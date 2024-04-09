@@ -38,7 +38,7 @@ export default function ApplicationHeader() {
 										item.href === router.pathname && "text-foreground"
 									)}
 								>
-									<SheetClose>{item.name}</SheetClose>
+									<SheetClose className="w-full text-left">{item.name}</SheetClose>
 								</Link>
 							))}
 						</nav>
