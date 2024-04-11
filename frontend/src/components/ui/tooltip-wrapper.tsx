@@ -1,4 +1,3 @@
-import React from "react";
 import { TooltipProvider } from "./tooltip";
 
 // For consistency's sake, this component is a wrapper for the TooltipProvider.

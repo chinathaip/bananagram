@@ -8,13 +8,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+
 import { formatTimestamp } from "@/lib/utils";
 import { formatDistance, subHours } from "date-fns";
 import { CrownIcon, EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "./button";
 import { Card } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
+
 import TooltipWrapper from "./tooltip-wrapper";
+
+import MarkdownViewer from "./markdown-viewer";
 
 // This disables scroll when activated, and there is an issue with
 // the content being misaligned since the width of the scrollbar is not accounted for.
@@ -114,12 +118,12 @@ export default function PostCard() {
 
 					{/* Post content */}
 					<section>
-						<p className="text-sm">
-							Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae hic tempore asperiores
+						<MarkdownViewer>
+							Lorem ipsum dolor sit **amet** consectetur, adipisicing elit. Quae hic tempore asperiores
 							tenetur velit pariatur, iusto rem. Corrupti ex illum commodi, aut tenetur nisi magnam porro
-							magni! Fugiat, mollitia? Animi officiis numquam fugiat voluptates quasi laudantium
-							reprehenderit totam dolores expedita!
-						</p>
+							magni! Fugiat, mollitia? _Animi_ officiis numquam fugiat voluptates quasi laudantium
+							reprehenderit totam dolores expedita! [Link](https://example.com)
+						</MarkdownViewer>
 					</section>
 				</div>
 			</article>

@@ -1,11 +1,10 @@
-import { getRepoStatsQuery } from "@/lib/queries/get-repo-stats";
-import { useQuery } from "@tanstack/react-query";
+import PostCard from "@/components/ui/post-card";
 
 export default function Home() {
-	const { isPending, error, data } = useQuery(getRepoStatsQuery);
+	// const { isPending, error, data } = useQuery(getRepoStatsQuery);
 
-	if (isPending) return <div className="container mx-auto">Loading...</div>;
-	if (error) return <div>Error: {error.message}</div>;
+	// if (isPending) return <div className="container mx-auto">Loading...</div>;
+	// if (error) return <div>Error: {error.message}</div>;
 
 	return (
 		<div className="container mx-auto grid grid-cols-12">
@@ -15,9 +14,9 @@ export default function Home() {
 			</div>
 			{/* TODO: don't forget to remove h-screen, make this scrollable since it's the main content */}
 			<div className="relative col-span-12 h-screen md:col-span-9">
-				{/* <PostCard /> */}
+				<PostCard />
 				{/* <PostCardSkeleton /> */}
-				<pre>{JSON.stringify(data, null, 2)}</pre>
+				{/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
 			</div>
 		</div>
 	);
