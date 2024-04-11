@@ -10,6 +10,7 @@ export default function Home() {
 			{/* TODO: don't forget to remove h-screen, make this scrollable since it's the main content */}
 			<div className="relative col-span-12 h-screen md:col-span-9">
 				<PostCard />
+				{/* <PostCardSkeleton /> */}
 			</div>
 		</div>
 	);
