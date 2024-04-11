@@ -3,8 +3,12 @@ import "@/styles/globals.css";
 import ApplicationShell from "@/components/core/application-shell";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { fontSans } from "@/lib/fonts";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
@@ -23,9 +27,12 @@ export default function App({ Component, pageProps }: AppProps) {
 			</Head>
 
 			<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-				<ApplicationShell>
-					<Component {...pageProps} />
-				</ApplicationShell>
+				<QueryClientProvider client={queryClient}>
+					<ApplicationShell>
+						<Component {...pageProps} />
+					</ApplicationShell>
+					<ReactQueryDevtools initialIsOpen={false} />
+				</QueryClientProvider>
 			</ThemeProvider>
 		</>
 	);
