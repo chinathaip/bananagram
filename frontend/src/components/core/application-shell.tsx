@@ -8,7 +8,12 @@ export default function ApplicationShell({ children }: { children: React.ReactNo
 	return (
 		<div className={`relative flex h-screen min-h-screen w-full flex-col ${InterFont.className}`}>
 			<ApplicationHeader />
-			<main className="h-full pt-2">{children}</main>
+
+			{/* The pt-16 here is the header height + 2, which in this case equals 16 */}
+			{/* Doing it this way instead of making the header sticky because the `h-screen` in the parent container here */}
+			{/* causes the header to disappear when scrolling past the viewport. */}
+			{/* TODO: make this a css variable */}
+			<main className="h-full pt-16">{children}</main>
 			<TailwindIndicator />
 		</div>
 	);
