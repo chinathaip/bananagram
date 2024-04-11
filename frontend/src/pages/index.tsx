@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 export default function Home() {
 	const { isPending, error, data } = useQuery(getRepoStatsQuery);
 
-	if (isPending) return <div>Loading...</div>;
+	if (isPending) return <div className="container mx-auto">Loading...</div>;
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
