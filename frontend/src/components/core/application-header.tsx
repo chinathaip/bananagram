@@ -49,7 +49,7 @@ export default function ApplicationHeader() {
 				<Link href="/" className="hidden select-none items-center gap-2 text-lg font-semibold lg:flex">
 					<div className="flex flex-row items-center gap-x-2 text-2xl font-bold">
 						<BananaIcon className="h-6 w-6" />
-						Bananagram
+						<span className="gradient-span">Bananagram</span>
 					</div>
 					<span className="sr-only">Bananagram</span>
 				</Link>
