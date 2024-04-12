@@ -36,10 +36,10 @@ export function PostEditor() {
 	});
 
 	return (
-		<>
+		<div>
 			<EditorContent editor={editor} />
 			{editor ? <PostEditorToolbar editor={editor} /> : null}
-		</>
+		</div>
 	);
 }
 
