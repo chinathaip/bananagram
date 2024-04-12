@@ -28,6 +28,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 
+import confetti from "canvas-confetti";
+import Realistic from "react-canvas-confetti/dist/presets/realistic";
+import type { TConductorInstance } from "react-canvas-confetti/dist/types";
 interface Post {
 	id: string;
 	content: string;
@@ -46,17 +49,48 @@ interface PostCardProps {
 
 function BananaLikeButton() {
 	const [bananaLiked, setBananaLiked] = useState(false);
+	const [confettiInstance, setconfettiInstance] = useState<{
+		confetti: confetti.CreateTypes;
+		conductor: TConductorInstance;
+	}>();
 
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		// Get the button's position relative to the viewport
-		const rect = event.currentTarget.getBoundingClientRect();
-		const x = event.clientX - rect.left;
-		const y = event.clientY - rect.top;
+		const { width, height, x, y } = event.currentTarget.getBoundingClientRect();
+
+		const xScale = (x + width / 2) / window.innerWidth;
+		const yScale = (y + height / 2) / window.innerHeight;
+
+		const scalar = 4;
+
+		setBananaLiked((prev) => {
+			if (!prev) {
+				// This has to be here because the confetti instance is not available on the first render
+				const bananaShape = confetti.shapeFromText({ text: "🍌", scalar });
+
+				confettiInstance?.confetti({
+					particleCount: 10,
+					scalar,
+					spread: 75,
+					origin: { x: xScale, y: yScale },
+					shapes: [bananaShape],
+					colors: ["#ff0000", "#00ff00", "#0000ff"]
+				});
+			}
+
+			return !prev;
+		});
 	};
 
 	return (
 		<Button onClick={handleClick} className="rounded-full" variant="ghost" size="icon">
 			<BananaIcon fill={bananaLiked ? "yellow" : undefined} className="h-6 w-6" />
+
+			<Realistic
+				onInit={(confetti) => {
+					setconfettiInstance(confetti);
+				}}
+			/>
 		</Button>
 	);
 }
