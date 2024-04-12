@@ -1,9 +1,8 @@
-import { useRepoStats } from "@/lib/hooks/use-repo-stats";
+import { useRepoStats } from "@/lib/hooks/data-hooks/use-repo-stats";
 
 export default function Home() {
 	const { isPending, error, data } = useRepoStats("TanStack/query");
 
-	if (isPending) return <div className="container mx-auto">Loading...</div>;
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
@@ -16,7 +15,7 @@ export default function Home() {
 			<div className="relative col-span-12 h-screen md:col-span-9">
 				{/* <PostCard /> */}
 				{/* <PostCardSkeleton /> */}
-				<pre>{JSON.stringify(data, null, 2)}</pre>
+				<pre>{isPending ? "Loading..." : JSON.stringify(data, null, 2)}</pre>
 			</div>
 		</div>
 	);
