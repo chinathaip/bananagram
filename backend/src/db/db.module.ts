@@ -1,4 +1,4 @@
-import { Module, OnApplicationBootstrap, OnApplicationShutdown } from "@nestjs/common";
+import { Logger, Module, OnApplicationBootstrap, OnApplicationShutdown } from "@nestjs/common";
 import { Client } from "pg";
 import { DatabaseService } from "./db.service";
 import { ModuleRef } from "@nestjs/core";
@@ -26,13 +26,15 @@ const dbFactory = async () => {
 export class DatabaseModule implements OnApplicationBootstrap, OnApplicationShutdown {
 	constructor(private readonly moduleRef: ModuleRef) {}
 
+	private readonly logger = new Logger(DatabaseModule.name);
+
 	async onApplicationBootstrap() {
 		await this.moduleRef.get("DB_CONN").connect();
-		console.log("creating connection to postgres");
+		this.logger.log("create connection to postgres");
 	}
 
 	async onApplicationShutdown(signal?: string) {
 		await this.moduleRef.get("DB_CONN").close();
-		console.log(`closing connection to postgres on signal ${signal}`);
+		this.logger.log(`close connection to postgres on signal ${signal}`);
 	}
 }
