@@ -25,6 +25,7 @@ import { Button } from "./button";
 import { Card } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
+import { useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 
 interface Post {
@@ -41,6 +42,23 @@ interface Post {
 
 interface PostCardProps {
 	post: Post;
+}
+
+function BananaLikeButton() {
+	const [bananaLiked, setBananaLiked] = useState(false);
+
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		// Get the button's position relative to the viewport
+		const rect = event.currentTarget.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+	};
+
+	return (
+		<Button onClick={handleClick} className="rounded-full" variant="ghost" size="icon">
+			<BananaIcon fill={bananaLiked ? "yellow" : undefined} className="h-6 w-6" />
+		</Button>
+	);
 }
 
 // This disables scroll when activated, and there is an issue with
@@ -140,9 +158,7 @@ export default function PostCard({ post }: PostCardProps) {
 						<Button className="rounded-full" variant="ghost" size="icon">
 							<MessageSquare className="h-6 w-6" />
 						</Button>
-						<Button className="rounded-full" variant="ghost" size="icon">
-							<BananaIcon className="h-6 w-6" />
-						</Button>
+						<BananaLikeButton />
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
 							<Button className="rounded-full" variant="ghost" size="icon">
 								<ShareIcon className="h-6 w-6" />
