@@ -1,9 +1,9 @@
-import { useRepoStats } from "@/lib/hooks/data-hooks/use-repo-stats";
+import { PostEditor } from "@/components/ui/post-editor";
 
 export default function Home() {
-	const { isPending, error, data } = useRepoStats("TanStack/query");
+	// const { isPending, error, data } = useRepoStats("TanStack/query");
 
-	if (error) return <div>Error: {error.message}</div>;
+	// if (error) return <div>Error: {error.message}</div>;
 
 	return (
 		<div className="container mx-auto grid grid-cols-12">
@@ -15,7 +15,8 @@ export default function Home() {
 			<div className="relative col-span-12 h-screen md:col-span-9">
 				{/* <PostCard /> */}
 				{/* <PostCardSkeleton /> */}
-				<pre>{isPending ? "Loading..." : JSON.stringify(data, null, 2)}</pre>
+				{/* <pre>{isPending ? "Loading..." : JSON.stringify(data, null, 2)}</pre> */}
+				<PostEditor />
 			</div>
 		</div>
 	);
