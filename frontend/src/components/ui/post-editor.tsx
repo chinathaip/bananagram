@@ -7,6 +7,7 @@ import { Bold, Italic, List, ListOrdered, Strikethrough } from "lucide-react";
 import { Separator } from "./separator";
 import { Toggle } from "./toggle";
 
+// TODO: fix the flash of unstyled content when switching back to home from about for example, the editor isn't rendered before the posts
 export function PostEditor() {
 	const editor = useEditor({
 		editorProps: {

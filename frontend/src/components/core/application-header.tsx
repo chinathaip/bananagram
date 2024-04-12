@@ -1,5 +1,6 @@
 import { navItems } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { BananaIcon, Menu } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -73,6 +74,16 @@ export default function ApplicationHeader() {
 				{/* Right side */}
 				<div className="ml-auto flex flex-row items-center gap-x-2">
 					<ThemeToggler />
+
+					<SignedIn>
+						<UserButton />
+					</SignedIn>
+
+					<SignedOut>
+						<Link href="/sign-in">
+							<Button size="sm">Sign In</Button>
+						</Link>
+					</SignedOut>
 				</div>
 			</div>
 		</header>

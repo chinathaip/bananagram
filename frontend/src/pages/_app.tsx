@@ -9,6 +9,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark as clerkDarkTheme } from "@clerk/themes";
+
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -30,9 +33,16 @@ export default function App({ Component, pageProps }: AppProps) {
 			<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
 				<QueryClientProvider client={queryClient}>
 					<TooltipProvider delayDuration={300}>
-						<ApplicationShell>
-							<Component {...pageProps} />
-						</ApplicationShell>
+						<ClerkProvider
+							appearance={{
+								baseTheme: clerkDarkTheme
+							}}
+							{...pageProps}
+						>
+							<ApplicationShell>
+								<Component {...pageProps} />
+							</ApplicationShell>
+						</ClerkProvider>
 					</TooltipProvider>
 
 					<ReactQueryDevtools initialIsOpen={false} />
