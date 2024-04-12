@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+    # ================================
+    # Postgres Database
+    # ================================
+    postgres:
+        image: postgres
+        container_name: bananagram_db
+        environment:
+            POSTGRES_DB: bananagram-dev
+            POSTGRES_USER: ite442
+            POSTGRES_PASSWORD: yaylastterm
+        volumes:
+            - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "9999:5432"

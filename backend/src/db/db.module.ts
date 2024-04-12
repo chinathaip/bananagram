@@ -6,10 +6,10 @@ import { ModuleRef } from "@nestjs/core";
 const dbFactory = async () => {
 	return new Client({
 		host: "localhost",
-		port: 5432,
-		user: "syntax",
-		password: "stamford",
-		database: "coursecompose-dev"
+		port: 9999,
+		user: "ite442",
+		password: "yaylastterm",
+		database: "bananagram-dev"
 	});
 };
 

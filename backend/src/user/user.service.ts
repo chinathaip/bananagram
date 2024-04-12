@@ -2,13 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { DatabaseService } from "../db/db.service";
-
-interface Course {
-	id: number;
-	code: string;
-	full_name: string;
-	prerequisites: string[];
-}
+import { User } from "./entities/user.entity";
 
 @Injectable()
 export class UserService {
@@ -18,9 +12,8 @@ export class UserService {
 		return "This action adds a new user";
 	}
 
-	async findAll() {
-		const result = await this.db.query<Course[]>(`SELECT * FROM public."Course"`);
-		return `This action returns all user`;
+	async findAll(): Promise<User[]> {
+		return await this.db.query<User[]>(`SELECT * FROM public.user`);
 	}
 
 	update(id: number, updateUserDto: UpdateUserDto) {
