@@ -16,8 +16,6 @@ import { Button } from "./button";
 import { Card } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
-import TooltipWrapper from "./tooltip-wrapper";
-
 import MarkdownViewer from "./markdown-viewer";
 
 // This disables scroll when activated, and there is an issue with
@@ -75,15 +73,13 @@ export default function PostCard() {
 					<div className="relative mb-1 flex w-full max-w-full flex-row items-center gap-x-2 overflow-hidden leading-none tracking-tight">
 						<div className="flex flex-col">
 							<h3 className="text-md flex items-center font-semibold">
-								<TooltipWrapper>
-									<Tooltip>
-										<TooltipContent>Admin</TooltipContent>
-										<TooltipTrigger>
-											{/* TODO: light theme colors for yellow */}
-											<CrownIcon className="h-4 w-4 text-yellow-400" />
-										</TooltipTrigger>
-									</Tooltip>
-								</TooltipWrapper>
+								<Tooltip>
+									<TooltipContent>Admin</TooltipContent>
+									<TooltipTrigger>
+										{/* TODO: light theme colors for yellow */}
+										<CrownIcon className="h-4 w-4 text-yellow-400" />
+									</TooltipTrigger>
+								</Tooltip>
 								<span className="select-none">&nbsp;</span>
 								<span className="break-all">ChinathaiP</span>
 								{/* We *could* put the options in the post header's top right to make it be in a more standard place, and it'll fit, 
@@ -96,22 +92,20 @@ export default function PostCard() {
 							<div className="flex flex-row items-center">
 								<span className="text-sm text-muted-foreground">@chinathai</span>
 								<span>&nbsp;·&nbsp;</span>
-								<TooltipWrapper>
-									<Tooltip>
-										<TooltipContent>{formatTimestamp(subHours(new Date(), 3))}</TooltipContent>
-										<TooltipTrigger className="text-sm text-muted-foreground">
-											{/* Allowing selection here is a bit finnicky but that's OK */}
-											<time
-												dateTime={formatTimestamp(subHours(new Date(), 3))}
-												className="select-text"
-											>
-												{formatDistance(subHours(new Date(), 3), new Date(), {
-													addSuffix: true
-												})}
-											</time>
-										</TooltipTrigger>
-									</Tooltip>
-								</TooltipWrapper>
+								<Tooltip>
+									<TooltipContent>{formatTimestamp(subHours(new Date(), 3))}</TooltipContent>
+									<TooltipTrigger className="text-sm text-muted-foreground">
+										{/* Allowing selection here is a bit finnicky but that's OK */}
+										<time
+											dateTime={formatTimestamp(subHours(new Date(), 3))}
+											className="select-text"
+										>
+											{formatDistance(subHours(new Date(), 3), new Date(), {
+												addSuffix: true
+											})}
+										</time>
+									</TooltipTrigger>
+								</Tooltip>
 							</div>
 						</div>
 					</div>

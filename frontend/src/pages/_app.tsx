@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import ApplicationShell from "@/components/core/application-shell";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { fontSans } from "@/lib/fonts";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { AppProps } from "next/app";
@@ -28,9 +29,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
 			<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
 				<QueryClientProvider client={queryClient}>
-					<ApplicationShell>
-						<Component {...pageProps} />
-					</ApplicationShell>
+					<TooltipProvider delayDuration={300}>
+						<ApplicationShell>
+							<Component {...pageProps} />
+						</ApplicationShell>
+					</TooltipProvider>
+
 					<ReactQueryDevtools initialIsOpen={false} />
 				</QueryClientProvider>
 			</ThemeProvider>
