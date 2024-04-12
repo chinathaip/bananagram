@@ -1,10 +1,10 @@
 import { Module, OnApplicationBootstrap, OnApplicationShutdown } from "@nestjs/common";
-import { Connection } from "postgresql-client";
+import { Client } from "pg";
 import { DatabaseService } from "./db.service";
 import { ModuleRef } from "@nestjs/core";
 
 const dbFactory = async () => {
-	return new Connection({
+	return new Client({
 		host: "localhost",
 		port: 5432,
 		user: "syntax",
