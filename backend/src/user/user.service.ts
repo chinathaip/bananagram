@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { DatabaseService } from "../db/db.service";
@@ -9,34 +9,75 @@ import { QueryConfig } from "pg";
 export class UserService {
 	constructor(private readonly db: DatabaseService) {}
 
-	async create(createUserDto: CreateUserDto) {
-		const queries: QueryConfig[] = [
-			{
-				name: "Create New User",
-				text: "INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-				values: [
-					createUserDto.id,
-					createUserDto.username,
-					createUserDto.email,
-					createUserDto.bio,
-					createUserDto.display_name,
-					createUserDto.profile_picture
-				]
-			}
-		];
-		const results = await this.db.transaction(queries);
-		return results;
+	private readonly logger = new Logger(UserService.name);
+
+	async create(createUserDto: CreateUserDto | UpdateUserDto) {
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `Create New User: ${createUserDto.id}`,
+					text: "INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+					values: [
+						createUserDto.id,
+						createUserDto.username,
+						createUserDto.email,
+						createUserDto.bio,
+						createUserDto.display_name,
+						createUserDto.profile_picture
+					]
+				}
+			];
+			return await this.db.transaction(queries);
+		} catch (e) {
+			this.logger.error(e);
+			throw e;
+		}
 	}
 
 	async findAll(): Promise<User[]> {
 		return await this.db.query<User[]>(`SELECT * FROM public.user`);
 	}
 
-	update(id: number, updateUserDto: UpdateUserDto) {
-		return `This action updates a #${id} user`;
+	async update(updateUserDto: UpdateUserDto) {
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `Update User Information for ${updateUserDto.id}`,
+					text: "UPDATE public.user SET username=$2, email=$3, bio=$4, display_name=$5, profile_picture=$6 WHERE id = $1",
+					values: [
+						updateUserDto.id,
+						updateUserDto.username,
+						updateUserDto.email,
+						updateUserDto.bio,
+						updateUserDto.display_name,
+						updateUserDto.profile_picture
+					]
+				}
+			];
+			const results = await this.db.transaction(queries);
+			// if user is not found, create one
+			if (results[0].rowsAffected == 0) {
+				this.logger.warn(`user: ${updateUserDto.id} does not exist for update, creating a new entry`);
+				return await this.create(updateUserDto);
+			}
+		} catch (e) {
+			this.logger.error(e);
+			throw e;
+		}
 	}
 
 	async remove(id: string) {
-		return await this.db.query<User>(`DELETE FROM public.user WHERE id = '${id}' RETURNING *`);
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `Delete User Information for ${id}`,
+					text: `DELETE FROM public.user WHERE id = '${id}' RETURNING *`
+				}
+			];
+			return await this.db.transaction(queries);
+		} catch (e) {
+			this.logger.error(e);
+			throw e;
+		}
 	}
 }

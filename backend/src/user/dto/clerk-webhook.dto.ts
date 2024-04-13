@@ -11,10 +11,10 @@ export enum ClerkUserEventType {
 
 export class ClerkUserPayload {
 	id: string;
-	username: string;
-	public_metadata: { bio: string; display_name: string };
-	profile_image_url: string;
+	username: string | null;
+	public_metadata: { bio: string; display_name: string | null };
+	profile_image_url: string | null;
 	email_addresses: { email_address: string }[];
 	created_at: Date;
-	updated_at: Date;
+	updated_at: Date | null;
 }

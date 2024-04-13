@@ -21,7 +21,7 @@ export class DatabaseService {
 			queries.forEach(async (query) => {
 				const res = await this.connection.query(query);
 				transactionResult.push({ name: query.name, rowsAffected: res.rowCount, rows: res.rows });
-				this.logger.log(`transaction: ${query.name}, rows affected: ${res.rowCount}, command: ${query.text}`);
+				this.logger.log(`transaction: ${query.name}, rows affected: ${res.rowCount}`);
 			});
 			await this.connection.query("COMMIT");
 			return transactionResult;
