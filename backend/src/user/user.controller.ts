@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -9,6 +9,15 @@ export class UserController {
 
 	@Post()
 	create(@Body() createUserDto: CreateUserDto) {
+		if (!createUserDto.id || !createUserDto.username || !createUserDto.email) {
+			throw new HttpException(
+				{
+					status: HttpStatus.BAD_REQUEST,
+					error: "missing fields to create new user"
+				},
+				HttpStatus.BAD_REQUEST
+			);
+		}
 		return this.userService.create(createUserDto);
 	}
 

@@ -3,13 +3,29 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { DatabaseService } from "../db/db.service";
 import { User } from "./entities/user.entity";
+import { QueryConfig } from "pg";
 
 @Injectable()
 export class UserService {
 	constructor(private readonly db: DatabaseService) {}
 
-	create(createUserDto: CreateUserDto) {
-		return "This action adds a new user";
+	async create(createUserDto: CreateUserDto) {
+		const queries: QueryConfig[] = [
+			{
+				name: "Create New User",
+				text: "INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+				values: [
+					createUserDto.id,
+					createUserDto.username,
+					createUserDto.email,
+					createUserDto.bio,
+					createUserDto.display_name,
+					createUserDto.profile_picture
+				]
+			}
+		];
+		const results = await this.db.transaction(queries);
+		return results;
 	}
 
 	async findAll(): Promise<User[]> {
