@@ -43,14 +43,15 @@ export class UserService {
 			const queries: QueryConfig[] = [
 				{
 					name: `Update User Information for ${updateUserDto.id}`,
-					text: "UPDATE public.user SET username=$2, email=$3, bio=$4, display_name=$5, profile_picture=$6 WHERE id = $1",
+					text: "UPDATE public.user SET username=$2, email=$3, bio=$4, display_name=$5, profile_picture=$6, updated_at=$7 WHERE id = $1",
 					values: [
 						updateUserDto.id,
 						updateUserDto.username,
 						updateUserDto.email,
 						updateUserDto.bio,
 						updateUserDto.display_name,
-						updateUserDto.profile_picture
+						updateUserDto.profile_picture,
+						updateUserDto.updated_at
 					]
 				}
 			];

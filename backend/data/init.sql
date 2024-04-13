@@ -6,7 +6,9 @@ CREATE TABLE "public"."user" (
     "display_name" varchar(255),
     "profile_picture" varchar(255),
     "created_at" timestamptz NOT NULL DEFAULT now(),
+    "updated_at" timestamptz,
     PRIMARY KEY ("id")
 );
 
-INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('132e9528-4a70-4ef4-9c68-f8f54a984a29', 'michael123', 'michael123@gmail.com', 'Wassup', 'MichaelZaza', '');
+INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', '', '', 'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
+INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', '', '', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
