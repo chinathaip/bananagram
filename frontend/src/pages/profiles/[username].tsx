@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, UserRoundPlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -9,12 +10,13 @@ export default function UserProfilePage() {
 	const username = router.query.username;
 
 	return (
-		<div className="container relative grid grid-cols-12">
+		<div className="container grid grid-cols-12">
 			{/* Left profile aside */}
-			<aside className="col-span-12 bg-background md:col-span-4 lg:col-span-3">
+			{/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/}
+			{/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */}
+			<aside className="col-span-12 h-min md:sticky md:top-16 md:col-span-4 lg:col-span-3">
 				<section aria-labelledby="profile-header">
 					<div className="flex flex-col">
-						{/* Profile Banner (TBD), might just force everyone's to be bananas lol */}
 						<div className="relative h-24 bg-secondary">
 							<Image
 								className="select-none"
@@ -35,9 +37,21 @@ export default function UserProfilePage() {
 									<AvatarFallback>NT</AvatarFallback>
 								</Avatar>
 							</div>
-							<div className="mt-2">
-								<div className="text-lg font-semibold">NayHtetKyaw</div>
-								<div className="text-muted-foreground">@bananayhtet</div>
+							<div className="mt-2 flex flex-row items-center">
+								<div>
+									<div className="text-lg font-semibold">NayHtetKyaw</div>
+									<div className="text-muted-foreground">@bananayhtet</div>
+								</div>
+								<div className="ml-auto">
+									<Button>
+										<UserRoundPlusIcon className="h-6 w-6" />
+										Follow
+									</Button>
+
+									{/* <button className="btn btn-secondary">Message</button> */}
+									{/* <button className="btn btn-secondary">Edit Profile</button> */}
+									{/* <button className="btn btn-secondary">More</button> */}
+								</div>
 							</div>
 						</div>
 					</div>
