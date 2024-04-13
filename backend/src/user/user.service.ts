@@ -57,7 +57,7 @@ export class UserService {
 			];
 			const results = await this.db.transaction(queries);
 			// if user is not found, create one
-			if (results[0].rowsAffected == 0) {
+			if (results[0].rowsAffected === 0) {
 				this.logger.warn(`user: ${updateUserDto.id} does not exist for update, creating a new entry`);
 				return await this.create(updateUserDto);
 			}
@@ -75,7 +75,10 @@ export class UserService {
 					text: `DELETE FROM public.user WHERE id = '${id}' RETURNING *`
 				}
 			];
-			return await this.db.transaction(queries);
+			const results = await this.db.transaction(queries);
+			if (results[0].rowsAffected === 0) {
+				this.logger.warn(`user: ${id} does not exist for delete`);
+			}
 		} catch (e) {
 			this.logger.error(e);
 			throw e;
