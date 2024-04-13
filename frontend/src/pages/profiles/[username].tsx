@@ -14,8 +14,8 @@ export default function UserProfilePage() {
 			{/* Left profile aside */}
 			{/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/}
 			{/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */}
-			<aside className="col-span-12 h-min md:sticky md:top-16 md:col-span-4 lg:col-span-3">
-				<section aria-labelledby="profile-header">
+			<aside className="col-span-12 h-min overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm lg:sticky lg:top-16 lg:col-span-4 xl:col-span-3">
+				<section className="mb-2" aria-labelledby="profile-header">
 					<div className="flex flex-col">
 						<div className="relative h-24 bg-secondary">
 							<Image
@@ -37,14 +37,14 @@ export default function UserProfilePage() {
 									<AvatarFallback>NT</AvatarFallback>
 								</Avatar>
 							</div>
-							<div className="mt-2 flex flex-row items-center">
+							<div className="mt-2 flex flex-row items-center px-2">
 								<div>
 									<div className="text-lg font-semibold">NayHtetKyaw</div>
 									<div className="text-muted-foreground">@bananayhtet</div>
 								</div>
 								<div className="ml-auto">
 									<Button>
-										<UserRoundPlusIcon className="h-6 w-6" />
+										<UserRoundPlusIcon className="mr-2 h-6 w-6" />
 										Follow
 									</Button>
 
@@ -57,10 +57,9 @@ export default function UserProfilePage() {
 					</div>
 				</section>
 
-				<section aria-labelledby="profile-details" className="mt-4">
-					{/* The unequal margins here are intentional, mathematically, not correct (probably??) but optical correction "corrects" it */}
-					{/* Atleast that's what it looks like to me */}
-					<Separator className="my-3 mb-2" />
+				<Separator />
+
+				<section className="mt-2 p-2 pt-0" aria-labelledby="profile-details">
 					<div className="mt-1">
 						XDDD Bananas! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem, rerum. Iste eius
 						illum commodi atque excepturi voluptatum facere quasi libero. Nobis iste, eum corporis quo error
@@ -88,7 +87,7 @@ export default function UserProfilePage() {
 				</section>
 			</aside>
 
-			<section className="col-span-12 md:col-span-8 md:pl-2 lg:col-span-9" aria-labelledby="user-posts">
+			<section className="col-span-12 lg:col-span-8 lg:pl-2 xl:col-span-9" aria-labelledby="user-posts">
 				<div className="h-screen">User's posts, filter</div>
 				<div className="h-screen">User's posts, filter</div>
 				{/* User's posts will be rendered here */}
