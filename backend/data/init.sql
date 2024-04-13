@@ -1,6 +1,6 @@
 CREATE TABLE "public"."user" (
-    "id" uuid NOT NULL,
-    "username" varchar(255) NOT NULL,
+    "id" varchar(255) NOT NULL,
+    "username" varchar(255) ,
     "email" varchar(255) NOT NULL,
     "bio" varchar(255),
     "display_name" varchar(255),

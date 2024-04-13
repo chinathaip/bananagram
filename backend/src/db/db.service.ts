@@ -9,7 +9,9 @@ export class DatabaseService {
 	private readonly logger = new Logger(DatabaseService.name);
 
 	async query<T>(sql: string): Promise<T> {
-		return (await this.connection.query(sql)).rows as T;
+		const res = await this.connection.query(sql);
+		this.logger.log(`comand: ${sql} affected: ${res.rowCount} rows`);
+		return res.rows as T;
 	}
 
 	async transaction(queries: QueryConfig[]): Promise<TransactionResult[]> {
