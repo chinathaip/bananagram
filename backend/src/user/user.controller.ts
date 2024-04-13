@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, HttpException, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Post, Body, HttpException, HttpStatus, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ClerkUserEventType, ClerkUserWebhook } from "./dto/clerk-webhook.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("users")
 export class UserController {
@@ -23,6 +24,7 @@ export class UserController {
 	}
 
 	@Post()
+	@UseGuards(AuthGuard("basic"))
 	handle(@Body() clerkUserWebhook: ClerkUserWebhook) {
 		switch (clerkUserWebhook.type) {
 			case ClerkUserEventType.Created:
