@@ -10,7 +10,7 @@ export class DatabaseService {
 
 	async query<T>(sql: string): Promise<T> {
 		const res = await this.connection.query(sql);
-		this.logger.log(`comand: ${sql} affected: ${res.rowCount} rows`);
+		this.logger.log(`command: ${sql} affected: ${res.rowCount} rows`);
 		return res.rows as T;
 	}
 

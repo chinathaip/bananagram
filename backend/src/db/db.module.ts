@@ -2,14 +2,15 @@ import { Logger, Module, OnApplicationBootstrap, OnApplicationShutdown } from "@
 import { Client } from "pg";
 import { DatabaseService } from "./db.service";
 import { ModuleRef } from "@nestjs/core";
+import { ConfigService } from "@nestjs/config";
 
-const dbFactory = async () => {
+const dbFactory = async (configService: ConfigService) => {
 	return new Client({
-		host: "localhost",
-		port: 9999,
-		user: "ite442",
-		password: "yaylastterm",
-		database: "bananagram-dev"
+		host: configService.get("POSTGRES_HOST"),
+		port: configService.get("POSTGRES_PORT"),
+		user: configService.get("POSTGRES_USER"),
+		password: configService.get("POSTGRES_PASSWORD"),
+		database: configService.get("POSTGRES_DATABASE")
 	});
 };
 
@@ -17,6 +18,7 @@ const dbFactory = async () => {
 	providers: [
 		{
 			provide: "DB_CONN",
+			inject: [ConfigService],
 			useFactory: dbFactory
 		},
 		DatabaseService
