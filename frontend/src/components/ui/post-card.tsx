@@ -29,6 +29,7 @@ import { useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 
 import confetti from "canvas-confetti";
+import Link from "next/link";
 import Realistic from "react-canvas-confetti/dist/presets/realistic";
 import type { TConductorInstance } from "react-canvas-confetti/dist/types";
 interface Post {
@@ -140,10 +141,12 @@ export default function PostCard({ post }: PostCardProps) {
 		<Card>
 			<article className="flex flex-row items-start gap-x-4 p-4">
 				<div className="flex flex-col items-center gap-y-2">
-					<Avatar>
-						<AvatarImage src={post.avatarUrl} alt={`@${post.username}`} />
-						<AvatarFallback>{post.avatarFallback}</AvatarFallback>
-					</Avatar>
+					<Link href={`/profiles/${post.username}`}>
+						<Avatar>
+							<AvatarImage src={post.avatarUrl} alt={`@${post.username}`} />
+							<AvatarFallback>{post.avatarFallback}</AvatarFallback>
+						</Avatar>
+					</Link>
 
 					<PostOptionsButton canEdit={post.canEdit} canDelete={post.canDelete} />
 				</div>
@@ -160,11 +163,15 @@ export default function PostCard({ post }: PostCardProps) {
 									</TooltipTrigger>
 								</Tooltip>
 								<span className="select-none">&nbsp;</span>
-								<span className="break-all">{post.displayName}</span>
+								<Link href={`/profiles/${post.username}`}>
+									<span className="break-all hover:underline">{post.displayName}</span>
+								</Link>
 							</h3>
 
 							<div className="flex flex-row items-center">
-								<span className="text-sm text-muted-foreground">@{post.username}</span>
+								<Link href={`/profiles/${post.username}`}>
+									<span className="text-sm text-muted-foreground">@{post.username}</span>
+								</Link>
 								<span>&nbsp;·&nbsp;</span>
 								<Tooltip>
 									<TooltipContent>{formatTimestamp(post.timestamp)}</TooltipContent>
@@ -181,13 +188,13 @@ export default function PostCard({ post }: PostCardProps) {
 					</div>
 
 					{/* Post content */}
-					<section>
+					<section aria-labelledby="post-content">
 						<MarkdownViewer>{post.content}</MarkdownViewer>
 					</section>
 
 					{/* <Separator className="mb-2 mt-4" /> */}
 
-					<section className="mt-4 flex w-full">
+					<section aria-labelledby="post actions" className="mt-4 flex w-full">
 						{/* Post actions */}
 						<Button className="rounded-full" variant="ghost" size="icon">
 							<MessageSquare className="h-6 w-6" />
