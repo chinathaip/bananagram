@@ -1,12 +1,12 @@
 export const navItems = [
 	{
 		name: "Home",
-		href: "/",
-		public: true
+		i18nKey: "header.home",
+		href: "/"
 	},
 	{
 		name: "About us",
-		href: "/about",
-		public: true
+		i18nKey: "header.about",
+		href: "/about"
 	}
-];
+] as const;

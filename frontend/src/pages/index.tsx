@@ -1,5 +1,6 @@
 import PostCard from "@/components/ui/post-card";
 import { PostEditor } from "@/components/ui/post-editor";
+import { subHours } from "date-fns";
 
 const examplePosts = [
 	{
@@ -17,7 +18,8 @@ const examplePosts = [
 	{
 		id: "post124",
 		content: "Lorem short! __Kek__",
-		timestamp: new Date("2024-04-11T15:00:00Z"), // Example timestamp
+		// 3 hours ago
+		timestamp: subHours(new Date(), 3),
 		username: "shadcn",
 		displayName: "shad",
 		avatarUrl: "https://github.com/shadcn.png",

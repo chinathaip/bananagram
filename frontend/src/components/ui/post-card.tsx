@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { formatTimestamp } from "@/lib/utils";
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import {
 	AlertTriangleIcon,
 	BananaIcon,
@@ -28,6 +28,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 
+import { useDateFnsLocale } from "@/lib/hooks/util-hooks/use-date-fns-locale";
 import confetti from "canvas-confetti";
 import Link from "next/link";
 import Realistic from "react-canvas-confetti/dist/presets/realistic";
@@ -137,6 +138,8 @@ function PostOptionsButton({ canEdit, canDelete }: { canEdit: boolean; canDelete
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
 export default function PostCard({ post }: PostCardProps) {
+	const dateFnsLocale = useDateFnsLocale();
+
 	return (
 		<Card>
 			<article className="flex flex-row items-start gap-x-4 p-4">
@@ -174,11 +177,17 @@ export default function PostCard({ post }: PostCardProps) {
 								</Link>
 								<span>&nbsp;·&nbsp;</span>
 								<Tooltip>
-									<TooltipContent>{formatTimestamp(post.timestamp)}</TooltipContent>
+									<TooltipContent>
+										{format(post.timestamp, "do MMM yyyy ppp", {
+											locale: dateFnsLocale
+										})}
+									</TooltipContent>
+
 									<TooltipTrigger className="text-sm text-muted-foreground">
 										<time dateTime={formatTimestamp(post.timestamp)} className="select-text">
 											{formatDistance(post.timestamp, new Date(), {
-												addSuffix: true
+												addSuffix: true,
+												locale: dateFnsLocale
 											})}
 										</time>
 									</TooltipTrigger>

@@ -16,6 +16,10 @@ const nextConfig = {
 				pathname: "/profile_banners/**"
 			}
 		]
+	},
+	i18n: {
+		locales: ["en", "th"],
+		defaultLocale: "en"
 	}
 };
 

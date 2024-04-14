@@ -5,6 +5,9 @@ import ApplicationHeader from "./application-header";
 const InterFont = Inter({ subsets: ["latin"] });
 
 export default function ApplicationShell({ children }: { children: React.ReactNode }) {
+	// const locale = useCurrentLocale();
+	// const dateFnsLocale = dateFnsLocaleObject[locale];
+
 	return (
 		<div className={`relative flex h-screen min-h-screen w-full flex-col ${InterFont.className}`}>
 			<ApplicationHeader />

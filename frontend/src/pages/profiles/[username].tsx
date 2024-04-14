@@ -14,6 +14,7 @@ export default function UserProfilePage() {
 			{/* Left profile aside */}
 			{/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/}
 			{/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */}
+			{/* Probably the header's height + padding */}
 			<aside className="col-span-12 h-min overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm lg:sticky lg:top-16 lg:col-span-4 xl:col-span-3">
 				<section className="mb-2" aria-labelledby="profile-header">
 					<div className="flex flex-col">

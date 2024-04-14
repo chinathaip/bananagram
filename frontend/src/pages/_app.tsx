@@ -12,6 +12,9 @@ import Head from "next/head";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark as clerkDarkTheme } from "@clerk/themes";
 
+import { I18nProvider } from "@/locales";
+import en from "@/locales/en";
+
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -32,18 +35,20 @@ export default function App({ Component, pageProps }: AppProps) {
 
 			<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
 				<QueryClientProvider client={queryClient}>
-					<TooltipProvider delayDuration={300}>
-						<ClerkProvider
-							appearance={{
-								baseTheme: clerkDarkTheme
-							}}
-							{...pageProps}
-						>
-							<ApplicationShell>
-								<Component {...pageProps} />
-							</ApplicationShell>
-						</ClerkProvider>
-					</TooltipProvider>
+					<I18nProvider locale={pageProps.locale} fallbackLocale={en}>
+						<TooltipProvider delayDuration={300}>
+							<ClerkProvider
+								appearance={{
+									baseTheme: clerkDarkTheme
+								}}
+								{...pageProps}
+							>
+								<ApplicationShell>
+									<Component {...pageProps} />
+								</ApplicationShell>
+							</ClerkProvider>
+						</TooltipProvider>
+					</I18nProvider>
 
 					<ReactQueryDevtools initialIsOpen={false} />
 				</QueryClientProvider>
