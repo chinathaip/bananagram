@@ -27,6 +27,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 
+import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
 import Link from "next/link";
 import Realistic from "react-canvas-confetti/dist/presets/realistic";
@@ -72,6 +73,7 @@ function BananaLikeButton() {
 					particleCount: 10,
 					scalar,
 					spread: 75,
+					startVelocity: 30,
 					origin: { x: xScale, y: yScale },
 					shapes: [bananaShape],
 					colors: ["#ff0000", "#00ff00", "#0000ff"]
@@ -84,7 +86,7 @@ function BananaLikeButton() {
 
 	return (
 		<Button onClick={handleClick} className="rounded-full" variant="ghost" size="icon">
-			<BananaIcon fill={bananaLiked ? "yellow" : undefined} className="h-6 w-6" />
+			<BananaIcon className={cn("h-6 w-6", bananaLiked ? "fill-yellow-400" : "")} />
 
 			<Realistic
 				onInit={(confetti) => {
