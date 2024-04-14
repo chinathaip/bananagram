@@ -9,8 +9,7 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import { formatTimestamp } from "@/lib/utils";
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import {
 	AlertTriangleIcon,
 	BananaIcon,
@@ -174,9 +173,12 @@ export default function PostCard({ post }: PostCardProps) {
 								</Link>
 								<span>&nbsp;·&nbsp;</span>
 								<Tooltip>
-									<TooltipContent>{formatTimestamp(post.timestamp)}</TooltipContent>
+									<TooltipContent>{format(post.timestamp, "do MMM yyyy ppp")}</TooltipContent>
 									<TooltipTrigger className="text-sm text-muted-foreground">
-										<time dateTime={formatTimestamp(post.timestamp)} className="select-text">
+										<time
+											dateTime={format(post.timestamp, "do MMM yyyy ppp")}
+											className="select-text"
+										>
 											{formatDistance(post.timestamp, new Date(), {
 												addSuffix: true
 											})}
