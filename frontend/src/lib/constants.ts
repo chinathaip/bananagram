@@ -8,5 +8,10 @@ export const navItems = [
 		name: "About us",
 		href: "/about",
 		public: true
+	},
+	{
+		name: "Contact",
+		href: "/contact",
+		public: true
 	}
 ];
