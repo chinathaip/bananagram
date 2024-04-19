@@ -4,13 +4,22 @@ import { AppService } from "./app.service";
 import { UserModule } from "../user/user.module";
 import { AuthModule } from "../auth/auth.module";
 import { ConfigModule } from "@nestjs/config";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { PostModule } from "../post/post.module";
+import { join } from "path";
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true
 		}),
+		GraphQLModule.forRoot<ApolloDriverConfig>({
+			driver: ApolloDriver,
+			autoSchemaFile: join(process.cwd(), "./schema.gql")
+		}),
 		UserModule,
+		PostModule,
 		AuthModule
 	],
 	controllers: [AppController],
