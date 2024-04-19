@@ -32,12 +32,14 @@ type Mutation {
 }
 
 input CreatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  content: String!
+  user_id: String!
+  category_id: Int!
 }
 
 input UpdatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  content: String
+  user_id: String
+  category_id: Int
   id: Int!
 }
