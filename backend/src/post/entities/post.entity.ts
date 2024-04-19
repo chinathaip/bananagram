@@ -9,14 +9,14 @@ export class Post {
 	content: string;
 
 	@Field({ description: "The user who created this post" })
-	userId: string;
+	user_id: string;
 
 	@Field((type) => Int, { description: "The type of category this post belongs to" })
-	categoryId: number;
+	category_id: number;
 
 	@Field()
-	createdAt: Date;
+	created_at: Date;
 
 	@Field({ nullable: true })
-	updatedAt?: Date;
+	updated_at?: Date;
 }

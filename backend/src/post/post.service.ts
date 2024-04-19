@@ -2,21 +2,19 @@ import { Injectable } from "@nestjs/common";
 import { CreatePostInput } from "./dto/create-post.input";
 import { UpdatePostInput } from "./dto/update-post.input";
 import { Post } from "./entities/post.entity";
+import { DatabaseService } from "../db/db.service";
 
 @Injectable()
 export class PostService {
+	constructor(private readonly db: DatabaseService) {}
+
 	create(createPostInput: CreatePostInput) {
 		return "This action adds a new post";
 	}
 
 	async findAll(): Promise<Post[]> {
-		const post = new Post();
-		post.id = 1;
-		post.content = "hello darkness";
-		post.categoryId = 1;
-		post.userId = "user_adadad";
-		post.createdAt = new Date();
-		return [post];
+		const posts = await this.db.query<Post[]>(`SELECT * FROM public.post`);
+		return posts;
 	}
 
 	findOne(id: number) {

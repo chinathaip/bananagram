@@ -16,7 +16,8 @@ import { join } from "path";
 		}),
 		GraphQLModule.forRoot<ApolloDriverConfig>({
 			driver: ApolloDriver,
-			autoSchemaFile: join(process.cwd(), "./schema.gql")
+			autoSchemaFile: join(process.cwd(), "./schema.gql"),
+			path: "/_api/graphql"
 		}),
 		UserModule,
 		PostModule,

@@ -7,12 +7,12 @@ type Post {
   content: String!
 
   """The user who created this post"""
-  userId: String!
+  user_id: String!
 
   """The type of category this post belongs to"""
-  categoryId: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime
+  category_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime
 }
 
 """
