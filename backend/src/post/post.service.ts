@@ -51,8 +51,14 @@ export class PostService {
 		return posts;
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} post`;
+	async findOne(id: number): Promise<Post> {
+		const post = await this.db.query<Post[]>(`SELECT * FROM public.post WHERE id = '${id}' LIMIT 1`);
+
+		if (post.length === 0) {
+			throw new NotFoundError("Post not found");
+		}
+
+		return post[0];
 	}
 
 	async update(postId: number, userId: string, editPostInput: EditPostInput): Promise<Post> {

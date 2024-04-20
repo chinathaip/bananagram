@@ -40,7 +40,7 @@ export class UserService {
 	}
 
 	async findOne(id: string): Promise<User> {
-		const user = await this.db.query<User[]>(`SELECT * FROM public.user WHERE id = '${id}'`);
+		const user = await this.db.query<User[]>(`SELECT * FROM public.user WHERE id = '${id}' LIMIT 1`);
 
 		if (user.length === 0) {
 			throw new NotFoundError("User not found");
