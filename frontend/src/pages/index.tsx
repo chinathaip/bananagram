@@ -1,5 +1,6 @@
-import PostCard from "@/components/ui/post-card";
-import { PostEditor } from "@/components/ui/post-editor";
+import { usePost } from "@/lib/hooks/data-hooks/use-post";
+import { useSession } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 
 const examplePosts = [
 	{
@@ -32,6 +33,23 @@ export default function Home() {
 
 	// if (error) return <div>Error: {error.message}</div>;
 
+	const [postId, setPostId] = useState(1);
+
+	const { data, isError, isPending } = usePost(postId);
+	const { isSignedIn, session, isLoaded } = useSession();
+
+	useEffect(() => {
+		if (isLoaded && isSignedIn) {
+			session
+				.getToken({
+					template: "supabase"
+				})
+				.then((token) => {
+					console.log(token);
+				});
+		}
+	}, [session]);
+
 	return (
 		<div className="container mx-auto grid grid-cols-12">
 			<div className="relative hidden md:col-span-3 md:block">
@@ -40,14 +58,17 @@ export default function Home() {
 			</div>
 			{/* TODO: don't forget to remove h-screen, make this scrollable since it's the main content */}
 			<div className="relative col-span-12 flex h-screen flex-col gap-y-2 md:col-span-9">
-				<PostEditor />
+				{/* <PostEditor />
 
 				{examplePosts.map((post) => (
 					<PostCard key={`post_card_` + post.id} post={post} />
-				))}
+				))} */}
 
 				{/* <PostCardSkeleton /> */}
 				{/* <pre>{isPending ? "Loading..." : JSON.stringify(data, null, 2)}</pre> */}
+
+				<input type="number" value={postId} onChange={(e) => setPostId(parseInt(e.target.value))} />
+				<pre>{isPending ? "Loading..." : isError ? "ERR" : JSON.stringify(data, null, 2)}</pre>
 			</div>
 		</div>
 	);
