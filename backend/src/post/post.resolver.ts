@@ -22,8 +22,7 @@ export class PostResolver {
 	@UseGuards(JwtAuthGuard)
 	@Mutation(() => Post)
 	createPost(@CurrentUser() userId: string, @Args("createPostInput") createPostInput: CreatePostInput) {
-		createPostInput.user_id = userId;
-		return this.postService.create(createPostInput);
+		return this.postService.create(userId, createPostInput);
 	}
 
 	@Query(() => [Post])

@@ -25,13 +25,13 @@ export class PostService {
 		}
 	}
 
-	async create(createPostInput: CreatePostInput): Promise<Post> {
+	async create(userId: string, createPostInput: CreatePostInput): Promise<Post> {
 		try {
 			const queries: QueryConfig[] = [
 				{
-					name: `Create New Post for : ${createPostInput.user_id}`,
+					name: `Create New Post for : ${userId}`,
 					text: `INSERT INTO public.post (content, user_id, category_id) VALUES ($1,$2, $3) RETURNING *`,
-					values: [createPostInput.content, createPostInput.user_id, createPostInput.category_id]
+					values: [createPostInput.content, userId, createPostInput.category_id]
 				}
 			];
 			const results = await this.db.transaction(queries);
@@ -39,7 +39,7 @@ export class PostService {
 			return post[0];
 		} catch (e) {
 			if (e.code == 23503) {
-				throw new BadRequestError(`User ${createPostInput.user_id} does not exist`);
+				throw new BadRequestError(`User ${userId} does not exist`);
 			}
 			this.logger.error(`error when creating new post: ${e}`);
 			throw new InternalServerErrorException();
