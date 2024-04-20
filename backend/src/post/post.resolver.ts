@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from "@nestjs/graphql";
 import { PostService } from "./post.service";
 import { Post } from "./entities/post.entity";
 import { CreatePostInput } from "./dto/create-post.input";
@@ -6,10 +6,15 @@ import { EditPostInput } from "./dto/update-post.input";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/auth-jwt.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { Category } from "../category/entities/category.entity";
+import { CategoryService } from "../category/category.service";
 
 @Resolver((of) => Post)
 export class PostResolver {
-	constructor(private readonly postService: PostService) {}
+	constructor(
+		private readonly postService: PostService,
+		private readonly categoryService: CategoryService
+	) {}
 
 	@UseGuards(JwtAuthGuard)
 	@Mutation(() => Post)
@@ -26,6 +31,11 @@ export class PostResolver {
 	@Query(() => Post)
 	post(@Args("id", { type: () => Int }) id: number) {
 		return this.postService.findOne(id);
+	}
+
+	@ResolveField(() => Category)
+	category(@Parent() post: Post) {
+		return this.categoryService.findOne(post.category_id);
 	}
 
 	@UseGuards(JwtAuthGuard)
