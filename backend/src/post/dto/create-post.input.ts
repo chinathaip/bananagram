@@ -8,11 +8,8 @@ export class CreatePostInput {
 	@Field()
 	content: string;
 
-	@IsNotEmpty()
-	@Field()
-	user_id: string;
+	userId: string;
 
-	@IsNumber()
 	@Field((type) => Int)
-	category_id: number;
+	categoryId: number;
 }

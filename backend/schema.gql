@@ -33,13 +33,11 @@ type Mutation {
 
 input CreatePostInput {
   content: String!
-  user_id: String!
-  category_id: Int!
+  categoryId: Int!
 }
 
 input UpdatePostInput {
   content: String
-  user_id: String
-  category_id: Int
+  categoryId: Int
   id: Int!
 }

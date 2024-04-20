@@ -4,7 +4,7 @@ import { UpdatePostInput } from "./dto/update-post.input";
 import { Post } from "./entities/post.entity";
 import { DatabaseService } from "../db/db.service";
 import { QueryConfig } from "pg";
-import { BadRequestError } from "src/common/errors/bad-request.error";
+import { BadRequestError } from "../common/errors/bad-request.error";
 
 @Injectable()
 export class PostService {
@@ -16,9 +16,9 @@ export class PostService {
 		try {
 			const queries: QueryConfig[] = [
 				{
-					name: `Create New Post for : ${createPostInput.user_id}`,
+					name: `Create New Post for : ${createPostInput.userId}`,
 					text: `INSERT INTO public.post (content, user_id, category_id) VALUES ($1,$2, $3) RETURNING *`,
-					values: [createPostInput.content, createPostInput.user_id, createPostInput.category_id]
+					values: [createPostInput.content, createPostInput.userId, createPostInput.categoryId]
 				}
 			];
 			const results = await this.db.transaction(queries);
@@ -26,7 +26,7 @@ export class PostService {
 			return post[0];
 		} catch (e) {
 			if (e.code == 23503) {
-				throw new BadRequestError(`User ${createPostInput.user_id} does not exist`);
+				throw new BadRequestError(`User ${createPostInput.userId} does not exist`);
 			}
 			this.logger.error(`error when creating new post: ${e}`);
 			throw new InternalServerErrorException();
