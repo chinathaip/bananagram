@@ -16,9 +16,9 @@ export class PostService {
 		try {
 			const queries: QueryConfig[] = [
 				{
-					name: `Create New Post for : ${createPostInput.userId}`,
+					name: `Create New Post for : ${createPostInput.user_id}`,
 					text: `INSERT INTO public.post (content, user_id, category_id) VALUES ($1,$2, $3) RETURNING *`,
-					values: [createPostInput.content, createPostInput.userId, createPostInput.categoryId]
+					values: [createPostInput.content, createPostInput.user_id, createPostInput.category_id]
 				}
 			];
 			const results = await this.db.transaction(queries);
@@ -26,7 +26,7 @@ export class PostService {
 			return post[0];
 		} catch (e) {
 			if (e.code == 23503) {
-				throw new BadRequestError(`User ${createPostInput.userId} does not exist`);
+				throw new BadRequestError(`User ${createPostInput.user_id} does not exist`);
 			}
 			this.logger.error(`error when creating new post: ${e}`);
 			throw new InternalServerErrorException();
@@ -34,7 +34,7 @@ export class PostService {
 	}
 
 	async findAll(): Promise<Post[]> {
-		const posts = await this.db.query<Post[]>(`SELECT * FROM public.post`);
+		const posts = await this.db.query<Post[]>(`SELECT * FROM public.post ORDER BY created_at DESC`);
 		return posts;
 	}
 
