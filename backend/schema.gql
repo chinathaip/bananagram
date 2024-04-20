@@ -27,7 +27,7 @@ type Query {
 
 type Mutation {
   createPost(createPostInput: CreatePostInput!): Post!
-  updatePost(updatePostInput: UpdatePostInput!): Post!
+  editPost(editPostInput: EditPostInput!): Post!
   removePost(id: Int!): Post!
 }
 
@@ -36,7 +36,7 @@ input CreatePostInput {
   category_id: Int!
 }
 
-input UpdatePostInput {
+input EditPostInput {
   content: String
   category_id: Int
   id: Int!
