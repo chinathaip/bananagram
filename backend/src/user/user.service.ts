@@ -4,6 +4,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { DatabaseService } from "../db/db.service";
 import { User } from "./entities/user.entity";
 import { QueryConfig } from "pg";
+import { NotFoundError } from "../common/errors/not-found.error";
 
 @Injectable()
 export class UserService {
@@ -36,6 +37,16 @@ export class UserService {
 
 	async findAll(): Promise<User[]> {
 		return await this.db.query<User[]>(`SELECT * FROM public.user`);
+	}
+
+	async findOne(id: string): Promise<User> {
+		const user = await this.db.query<User[]>(`SELECT * FROM public.user WHERE id = '${id}'`);
+
+		if (user.length === 0) {
+			throw new NotFoundError("User not found");
+		}
+
+		return user[0];
 	}
 
 	async update(updateUserDto: UpdateUserDto) {

@@ -8,12 +8,15 @@ import { JwtAuthGuard } from "../auth/auth-jwt.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Category } from "../category/entities/category.entity";
 import { CategoryService } from "../category/category.service";
+import { User } from "../user/entities/user.entity";
+import { UserService } from "../user/user.service";
 
 @Resolver((of) => Post)
 export class PostResolver {
 	constructor(
 		private readonly postService: PostService,
-		private readonly categoryService: CategoryService
+		private readonly categoryService: CategoryService,
+		private readonly userService: UserService
 	) {}
 
 	@UseGuards(JwtAuthGuard)
@@ -31,6 +34,11 @@ export class PostResolver {
 	@Query(() => Post)
 	post(@Args("id", { type: () => Int }) id: number) {
 		return this.postService.findOne(id);
+	}
+
+	@ResolveField(() => User)
+	user(@Parent() post: Post) {
+		return this.userService.findOne(post.user_id);
 	}
 
 	@ResolveField(() => Category)

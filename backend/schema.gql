@@ -13,6 +13,7 @@ type Post {
   category_id: Int!
   created_at: DateTime!
   updated_at: DateTime
+  user: User!
   category: Category!
 }
 
@@ -24,6 +25,16 @@ scalar DateTime
 type Category {
   id: Int!
   name: String!
+}
+
+type User {
+  id: String!
+  username: String!
+  email: String!
+  bio: String!
+  display_name: String!
+  profile_picture: String!
+  created_at: DateTime!
 }
 
 type Query {
