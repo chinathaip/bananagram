@@ -21,18 +21,33 @@ export class PostService {
 
 	private readonly logger = new Logger(PostService.name);
 
-	private async validateInput(userId: string, categoryId: number, postId?: number) {
+	private async validateInput({
+		userId,
+		categoryId,
+		postId,
+		isEdit,
+		isLike
+	}: {
+		userId: string;
+		categoryId?: number;
+		postId?: number;
+		isEdit?: boolean;
+		isLike?: boolean;
+	}) {
 		try {
 			const promiseResult = await Promise.all([
 				// these 3 will throw NotFoundError if the given does not exist
 				this.userService.findOne(userId),
-				this.categoryService.findOne(categoryId),
-				postId ? this.findOne(postId) : null // postId will only be passed when editing post
+				categoryId ? this.categoryService.findOne(categoryId) : null,
+				postId ? this.findOne(postId) : null
 			]);
 
 			const post = promiseResult[2];
-			if (post && post.user_id !== userId) {
+			if (isEdit && post.user_id !== userId) {
 				throw new BadRequestError(`User ${userId} does not own post id ${post.id}`);
+			}
+			if (isLike && post.user_id === userId) {
+				throw new BadRequestError(`User ${userId} cannot like his/her own post id ${post.id}`);
 			}
 		} catch (e) {
 			throw e;
@@ -41,7 +56,7 @@ export class PostService {
 
 	async create(userId: string, createPostInput: CreatePostInput): Promise<Post> {
 		try {
-			await this.validateInput(userId, createPostInput.category_id);
+			await this.validateInput({ userId, categoryId: createPostInput.category_id });
 			const queries: QueryConfig[] = [
 				{
 					name: `Create New Post for : ${userId}`,
@@ -81,7 +96,12 @@ export class PostService {
 
 	async edit(userId: string, editPostInput: EditPostInput): Promise<Post> {
 		try {
-			await this.validateInput(userId, editPostInput.category_id, editPostInput.id);
+			await this.validateInput({
+				userId,
+				categoryId: editPostInput.category_id,
+				postId: editPostInput.id,
+				isEdit: true
+			});
 
 			const queries: QueryConfig[] = [
 				{
@@ -104,6 +124,39 @@ export class PostService {
 			}
 
 			this.logger.error(`error when creating new post: ${e}`);
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async likePost(id: number, userId: string): Promise<Post> {
+		try {
+			await this.validateInput({ userId, postId: id, isLike: true });
+
+			const queries: QueryConfig[] = [
+				{
+					name: `User ${userId} likes post id ${id}`,
+					text: `INSERT INTO public.user_likes_post (user_id, post_id) VALUES ($1, $2) RETURNING *`,
+					values: [userId, id]
+				},
+				{
+					name: `Get updated post id ${id} after like`,
+					text: `SELECT * FROM public.post WHERE id = $1 LIMIT 1`,
+					values: [id]
+				}
+			];
+			const results = await this.db.transaction(queries);
+			const post = results[1].rows as Post[];
+			return post[0];
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+			if (e.code === "23505") {
+				// 23505 = duplicate key constraint
+				throw new BadRequestError(`User ${userId} has already liked post id: ${id}`);
+			}
+
+			this.logger.error(`error when liking a post: ${e}`);
 			throw new InternalServerErrorException();
 		}
 	}

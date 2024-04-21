@@ -14,6 +14,7 @@ type Post {
   created_at: DateTime!
   updated_at: DateTime
   user: User!
+  likes: Int!
   category: Category!
 }
 
@@ -85,6 +86,7 @@ type Query {
 type Mutation {
   createPost(createPostInput: CreatePostInput!): Post!
   editPost(editPostInput: EditPostInput!): Post!
+  likePost(id: Int!): Post!
   removePost(id: Int!): Post!
 }
 

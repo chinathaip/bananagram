@@ -1,10 +1,10 @@
 CREATE TABLE public.user (
-    id varchar(255) NOT NULL PRIMARY KEY,
-    username varchar(255) ,
-    email varchar(255) NOT NULL,
-    bio varchar(255),
-    display_name varchar(255),
-    profile_picture varchar(255),
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    username VARCHAR(255) ,
+    email VARCHAR(255) NOT NULL,
+    bio VARCHAR(255),
+    display_name VARCHAR(255),
+    profile_picture VARCHAR(255),
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz
 );
@@ -35,6 +35,12 @@ CREATE TABLE public.comment (
 CREATE TABLE public.hashtag (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) UNIQUE
+);
+
+CREATE TABLE public.user_likes_post (
+    user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE,
+    post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id,post_id)
 );
 
 INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', '', '', 'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');

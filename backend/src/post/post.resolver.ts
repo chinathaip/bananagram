@@ -10,13 +10,15 @@ import { Category } from "../category/entities/category.entity";
 import { CategoryService } from "../category/category.service";
 import { User } from "../user/entities/user.entity";
 import { UserService } from "../user/user.service";
+import { PaginationService } from "../common/pagination/pagination.service";
 
 @Resolver((of) => Post)
 export class PostResolver {
 	constructor(
 		private readonly postService: PostService,
 		private readonly categoryService: CategoryService,
-		private readonly userService: UserService
+		private readonly userService: UserService,
+		private readonly paginationService: PaginationService
 	) {}
 
 	@UseGuards(JwtAuthGuard)
@@ -35,6 +37,13 @@ export class PostResolver {
 		return this.userService.findOne(post.user_id);
 	}
 
+	@ResolveField(() => Int)
+	likes(@Parent() post: Post) {
+		// potential issue if the number of likes are high
+		// should denormalize creating an additional number_of_likes attribute on post entity and have 2 triggers that update it
+		return this.paginationService.getItemCountFor("user_likes_post", [{ where: "post_id", equals: post.id }]);
+	}
+
 	@ResolveField(() => Category)
 	category(@Parent() post: Post) {
 		return this.categoryService.findOne(post.category_id);
@@ -44,6 +53,12 @@ export class PostResolver {
 	@Mutation(() => Post)
 	editPost(@CurrentUser() userId: string, @Args("editPostInput") editPostInput: EditPostInput) {
 		return this.postService.edit(userId, editPostInput);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation(() => Post)
+	likePost(@CurrentUser() userId: string, @Args("id", { type: () => Int }) id: number) {
+		return this.postService.likePost(id, userId);
 	}
 
 	@Mutation(() => Post)
