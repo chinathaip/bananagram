@@ -37,9 +37,49 @@ type User {
   created_at: DateTime!
 }
 
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+  totalEdges: Int
+}
+
+type PostEdge {
+  """The node object (belonging to type Post) attached to the edge."""
+  node: Post!
+
+  """
+  An opaque cursor that can be used to retrieve further pages of edges before or after this one.
+  """
+  cursor: String!
+}
+
+type PostConnection {
+  pageInfo: PageInfo!
+  edges: [PostEdge!]!
+}
+
 type Query {
-  posts: [Post!]!
   post(id: Int!): Post!
+  posts(
+    """Retrieve page of edges by fixed offset page number."""
+    page: Int
+
+    """Retrieve page of edges before opaque cursor."""
+    before: String
+
+    """Retrieve page of edges after opaque cursor."""
+    after: String
+
+    """Retrieve first `n` edges."""
+    first: Int
+
+    """Retrieve last `n` edges."""
+    last: Int
+    category_id: Int
+    user_id: String
+  ): PostConnection!
 }
 
 type Mutation {

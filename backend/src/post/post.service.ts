@@ -7,6 +7,7 @@ import { QueryConfig } from "pg";
 import { BadRequestError } from "../common/errors/bad-request.error";
 import { NotFoundError } from "../common/errors/not-found.error";
 import { GraphQLError } from "graphql";
+import { WhereEqualCondition, appendQueryCondition } from "../common/util/query-condition";
 
 @Injectable()
 export class PostService {
@@ -46,8 +47,11 @@ export class PostService {
 		}
 	}
 
-	async findAll(): Promise<Post[]> {
-		const posts = await this.db.query<Post[]>(`SELECT * FROM public.post ORDER BY created_at DESC`);
+	async findAll(conditions: WhereEqualCondition[], limit: number, offset: number): Promise<Post[]> {
+		let statement = appendQueryCondition(`SELECT * FROM public.post`, conditions);
+		const posts = await this.db.query<Post[]>(
+			(statement += ` ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`)
+		);
 		return posts;
 	}
 

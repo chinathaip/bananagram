@@ -25,11 +25,6 @@ export class PostResolver {
 		return this.postService.create(userId, createPostInput);
 	}
 
-	@Query(() => [Post])
-	posts() {
-		return this.postService.findAll();
-	}
-
 	@Query(() => Post)
 	post(@Args("id", { type: () => Int }) id: number) {
 		return this.postService.findOne(id);
