@@ -54,6 +54,14 @@ INSERT INTO public.hashtag(name) VALUES ('stamford');
 
 INSERT INTO public.post (content, user_id, category_id) VALUES ('How I get 0 hours of sleep because of classes','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
 INSERT INTO public.post (content, user_id, category_id) VALUES ('NextJS is great and all that....','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('yee haaa','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('hiiiiiii','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('woohoooo!!!','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('Stamford Syntax Club!','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('ITE442 projectsssss','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('NestJS is legit','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('But Go Fiber is better','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('Pagintion in GraphQL is annoying','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
 
 INSERT INTO public.comment (content, post_id, user_id) VALUES ('Me too....', 1, 'user_2f02EDTfrcAuyhODlRHaNLP6LQQ');
 INSERT INTO public.comment (content, post_id, user_id) VALUES ('sure, but dockerize it yourself', 1, 'user_2f2BNrbARuhvr1M84Jq4kALpw9O');
