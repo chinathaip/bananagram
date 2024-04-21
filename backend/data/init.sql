@@ -62,6 +62,16 @@ INSERT INTO public.post (content, user_id, category_id) VALUES ('ITE442 projects
 INSERT INTO public.post (content, user_id, category_id) VALUES ('NestJS is legit','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
 INSERT INTO public.post (content, user_id, category_id) VALUES ('But Go Fiber is better','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
 INSERT INTO public.post (content, user_id, category_id) VALUES ('Pagintion in GraphQL is annoying','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('this is 11','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('12 is my life','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('13 is not death','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('but 14 is lol','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('something is wrong 15','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('in your neighbourhood 16','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('who you gonna call? 17','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('ghost BUSTAS 18','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('but 19 ghosts','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 1);
+INSERT INTO public.post (content, user_id, category_id) VALUES ('but not my problem','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
 
 INSERT INTO public.comment (content, post_id, user_id) VALUES ('Me too....', 1, 'user_2f02EDTfrcAuyhODlRHaNLP6LQQ');
 INSERT INTO public.comment (content, post_id, user_id) VALUES ('sure, but dockerize it yourself', 1, 'user_2f2BNrbARuhvr1M84Jq4kALpw9O');
