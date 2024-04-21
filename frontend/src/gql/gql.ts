@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n\tquery Posts($page: Int!) {\n\t\tposts(page: $page) {\n\t\t\tpageInfo {\n\t\t\t\thasNextPage\n\t\t\t\thasPreviousPage\n\t\t\t\tstartCursor\n\t\t\t\tendCursor\n\t\t\t\ttotalEdges\n\t\t\t}\n\t\t\tedges {\n\t\t\t\tnode {\n\t\t\t\t\tid\n\t\t\t\t\tcontent\n\t\t\t\t\tuser_id\n\t\t\t\t\tcategory_id\n\t\t\t\t\tcreated_at\n\t\t\t\t\tupdated_at\n\t\t\t\t\tuser {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tusername\n\t\t\t\t\t\temail\n\t\t\t\t\t\tbio\n\t\t\t\t\t\tdisplay_name\n\t\t\t\t\t\tprofile_picture\n\t\t\t\t\t\tcreated_at\n\t\t\t\t\t}\n\t\t\t\t\tcategory {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n": types.PostsDocument,
+    "\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\temail\n\t\t\t\tbio\n\t\t\t\tdisplay_name\n\t\t\t\tprofile_picture\n\t\t\t\tcreated_at\n\t\t\t}\n\t\t\tcategory {\n\t\t\t\tname\n\t\t\t}\n\t\t}\n\t}\n": types.PostDocument,
 };
 
 /**
@@ -34,6 +35,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery Posts($page: Int!) {\n\t\tposts(page: $page) {\n\t\t\tpageInfo {\n\t\t\t\thasNextPage\n\t\t\t\thasPreviousPage\n\t\t\t\tstartCursor\n\t\t\t\tendCursor\n\t\t\t\ttotalEdges\n\t\t\t}\n\t\t\tedges {\n\t\t\t\tnode {\n\t\t\t\t\tid\n\t\t\t\t\tcontent\n\t\t\t\t\tuser_id\n\t\t\t\t\tcategory_id\n\t\t\t\t\tcreated_at\n\t\t\t\t\tupdated_at\n\t\t\t\t\tuser {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tusername\n\t\t\t\t\t\temail\n\t\t\t\t\t\tbio\n\t\t\t\t\t\tdisplay_name\n\t\t\t\t\t\tprofile_picture\n\t\t\t\t\t\tcreated_at\n\t\t\t\t\t}\n\t\t\t\t\tcategory {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery Posts($page: Int!) {\n\t\tposts(page: $page) {\n\t\t\tpageInfo {\n\t\t\t\thasNextPage\n\t\t\t\thasPreviousPage\n\t\t\t\tstartCursor\n\t\t\t\tendCursor\n\t\t\t\ttotalEdges\n\t\t\t}\n\t\t\tedges {\n\t\t\t\tnode {\n\t\t\t\t\tid\n\t\t\t\t\tcontent\n\t\t\t\t\tuser_id\n\t\t\t\t\tcategory_id\n\t\t\t\t\tcreated_at\n\t\t\t\t\tupdated_at\n\t\t\t\t\tuser {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tusername\n\t\t\t\t\t\temail\n\t\t\t\t\t\tbio\n\t\t\t\t\t\tdisplay_name\n\t\t\t\t\t\tprofile_picture\n\t\t\t\t\t\tcreated_at\n\t\t\t\t\t}\n\t\t\t\t\tcategory {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\temail\n\t\t\t\tbio\n\t\t\t\tdisplay_name\n\t\t\t\tprofile_picture\n\t\t\t\tcreated_at\n\t\t\t}\n\t\t\tcategory {\n\t\t\t\tname\n\t\t\t}\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\temail\n\t\t\t\tbio\n\t\t\t\tdisplay_name\n\t\t\t\tprofile_picture\n\t\t\t\tcreated_at\n\t\t\t}\n\t\t\tcategory {\n\t\t\t\tname\n\t\t\t}\n\t\t}\n\t}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
