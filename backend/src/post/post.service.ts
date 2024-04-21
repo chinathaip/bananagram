@@ -47,7 +47,7 @@ export class PostService {
 				throw new BadRequestError(`User ${userId} does not own post id ${post.id}`);
 			}
 			if (isLike && post.user_id === userId) {
-				throw new BadRequestError(`User ${userId} cannot like his/her own post id ${post.id}`);
+				throw new BadRequestError(`User ${userId} cannot like or unlike his/her own post id ${post.id}`);
 			}
 		} catch (e) {
 			throw e;
@@ -128,22 +128,23 @@ export class PostService {
 		}
 	}
 
-	async likePost(id: number, userId: string): Promise<Post> {
+	async likePost(postId: number, userId: string): Promise<Post> {
 		try {
-			await this.validateInput({ userId, postId: id, isLike: true });
+			await this.validateInput({ userId, postId, isLike: true });
 
 			const queries: QueryConfig[] = [
 				{
-					name: `User ${userId} likes post id ${id}`,
+					name: `User ${userId} likes post id ${postId}`,
 					text: `INSERT INTO public.user_likes_post (user_id, post_id) VALUES ($1, $2) RETURNING *`,
-					values: [userId, id]
+					values: [userId, postId]
 				},
 				{
-					name: `Get updated post id ${id} after like`,
+					name: `Get updated post id ${postId} after like`,
 					text: `SELECT * FROM public.post WHERE id = $1 LIMIT 1`,
-					values: [id]
+					values: [postId]
 				}
 			];
+
 			const results = await this.db.transaction(queries);
 			const post = results[1].rows as Post[];
 			return post[0];
@@ -153,7 +154,37 @@ export class PostService {
 			}
 			if (e.code === "23505") {
 				// 23505 = duplicate key constraint
-				throw new BadRequestError(`User ${userId} has already liked post id: ${id}`);
+				throw new BadRequestError(`User ${userId} has already liked post id: ${postId}`);
+			}
+
+			this.logger.error(`error when liking a post: ${e}`);
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async unlikePost(postId: number, userId: string): Promise<Post> {
+		try {
+			await this.validateInput({ userId, postId, isLike: true });
+
+			const queries: QueryConfig[] = [
+				{
+					name: `User ${userId} unlikes post id ${postId}`,
+					text: `DELETE FROM public.user_likes_post WHERE user_id = $1 AND post_id = $2`,
+					values: [userId, postId]
+				},
+				{
+					name: `Get updated post id ${postId} after unlike`,
+					text: `SELECT * FROM public.post WHERE id = $1 LIMIT 1`,
+					values: [postId]
+				}
+			];
+
+			const results = await this.db.transaction(queries);
+			const post = results[1].rows as Post[];
+			return post[0];
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
 			}
 
 			this.logger.error(`error when liking a post: ${e}`);
