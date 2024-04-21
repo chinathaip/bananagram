@@ -15,7 +15,7 @@ import {
 	BananaIcon,
 	CrownIcon,
 	EllipsisIcon,
-	MessageSquare,
+	MessageCircleIcon,
 	PencilIcon,
 	ShareIcon,
 	Trash2Icon
@@ -24,7 +24,7 @@ import { Button } from "./button";
 import { Card } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 
 import { cn } from "@/lib/utils";
@@ -32,20 +32,12 @@ import confetti from "canvas-confetti";
 import Link from "next/link";
 import Realistic from "react-canvas-confetti/dist/presets/realistic";
 import type { TConductorInstance } from "react-canvas-confetti/dist/types";
-interface Post {
-	id: string;
-	content: string;
-	timestamp: Date;
-	username: string;
-	displayName: string;
-	avatarUrl: string;
-	avatarFallback: string;
-	canEdit: boolean;
-	canDelete: boolean;
-}
+
+import type { Post } from "@/gql/graphql";
 
 interface PostCardProps {
 	post: Post;
+	ref: any;
 }
 
 function BananaLikeButton() {
@@ -85,15 +77,35 @@ function BananaLikeButton() {
 	};
 
 	return (
-		<Button onClick={handleClick} className="rounded-full" variant="ghost" size="icon">
-			<BananaIcon className={cn("h-6 w-6", bananaLiked ? "fill-yellow-400" : "")} />
+		// Again, we are not using the Button component here because we just need this to be clickable, without any other styling.
+		<button
+			onClick={handleClick}
+			className={cn(
+				"group flex flex-row items-center rounded-full",
+				bananaLiked ? "text-primary" : "text-muted-foreground"
+			)}
+			aria-label="like post"
+		>
+			<BananaIcon
+				className={cn(
+					"h-5 w-5 transition-all duration-150 group-hover:text-accent-foreground",
+					bananaLiked ? "fill-yellow-400" : ""
+				)}
+			/>
+			<span>&nbsp;</span>
+			{/* TODO: Like count */}
+			<span className="text-sm transition-all duration-150 group-hover:text-accent-foreground">
+				{Intl.NumberFormat("en-US", {
+					notation: "compact"
+				}).format(9990)}
+			</span>
 
 			<Realistic
 				onInit={(confetti) => {
 					setconfettiInstance(confetti);
 				}}
 			/>
-		</Button>
+		</button>
 	);
 }
 
@@ -137,19 +149,23 @@ function PostOptionsButton({ canEdit, canDelete }: { canEdit: boolean; canDelete
 
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
-export default function PostCard({ post }: PostCardProps) {
+function PostCard({ post }: PostCardProps, ref: any) {
 	return (
-		<Card>
+		<Card ref={ref}>
 			<article className="flex flex-row items-start gap-x-4 p-4">
 				<div className="flex flex-col items-center gap-y-2">
-					<Link href={`/profiles/${post.username}`}>
+					<Link href={`/profiles/${post.user.username}`}>
 						<Avatar>
-							<AvatarImage src={post.avatarUrl} alt={`@${post.username}`} />
-							<AvatarFallback>{post.avatarFallback}</AvatarFallback>
+							{/* TODO: check if there is any nextjs specific thing with this, */}
+							{/* since next usually complains about using <img> tags and not its Image component from next/link  */}
+							<AvatarImage src={post.user.profile_picture} alt={`@${post.user.username}`} />
+							<AvatarFallback>{post.user.username.substring(0, 2)}</AvatarFallback>
 						</Avatar>
 					</Link>
 
-					<PostOptionsButton canEdit={post.canEdit} canDelete={post.canDelete} />
+					{/* <PostOptionsButton canEdit={post.canEdit} canDelete={post.canDelete} /> */}
+					{/* TODO: make these work */}
+					<PostOptionsButton canEdit={false} canDelete={false} />
 				</div>
 
 				<div className="relative w-full">
@@ -157,6 +173,7 @@ export default function PostCard({ post }: PostCardProps) {
 					<div className="relative mb-1 flex w-full max-w-full flex-row items-center gap-x-2 overflow-hidden leading-none tracking-tight">
 						<div className="flex flex-col">
 							<h3 className="text-md flex items-center font-semibold">
+								{/* TODO: role badges and stuff */}
 								<Tooltip>
 									<TooltipContent>Admin</TooltipContent>
 									<TooltipTrigger>
@@ -164,24 +181,26 @@ export default function PostCard({ post }: PostCardProps) {
 									</TooltipTrigger>
 								</Tooltip>
 								<span className="select-none">&nbsp;</span>
-								<Link href={`/profiles/${post.username}`}>
-									<span className="break-all hover:underline">{post.displayName}</span>
+								<Link href={`/profiles/${post.user.username}`}>
+									<span className="break-all hover:underline">
+										{post.user.display_name || post.user.username}
+									</span>
 								</Link>
 							</h3>
 
 							<div className="flex flex-row items-center">
-								<Link href={`/profiles/${post.username}`}>
-									<span className="text-sm text-muted-foreground">@{post.username}</span>
+								<Link href={`/profiles/${post.user.username}`}>
+									<span className="text-sm text-muted-foreground">@{post.user.username}</span>
 								</Link>
 								<span>&nbsp;·&nbsp;</span>
 								<Tooltip>
-									<TooltipContent>{format(post.timestamp, "do MMM yyyy ppp")}</TooltipContent>
+									<TooltipContent>{format(post.created_at, "do MMM yyyy ppp")}</TooltipContent>
 									<TooltipTrigger className="text-sm text-muted-foreground">
 										<time
-											dateTime={format(post.timestamp, "do MMM yyyy ppp")}
+											dateTime={format(post.created_at, "do MMM yyyy ppp")}
 											className="select-text"
 										>
-											{formatDistance(post.timestamp, new Date(), {
+											{formatDistance(post.created_at, new Date(), {
 												addSuffix: true
 											})}
 										</time>
@@ -198,16 +217,40 @@ export default function PostCard({ post }: PostCardProps) {
 
 					{/* <Separator className="mb-2 mt-4" /> */}
 
-					<section aria-labelledby="post actions" className="mt-4 flex w-full">
+					<section aria-labelledby="post actions" className="mt-4 flex w-full items-center gap-x-2">
 						{/* Post actions */}
-						<Button className="rounded-full" variant="ghost" size="icon">
+						{/* <Button className="rounded-full" variant="ghost">
 							<MessageSquare className="h-6 w-6" />
-						</Button>
+						</Button> */}
+
+						{/* We are not using the Button component here because we just need this to be clickable, without any other styling. */}
+						{/* Mostly to combat alignment issues and to use semantic html. It can easily be a div. */}
+						<button
+							className="group flex flex-row items-center text-sm text-muted-foreground"
+							aria-label="comment on post"
+						>
+							<MessageCircleIcon className="h-5 w-5 transition-all duration-150 group-hover:text-accent-foreground" />
+							{/* TODO: probably find all instances of this type of thing and make it a component */}
+							<span className="select-none">&nbsp;</span>
+
+							{/* TODO: comments count */}
+							<span className="transition-all duration-150 group-hover:text-accent-foreground">
+								{Intl.NumberFormat("en-US", {
+									notation: "compact"
+								}).format(1100)}
+							</span>
+						</button>
+
 						<BananaLikeButton />
+
+						{/* TODO: share post */}
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
-							<Button className="rounded-full" variant="ghost" size="icon">
-								<ShareIcon className="h-6 w-6" />
-							</Button>
+							<button
+								className="text-muted-foreground transition-all duration-150 hover:text-accent-foreground"
+								aria-label="share post"
+							>
+								<ShareIcon className="h-5 w-5" />
+							</button>
 						</div>
 					</section>
 				</div>
@@ -215,3 +258,5 @@ export default function PostCard({ post }: PostCardProps) {
 		</Card>
 	);
 }
+
+export default forwardRef(PostCard);
