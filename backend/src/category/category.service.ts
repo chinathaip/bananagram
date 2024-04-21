@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { DatabaseService } from "src/db/db.service";
+import { DatabaseService } from "../db/db.service";
 import { Category } from "./entities/category.entity";
 import { NotFoundError } from "../common/errors/not-found.error";
 
@@ -13,7 +13,7 @@ export class CategoryService {
 		const category = await this.db.query<Category[]>(`SELECT * FROM public.category WHERE id = ${id} LIMIT 1`);
 
 		if (category.length === 0) {
-			throw new NotFoundError("Category not found");
+			throw new NotFoundError(`Category id ${id} not found`);
 		}
 
 		return category[0];

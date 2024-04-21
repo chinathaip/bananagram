@@ -43,7 +43,7 @@ export class UserService {
 		const user = await this.db.query<User[]>(`SELECT * FROM public.user WHERE id = '${id}' LIMIT 1`);
 
 		if (user.length === 0) {
-			throw new NotFoundError("User not found");
+			throw new NotFoundError(`User ${id} not found`);
 		}
 
 		return user[0];

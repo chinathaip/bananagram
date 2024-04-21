@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "src/db/db.service";
+import { DatabaseService } from "../../db/db.service";
 import { WhereEqualCondition, appendQueryCondition } from "../util/query-condition";
 
 @Injectable()

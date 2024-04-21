@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from "@nes
 import { PostService } from "./post.service";
 import { Post } from "./entities/post.entity";
 import { CreatePostInput } from "./dto/create-post.input";
-import { EditPostInput } from "./dto/update-post.input";
+import { EditPostInput } from "./dto/edit-post.input";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/auth-jwt.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
@@ -43,7 +43,7 @@ export class PostResolver {
 	@UseGuards(JwtAuthGuard)
 	@Mutation(() => Post)
 	editPost(@CurrentUser() userId: string, @Args("editPostInput") editPostInput: EditPostInput) {
-		return this.postService.update(editPostInput.id, userId, editPostInput);
+		return this.postService.edit(userId, editPostInput);
 	}
 
 	@Mutation(() => Post)

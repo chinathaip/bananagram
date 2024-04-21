@@ -97,4 +97,5 @@ input EditPostInput {
   content: String
   category_id: Int
   id: Int!
+  updated_at: DateTime
 }
