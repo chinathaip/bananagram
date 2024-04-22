@@ -18,6 +18,7 @@ const infinitePostsQuery = graphql(`
 					content
 					user_id
 					category_id
+					likes
 					created_at
 					updated_at
 					user {

@@ -40,7 +40,7 @@ interface PostCardProps {
 	ref: any;
 }
 
-function BananaLikeButton() {
+function BananaLikeButton({ likeCount }: { likeCount: number }) {
 	const [bananaLiked, setBananaLiked] = useState(false);
 	const [confettiInstance, setconfettiInstance] = useState<{
 		confetti: confetti.CreateTypes;
@@ -97,7 +97,7 @@ function BananaLikeButton() {
 			<span className="text-sm transition-all duration-150 group-hover:text-accent-foreground">
 				{Intl.NumberFormat("en-US", {
 					notation: "compact"
-				}).format(9990)}
+				}).format(likeCount)}
 			</span>
 
 			<Realistic
@@ -241,7 +241,7 @@ function PostCard({ post }: PostCardProps, ref: any) {
 							</span>
 						</button>
 
-						<BananaLikeButton />
+						<BananaLikeButton likeCount={post.likes} />
 
 						{/* TODO: share post */}
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
