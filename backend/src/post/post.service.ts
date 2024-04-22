@@ -128,6 +128,30 @@ export class PostService {
 		}
 	}
 
+	async checkUserLike(postId: number, userId: string): Promise<Boolean> {
+		if (!userId) {
+			return false;
+		}
+
+		try {
+			await this.validateInput({ userId, postId });
+
+			const result = await this.db.query<{ user_id: string; post_id: number }[]>(
+				`SELECT * FROM public.user_likes_post WHERE user_id = '${userId}' AND post_id = ${postId} LIMIT 1`
+			);
+
+			const userLikePost = result[0];
+			return userLikePost !== undefined;
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			this.logger.error(`error when querying user_likes_post: ${e}`);
+			throw new InternalServerErrorException();
+		}
+	}
+
 	async likePost(postId: number, userId: string): Promise<Post> {
 		try {
 			await this.validateInput({ userId, postId, isLike: true });

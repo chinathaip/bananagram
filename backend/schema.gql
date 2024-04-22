@@ -14,6 +14,7 @@ type Post {
   created_at: DateTime!
   updated_at: DateTime
   user: User!
+  user_liked: Boolean!
   likes: Int!
   category: Category!
 }

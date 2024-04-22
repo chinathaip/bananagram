@@ -4,7 +4,7 @@ import { Post } from "./entities/post.entity";
 import { CreatePostInput } from "./dto/create-post.input";
 import { EditPostInput } from "./dto/edit-post.input";
 import { UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "../auth/auth-jwt.guard";
+import { JwtAuthGuard, JwtAuthGuardOptional } from "../auth/auth-jwt.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Category } from "../category/entities/category.entity";
 import { CategoryService } from "../category/category.service";
@@ -27,6 +27,7 @@ export class PostResolver {
 		return this.postService.create(userId, createPostInput);
 	}
 
+	@UseGuards(JwtAuthGuardOptional)
 	@Query(() => Post)
 	post(@Args("id", { type: () => Int }) id: number) {
 		return this.postService.findOne(id);
@@ -35,6 +36,11 @@ export class PostResolver {
 	@ResolveField(() => User)
 	user(@Parent() post: Post) {
 		return this.userService.findOne(post.user_id);
+	}
+
+	@ResolveField(() => Boolean)
+	user_liked(@CurrentUser() userId: string, @Parent() post: Post) {
+		return this.postService.checkUserLike(post.id, userId);
 	}
 
 	@ResolveField(() => Int)
