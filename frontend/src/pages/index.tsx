@@ -1,11 +1,13 @@
 import PostCard from "@/components/ui/post-card";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
+import { useLikePost } from "@/lib/hooks/data-hooks/use-like-post";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect } from "react";
 
 export default function Home() {
 	const { data, error, isError, isPending, fetchNextPage, hasNextPage } = useInfinitePosts();
 
+	const { data: likeData, mutate } = useLikePost();
 	const { ref, entry } = useIntersection({
 		threshold: 0.1 // Adjust this threshold according to your preference for when the load should trigger
 	});
@@ -34,7 +36,14 @@ export default function Home() {
 								// 	<Separator />
 								// 	{JSON.stringify(edge.node, null, 2)}
 								// </Card>
-								<PostCard key={edge.node.id} post={edge.node} ref={isLastElement ? ref : null} />
+								<PostCard
+									key={edge.node.id}
+									post={edge.node}
+									onBananaClick={(id) => {
+										mutate(id);
+									}}
+									ref={isLastElement ? ref : null}
+								/>
 							);
 						})
 					)}

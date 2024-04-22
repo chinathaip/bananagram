@@ -37,10 +37,11 @@ import type { Post } from "@/gql/graphql";
 
 interface PostCardProps {
 	post: Post;
+	onBananaClick: (postId: number) => void;
 	ref: any;
 }
 
-function BananaLikeButton({ likeCount }: { likeCount: number }) {
+function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onBananaClick: () => void }) {
 	const [bananaLiked, setBananaLiked] = useState(false);
 	const [confettiInstance, setconfettiInstance] = useState<{
 		confetti: confetti.CreateTypes;
@@ -48,6 +49,7 @@ function BananaLikeButton({ likeCount }: { likeCount: number }) {
 	}>();
 
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		onBananaClick();
 		// Get the button's position relative to the viewport
 		const { width, height, x, y } = event.currentTarget.getBoundingClientRect();
 
@@ -149,7 +151,7 @@ function PostOptionsButton({ canEdit, canDelete }: { canEdit: boolean; canDelete
 
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
-function PostCard({ post }: PostCardProps, ref: any) {
+function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 	return (
 		<Card ref={ref}>
 			<article className="flex flex-row items-start gap-x-4 p-4">
@@ -241,7 +243,12 @@ function PostCard({ post }: PostCardProps, ref: any) {
 							</span>
 						</button>
 
-						<BananaLikeButton likeCount={post.likes} />
+						<BananaLikeButton
+							likeCount={post.likes}
+							onBananaClick={() => {
+								onBananaClick(post.id);
+							}}
+						/>
 
 						{/* TODO: share post */}
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
