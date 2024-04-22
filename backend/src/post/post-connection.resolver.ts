@@ -4,6 +4,8 @@ import { PostConnectionArgs } from "./dto/post-args.input";
 import { PostConnectionBuilder } from "./connection/post.connection.builder";
 import { PostService } from "./post.service";
 import { PaginationService } from "../common/pagination/pagination.service";
+import { UseGuards } from "@nestjs/common";
+import { JwtAuthGuardOptional } from "../auth/auth-jwt.guard";
 
 @Resolver((of) => PostConnection)
 export class PostConnectionResolver {
@@ -12,6 +14,7 @@ export class PostConnectionResolver {
 		private readonly paginationService: PaginationService
 	) {}
 
+	@UseGuards(JwtAuthGuardOptional)
 	@Query(() => PostConnection)
 	async posts(@Args() connectionArgs: PostConnectionArgs) {
 		const queryConditions = [
