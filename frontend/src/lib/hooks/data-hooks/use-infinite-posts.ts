@@ -27,6 +27,7 @@ const infinitePostsQuery = graphql(`
 						username
 						email
 						bio
+						is_owner
 						display_name
 						profile_picture
 						created_at
@@ -43,7 +44,7 @@ const infinitePostsQuery = graphql(`
 
 export function useInfinitePosts({ userId, categoryId }: { userId?: string; categoryId?: number }) {
 	return useInfiniteQuery({
-		queryKey: ["infinite-posts"],
+		queryKey: ["infinite-posts", userId, categoryId],
 		queryFn: ({ pageParam }) => {
 			return request("http://localhost:3001/_api/graphql", infinitePostsQuery, {
 				page: pageParam,

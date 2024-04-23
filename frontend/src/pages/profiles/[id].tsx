@@ -8,9 +8,16 @@ import { useRouter } from "next/router";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
 import { useIntersection } from "@mantine/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "@/lib/hooks/data-hooks/use-user";
+import { User } from "@/gql/graphql";
+import { useSession } from "@clerk/nextjs";
 
-function UserProfileCard() {
+interface UserProfileCardProps {
+	user: User;
+}
+
+function UserProfileCard({ user }: UserProfileCardProps) {
 	/* Left profile aside 
 	/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/
 	/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */
@@ -28,44 +35,41 @@ function UserProfileCard() {
 							alt="banananaynay's profile cover picture"
 						/>
 					</div>
-					<div className="relative flex flex-col">
-						<div className="h-12">
-							<Avatar className="ml-2 h-24 w-24 -translate-y-1/2 border-2 border-background">
-								<AvatarImage
-									className="select-none"
-									src="https://github.com/NayHtetKyaw.png"
-									alt="@bananayhtet's profile picture"
-								/>
-								<AvatarFallback>NT</AvatarFallback>
-							</Avatar>
+					{/* <div className="relative flex flex-col"> */}
+					<div className="h-12">
+						<Avatar className="ml-2 h-24 w-24 -translate-y-1/2 border-2 border-background">
+							<AvatarImage
+								className="select-none"
+								src={user.profile_picture}
+								alt="{@bananayhtet's} profile picture"
+							/>
+							<AvatarFallback>NT</AvatarFallback>
+						</Avatar>
+					</div>
+					<div className="mt-2 flex flex-row items-center px-2">
+						<div>
+							<div className="text-lg font-semibold">{user.display_name}</div>
+							<div className="text-muted-foreground">@{user.username}</div>
+							<div>{user.is_owner ? "owner" : "nope"}</div>
 						</div>
-						<div className="mt-2 flex flex-row items-center px-2">
-							<div>
-								<div className="text-lg font-semibold">NayHtetKyaw</div>
-								<div className="text-muted-foreground">@bananayhtet</div>
-							</div>
-							<div className="ml-auto">
-								<Button>
-									<UserRoundPlusIcon className="h-6 w-6" />
-								</Button>
+						<div className="ml-auto">
+							<Button>
+								<UserRoundPlusIcon className="h-6 w-6" />
+							</Button>
 
-								{/* <button className="btn btn-secondary">Message</button> */}
-								{/* <button className="btn btn-secondary">Edit Profile</button> */}
-								{/* <button className="btn btn-secondary">More</button> */}
-							</div>
+							{/* <button className="btn btn-secondary">Message</button> */}
+							{/* <button className="btn btn-secondary">Edit Profile</button> */}
+							{/* <button className="btn btn-secondary">More</button> */}
 						</div>
 					</div>
+					{/* </div> */}
 				</div>
 			</section>
 
 			<Separator />
 
 			<section className="mt-2 p-2 pt-0" aria-labelledby="profile-details">
-				<div className="mt-1">
-					XDDD Bananas! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem, rerum. Iste eius illum
-					commodi atque excepturi voluptatum facere quasi libero. Nobis iste, eum corporis quo error quae quam
-					laboriosam? Amet praesentium, sed libero quibusdam numquam fuga ut qui reprehenderit voluptatem?
-				</div>
+				<div className="mt-1">{user.bio} </div>
 
 				<div className="mt-4 flex flex-row items-center text-sm text-muted-foreground">
 					<CalendarIcon className="h-6 w-6" />
@@ -96,6 +100,22 @@ export default function UserProfilePage() {
 		userId
 	});
 
+	const { session, isLoaded, isSignedIn } = useSession();
+	const [token, setToken] = useState("");
+
+	const { data: userData, refetch } = useUser(userId || "", token);
+
+	useEffect(() => {
+		if (isLoaded && isSignedIn && session) {
+			session
+				.getToken({ template: "supabase" })
+				.then((token) => setToken(token || ""))
+				.finally(() => {
+					refetch();
+				});
+		}
+	}, [session, isLoaded, isSignedIn, token]);
+
 	const { ref, entry } = useIntersection({
 		threshold: 0.1
 	});
@@ -107,10 +127,11 @@ export default function UserProfilePage() {
 	}, [entry?.isIntersecting, hasNextPage, fetchNextPage]);
 
 	if (isError) return <div>Error: {error.message}</div>;
+	if (!userData?.user) return <div>Error: user not found</div>;
 
 	return (
 		<div className="container grid grid-cols-12">
-			<UserProfileCard />
+			<UserProfileCard user={userData.user} />
 
 			<section className="col-span-12 lg:col-span-8 lg:pl-2 xl:col-span-9" aria-labelledby="user-posts">
 				<Tabs defaultValue="posts">
@@ -132,7 +153,7 @@ export default function UserProfilePage() {
 											key={edge.node.id}
 											post={edge.node}
 											onBananaClick={() => {}}
-											ref={isLastELement ? ref : null}
+											ref={isLastELement ? ref : null} // fetch new page when the last element is about to be visible
 										/>
 									);
 								})

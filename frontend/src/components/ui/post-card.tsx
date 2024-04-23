@@ -156,7 +156,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 		<Card ref={ref}>
 			<article className="flex flex-row items-start gap-x-4 p-4">
 				<div className="flex flex-col items-center gap-y-2">
-					<Link href={`/profiles/${post.user.username}`}>
+					<Link href={`/profiles/${post.user.id}`}>
 						<Avatar>
 							{/* TODO: check if there is any nextjs specific thing with this, */}
 							{/* since next usually complains about using <img> tags and not its Image component from next/link  */}

@@ -16,6 +16,7 @@ const likePostQuery = graphql(`
 export function useLikePost() {
 	const { session } = useSession();
 	const [token, setToken] = useState("");
+
 	session?.getToken({ template: "supabase" }).then((token) => setToken(token || ""));
 
 	return useMutation({
