@@ -5,8 +5,8 @@ CREATE TABLE public.user (
     bio VARCHAR(255),
     display_name VARCHAR(255),
     profile_picture VARCHAR(255),
-    created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP 
 );
 
 CREATE TABLE public.category (
