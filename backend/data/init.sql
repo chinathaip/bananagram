@@ -37,6 +37,24 @@ CREATE TABLE public.hashtag (
   name VARCHAR(255) UNIQUE
 );
 
+CREATE TABLE public.post_hashtag (
+  hashtag_id INTEGER REFERENCES public.hashtag (id),
+  post_id INTEGER REFERENCES public.post (id)
+);
+
+CREATE TABLE public.user_follow (
+  user_id VARCHAR(255) REFERENCES public.user (id),
+  follower_id VARCHAR(255) REFERENCES public.user (id)
+);
+
+CREATE TABLE public.user_shares_post (
+  user_id VARCHAR(255) REFERENCES public.user (id),
+  post_id INTEGER REFERENCES public.post (id),
+  content VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP
+);
+
 CREATE TABLE public.user_likes_post (
     user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE,
     post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE,
