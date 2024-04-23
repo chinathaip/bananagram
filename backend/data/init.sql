@@ -33,32 +33,35 @@ CREATE TABLE public.comment (
 );
 
 CREATE TABLE public.hashtag (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) UNIQUE
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE public.post_hashtag (
-  hashtag_id INTEGER REFERENCES public.hashtag (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE ON UPDATE CASCADE
+    hashtag_id INTEGER REFERENCES public.hashtag (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (hashtag_id, post_id)
 );
 
 CREATE TABLE public.user_follow (
-  user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  follower_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE
+    user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    follower_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (user_id, follower_id)
 );
 
 CREATE TABLE public.user_shares_post (
-  user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  post_id INTEGER REFERENCES public.post (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  content VARCHAR(255),
-  created_at TIMESTAMP NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP
+    user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    post_id INTEGER REFERENCES public.post (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    content VARCHAR,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP,
+    PRIMARY KEY (user_id, post_id)
 );
 
 CREATE TABLE public.user_likes_post (
     user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
     post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (user_id,post_id)
+    PRIMARY KEY (user_id, post_id)
 );
 
 INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', '', '', 'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
