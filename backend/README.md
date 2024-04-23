@@ -28,34 +28,43 @@
 
 ## Installation
 
+**Install bun (first time only)**
+
 ```bash
-$ pnpm install
+npm install -g bun
+
+# or
+
+powershell -c "irm bun.sh/install.ps1|iex"
+```
+
+**Install dependencies**
+
+```bash
+bun i
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
+bun start:dev
 
 # production mode
-$ pnpm run start:prod
+bun start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ pnpm run test
+bun run test
 
 # e2e tests
-$ pnpm run test:e2e
+bun test:e2e
 
 # test coverage
-$ pnpm run test:cov
+bun test:cov
 ```
 
 ## Support
@@ -64,9 +73,9 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+-   Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+-   Website - [https://nestjs.com](https://nestjs.com/)
+-   Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
