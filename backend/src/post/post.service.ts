@@ -84,11 +84,11 @@ export class PostService {
 		return posts;
 	}
 
-	async findOne(id: number): Promise<Post> {
-		const post = await this.db.query<Post[]>(`SELECT * FROM public.post WHERE id = '${id}' LIMIT 1`);
+	async findOne(postId: number): Promise<Post> {
+		const post = await this.db.query<Post[]>(`SELECT * FROM public.post WHERE id = '${postId}' LIMIT 1`);
 
 		if (post.length === 0) {
-			throw new NotFoundError(`Post id ${id} not found`);
+			throw new NotFoundError(`Post id ${postId} not found`);
 		}
 
 		return post[0];
@@ -216,7 +216,20 @@ export class PostService {
 		}
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} post`;
+	async remove(postId: number, userId: string): Promise<Post> {
+		// `This action removes a #${postId} post`;
+
+		// TODO: check if user is the owner of the post or not before allowing deletion
+		const postToDelete = await this.findOne(postId);
+
+		// TODO: write an sql script to delete a row from public.post with the following post_id and user_id
+		const queries: QueryConfig[] = [
+			{
+				name: `Delete post id ${postId} by user ${userId}`,
+				text: `SQL QUERIES HERE!`
+			}
+		];
+
+		return;
 	}
 }

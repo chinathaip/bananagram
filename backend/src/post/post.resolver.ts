@@ -73,8 +73,9 @@ export class PostResolver {
 		return this.postService.unlikePost(id, userId);
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Mutation(() => Post)
-	removePost(@Args("id", { type: () => Int }) id: number) {
-		return this.postService.remove(id);
+	removePost(@CurrentUser() userId: string, @Args("id", { type: () => Int }) id: number) {
+		return this.postService.remove(id, userId);
 	}
 }
