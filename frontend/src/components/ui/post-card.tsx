@@ -183,7 +183,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 									</TooltipTrigger>
 								</Tooltip>
 								<span className="select-none">&nbsp;</span>
-								<Link href={`/profiles/${post.user.username}`}>
+								<Link href={`/profiles/${post.user.id}`}>
 									<span className="break-all hover:underline">
 										{post.user.display_name || post.user.username}
 									</span>
@@ -191,7 +191,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 							</h3>
 
 							<div className="flex flex-row items-center">
-								<Link href={`/profiles/${post.user.username}`}>
+								<Link href={`/profiles/${post.user.id}`}>
 									<span className="text-sm text-muted-foreground">@{post.user.username}</span>
 								</Link>
 								<span>&nbsp;·&nbsp;</span>
