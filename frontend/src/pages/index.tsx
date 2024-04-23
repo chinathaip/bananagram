@@ -5,7 +5,7 @@ import { useIntersection } from "@mantine/hooks";
 import { useEffect } from "react";
 
 export default function Home() {
-	const { data, error, isError, isPending, fetchNextPage, hasNextPage } = useInfinitePosts();
+	const { data, error, isError, isPending, fetchNextPage, hasNextPage } = useInfinitePosts({});
 
 	const { data: likeData, mutate } = useLikePost();
 	const { ref, entry } = useIntersection({
