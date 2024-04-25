@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import PostCard from "@/components/ui/post-card";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, UserRoundPlusIcon } from "lucide-react";
+import { CalendarIcon, UserRoundPlusIcon, UserRoundCog, Send } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@/lib/hooks/data-hooks/use-user";
 import { User } from "@/gql/graphql";
 import { useSession } from "@clerk/nextjs";
+import { format } from "date-fns";
 
 interface UserProfileCardProps {
 	user: User;
@@ -50,16 +51,23 @@ function UserProfileCard({ user }: UserProfileCardProps) {
 						<div>
 							<div className="text-lg font-semibold">{user.display_name}</div>
 							<div className="text-muted-foreground">@{user.username}</div>
-							<div>{user.is_owner ? "owner" : "nope"}</div>
 						</div>
 						<div className="ml-auto">
-							<Button>
-								<UserRoundPlusIcon className="h-6 w-6" />
-							</Button>
-
-							{/* <button className="btn btn-secondary">Message</button> */}
-							{/* <button className="btn btn-secondary">Edit Profile</button> */}
-							{/* <button className="btn btn-secondary">More</button> */}
+							{user.is_owner ? (
+								<Button>
+									<UserRoundCog className="h-6 w-6" />
+									Edit
+								</Button>
+							) : (
+								<div className="flex flex-row gap-x-2 ">
+									<Button>
+										<UserRoundPlusIcon className="h-6 w-6" />
+									</Button>
+									<Button>
+										<Send className="h-6 w-6" />
+									</Button>
+								</div>
+							)}
 						</div>
 					</div>
 					{/* </div> */}
@@ -72,9 +80,9 @@ function UserProfileCard({ user }: UserProfileCardProps) {
 				<div className="mt-1">{user.bio} </div>
 
 				<div className="mt-4 flex flex-row items-center text-sm text-muted-foreground">
-					<CalendarIcon className="h-6 w-6" />
-					<time dateTime="2021-02">
-						<span className="select-none">&nbsp;</span>Joined February 2021
+					<CalendarIcon className="mr-2 h-6 w-6" />
+					<time dateTime={format(user.created_at, "dd-mm-yyyy")} className="select-text">
+						Joined: {new Date(user.created_at).toLocaleDateString()}
 					</time>
 				</div>
 
@@ -103,7 +111,7 @@ export default function UserProfilePage() {
 	const { session, isLoaded, isSignedIn } = useSession();
 	const [token, setToken] = useState("");
 
-	const { data: userData, refetch } = useUser(userId || "", token);
+	const { data: userData, refetch } = useUser(userId, token);
 
 	useEffect(() => {
 		if (isLoaded && isSignedIn && session) {

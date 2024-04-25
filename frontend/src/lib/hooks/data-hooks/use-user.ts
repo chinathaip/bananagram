@@ -17,10 +17,10 @@ const userById = graphql(`
 	}
 `);
 
-export function useUser(id: string, token: string) {
+export function useUser(id: string = "", token: string) {
 	return useQuery({
 		queryKey: ["user", id],
-        gcTime: Infinity,
+		gcTime: Infinity,
 		queryFn: async () => {
 			return request(
 				"http://localhost:3001/_api/graphql",
