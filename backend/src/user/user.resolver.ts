@@ -24,6 +24,11 @@ export class UserResolver {
 		return userId === user.id;
 	}
 
+	@ResolveField(() => Boolean)
+	is_following(@CurrentUser() userId: string, @Parent() friend: User) {
+		return this.userService.alreadyFollowed(userId, friend.id);
+	}
+
 	@ResolveField(() => Int)
 	following(@Parent() user: User) {
 		return this.paginationService.getItemCountFor("user_follow", [{ where: "user_id", equals: user.id }]);

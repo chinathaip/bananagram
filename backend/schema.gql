@@ -11,6 +11,7 @@ type User {
   profile_picture: String!
   created_at: DateTime!
   is_owner: Boolean!
+  is_following: Boolean!
   following: Int!
   followers: Int!
 }
