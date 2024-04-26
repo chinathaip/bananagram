@@ -40,4 +40,10 @@ export class UserResolver {
 	follow(@CurrentUser() userId: string, @Args("id") friendId: string) {
 		return this.userService.follow(userId, friendId);
 	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation(() => User)
+	unfollow(@CurrentUser() userId: string, @Args("id") friendId: string) {
+		return this.userService.unfollow(userId, friendId);
+	}
 }

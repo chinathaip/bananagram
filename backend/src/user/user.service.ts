@@ -133,6 +133,26 @@ export class UserService {
 			this.logger.error(`error when following: ${e}`);
 			throw new InternalServerErrorException();
 		}
-		return;
+	}
+
+	async unfollow(userId: string, friendId: string): Promise<User> {
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `${userId} unfollows ${friendId}`,
+					text: `DELETE FROM public.user_follow WHERE user_id = $1 AND friend_id = $2`,
+					values: [userId, friendId]
+				}
+			];
+			const results = await this.db.transaction(queries);
+			if (results[0].rowsAffected === 0) {
+				this.logger.warn(`${userId} did not follow ${friendId}`);
+			}
+
+			return this.findOne(friendId);
+		} catch (e) {
+			this.logger.error(`error when unfollowing: ${e}`);
+			throw new InternalServerErrorException();
+		}
 	}
 }

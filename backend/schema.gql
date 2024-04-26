@@ -90,6 +90,7 @@ type Query {
 
 type Mutation {
   follow(id: String!): User!
+  unfollow(id: String!): User!
   createPost(createPostInput: CreatePostInput!): Post!
   editPost(editPostInput: EditPostInput!): Post!
   likePost(id: Int!): Post!
