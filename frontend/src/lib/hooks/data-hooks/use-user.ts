@@ -1,6 +1,8 @@
 import { graphql } from "@/gql";
-import { useQuery } from "@tanstack/react-query";
+import { useSession } from "@clerk/nextjs";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import request from "graphql-request";
+import { useState } from "react";
 
 const userById = graphql(`
 	query User($id: String!) {
@@ -9,7 +11,10 @@ const userById = graphql(`
 			username
 			bio
 			email
+			following
+			followers
 			display_name
+			is_following
 			is_owner
 			created_at
 			profile_picture
@@ -17,10 +22,18 @@ const userById = graphql(`
 	}
 `);
 
-export function useUser(id: string = "", token: string) {
+export function useUser(id: string = "") {
+	const { session } = useSession();
+	const [token, setToken] = useState("");
+	const queryClient = useQueryClient();
+
+	session?.getToken({ template: "supabase" }).then((token) => {
+		setToken(token || "");
+		queryClient.invalidateQueries({ queryKey: ["user", id] });
+	});
+
 	return useQuery({
 		queryKey: ["user", id],
-		gcTime: Infinity,
 		queryFn: async () => {
 			return request(
 				"http://localhost:3001/_api/graphql",

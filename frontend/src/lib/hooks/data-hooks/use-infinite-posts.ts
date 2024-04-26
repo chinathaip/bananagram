@@ -25,12 +25,15 @@ const infinitePostsQuery = graphql(`
 					user {
 						id
 						username
-						email
 						bio
-						is_owner
+						email
+						following
+						followers
 						display_name
-						profile_picture
+						is_following
+						is_owner
 						created_at
+						profile_picture
 					}
 					category {
 						id

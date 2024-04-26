@@ -2,104 +2,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import PostCard from "@/components/ui/post-card";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, UserRoundPlusIcon, UserRoundCog, Send } from "lucide-react";
+import { CalendarIcon, UserRoundPlusIcon, UserRoundMinusIcon, UserRoundCog, Send } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
 import { useIntersection } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUser } from "@/lib/hooks/data-hooks/use-user";
-import { User } from "@/gql/graphql";
-import { useSession } from "@clerk/nextjs";
 import { format } from "date-fns";
-
-interface UserProfileCardProps {
-	user: User;
-}
-
-function UserProfileCard({ user }: UserProfileCardProps) {
-	/* Left profile aside 
-	/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/
-	/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */
-	/* Probably due to the header's height + its padding */
-	return (
-		<aside className="col-span-12 mb-2 h-min overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm lg:sticky lg:top-16 lg:col-span-4 xl:col-span-3">
-			<section className="mb-2" aria-labelledby="profile-header">
-				<div className="flex flex-col">
-					<div className="relative h-24 bg-secondary">
-						<Image
-							className="select-none"
-							src="https://pbs.twimg.com/profile_banners/1504109916461539336/1685621542/1500x500"
-							fill
-							objectFit="cover"
-							alt="banananaynay's profile cover picture"
-						/>
-					</div>
-					{/* <div className="relative flex flex-col"> */}
-					<div className="h-12">
-						<Avatar className="ml-2 h-24 w-24 -translate-y-1/2 border-2 border-background">
-							<AvatarImage
-								className="select-none"
-								src={user.profile_picture}
-								alt="{@bananayhtet's} profile picture"
-							/>
-							<AvatarFallback>NT</AvatarFallback>
-						</Avatar>
-					</div>
-					<div className="mt-2 flex flex-row items-center px-2">
-						<div>
-							<div className="text-lg font-semibold">{user.display_name}</div>
-							<div className="text-muted-foreground">@{user.username}</div>
-						</div>
-						<div className="ml-auto">
-							{user.is_owner ? (
-								<Button>
-									<UserRoundCog className="h-6 w-6" />
-									Edit
-								</Button>
-							) : (
-								<div className="flex flex-row gap-x-2 ">
-									<Button>
-										<UserRoundPlusIcon className="h-6 w-6" />
-									</Button>
-									<Button>
-										<Send className="h-6 w-6" />
-									</Button>
-								</div>
-							)}
-						</div>
-					</div>
-					{/* </div> */}
-				</div>
-			</section>
-
-			<Separator />
-
-			<section className="mt-2 p-2 pt-0" aria-labelledby="profile-details">
-				<div className="mt-1">{user.bio} </div>
-
-				<div className="mt-4 flex flex-row items-center text-sm text-muted-foreground">
-					<CalendarIcon className="mr-2 h-6 w-6" />
-					<time dateTime={format(user.created_at, "dd-mm-yyyy")} className="select-text">
-						Joined: {new Date(user.created_at).toLocaleDateString()}
-					</time>
-				</div>
-
-				<div className="mt-1 flex">
-					<div className="mr-4">
-						<span className="font-semibold">18</span>{" "}
-						<span className="text-muted-foreground">Following</span>
-					</div>
-					<div>
-						<span className="font-semibold">20</span>{" "}
-						<span className="text-muted-foreground">Followers</span>
-					</div>
-				</div>
-			</section>
-		</aside>
-	);
-}
+import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
+import { useUnfollow } from "@/lib/hooks/data-hooks/use-unfollow";
 
 export default function UserProfilePage() {
 	const router = useRouter();
@@ -107,22 +20,10 @@ export default function UserProfilePage() {
 	const { data, error, isError, isPending, fetchNextPage, hasNextPage } = useInfinitePosts({
 		userId
 	});
+	const { mutateAsync: follow } = useFollow();
+	const { mutateAsync: unfollow } = useUnfollow();
 
-	const { session, isLoaded, isSignedIn } = useSession();
-	const [token, setToken] = useState("");
-
-	const { data: userData, refetch } = useUser(userId, token);
-
-	useEffect(() => {
-		if (isLoaded && isSignedIn && session) {
-			session
-				.getToken({ template: "supabase" })
-				.then((token) => setToken(token || ""))
-				.finally(() => {
-					refetch();
-				});
-		}
-	}, [session, isLoaded, isSignedIn, token]);
+	const { data: userData, refetch } = useUser(userId);
 
 	const { ref, entry } = useIntersection({
 		threshold: 0.1
@@ -139,13 +40,113 @@ export default function UserProfilePage() {
 
 	return (
 		<div className="container grid grid-cols-12">
-			<UserProfileCard user={userData.user} />
+			{/* Left profile aside */}
+			{/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/}
+			{/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */}
+			{/* Probably due to the header's height + its padding */}
+			<aside className="col-span-12 mb-2 h-min overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm lg:sticky lg:top-16 lg:col-span-4 xl:col-span-3">
+				<section className="mb-2" aria-labelledby="profile-header">
+					<div className="flex flex-col">
+						<div className="relative h-24 bg-secondary">
+							<Image
+								className="select-none"
+								src="https://pbs.twimg.com/profile_banners/1504109916461539336/1685621542/1500x500"
+								fill
+								objectFit="cover"
+								alt="banananaynay's profile cover picture"
+							/>
+						</div>
+						{/* <div className="relative flex flex-col"> */}
+						<div className="h-12">
+							<Avatar className="ml-2 h-24 w-24 -translate-y-1/2 border-2 border-background">
+								<AvatarImage
+									className="select-none"
+									src={userData.user.profile_picture}
+									alt="{@bananayhtet's} profile picture"
+								/>
+								<AvatarFallback>NT</AvatarFallback>
+							</Avatar>
+						</div>
+						<div className="mt-2 flex flex-row items-center px-2">
+							<div>
+								<div className="text-lg font-semibold">{userData.user.display_name}</div>
+								<div className="text-muted-foreground">@{userData.user.username}</div>
+							</div>
+							<div className="ml-auto">
+								{userData.user.is_owner ? (
+									<Button>
+										<UserRoundCog className="h-6 w-6" />
+										Edit
+									</Button>
+								) : (
+									<div className="flex flex-row gap-x-2 ">
+										{userData.user.is_following ? (
+											<Button
+												onClick={() => {
+													unfollow(userData.user.id)
+														.then(() => refetch())
+														.catch(console.error);
+												}}
+											>
+												<UserRoundMinusIcon className="mr-2 h-6 w-6" />
+												Unfollow
+											</Button>
+										) : (
+											<Button
+												onClick={() => {
+													follow(userData.user.id)
+														.then(() => refetch())
+														.catch(console.error);
+												}}
+											>
+												<UserRoundPlusIcon className="mr-2 h-6 w-6" />
+												Follow
+											</Button>
+										)}
+										<Button>
+											<Send className="h-6 w-6" />
+										</Button>
+									</div>
+								)}
+							</div>
+						</div>
+						{/* </div> */}
+					</div>
+				</section>
 
-			<section className="col-span-12 lg:col-span-8 lg:pl-2 xl:col-span-9" aria-labelledby="user-posts">
+				<Separator />
+
+				<section className="mt-2 p-2 pt-0" aria-labelledby="profile-details">
+					<div className="mt-1">{userData.user.bio} </div>
+
+					<div className="mt-4 flex flex-row items-center text-sm text-muted-foreground">
+						<CalendarIcon className="mr-2 h-6 w-6" />
+						<time dateTime={format(userData.user.created_at, "dd-mm-yyyy")} className="select-text">
+							Joined: {new Date(userData.user.created_at).toLocaleDateString()}
+						</time>
+					</div>
+
+					<div className="mt-1 flex">
+						<div className="mr-4">
+							<span className="font-semibold">{userData.user.following}</span>{" "}
+							<span className="text-muted-foreground">Following</span>
+						</div>
+						<div>
+							<span className="font-semibold">{userData.user.followers}</span>{" "}
+							<span className="text-muted-foreground">Followers</span>
+						</div>
+					</div>
+				</section>
+			</aside>
+
+			{/* Post section*/}
+			<section className="col-span-12 lg:col-span-8 lg:pl-2 xl:col-span-9">
 				<Tabs defaultValue="posts">
 					<TabsList className="grid w-full grid-cols-2">
 						<TabsTrigger value="posts">Posts</TabsTrigger>
-						<TabsTrigger value="shares">Shares</TabsTrigger>
+						<TabsTrigger disabled value="shares">
+							Shares
+						</TabsTrigger>
 					</TabsList>
 
 					{/* User's posts  */}
@@ -158,7 +159,7 @@ export default function UserProfilePage() {
 
 									return (
 										<PostCard
-											key={edge.node.id}
+											key={`postcard_${edge.node.id}`}
 											post={edge.node}
 											onBananaClick={() => {}}
 											ref={isLastELement ? ref : null} // fetch new page when the last element is about to be visible
