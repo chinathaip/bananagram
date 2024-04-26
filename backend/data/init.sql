@@ -45,8 +45,8 @@ CREATE TABLE public.post_hashtag (
 
 CREATE TABLE public.user_follow (
     user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    follower_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (user_id, follower_id)
+    friend_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (user_id, friend_id)
 );
 
 CREATE TABLE public.user_shares_post (
