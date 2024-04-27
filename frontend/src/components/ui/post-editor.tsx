@@ -4,18 +4,20 @@ import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 
 import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, StrikethroughIcon } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
 import { Toggle } from "./toggle";
 import { Button } from "./button";
 import { useCreatePost } from "@/lib/hooks/data-hooks/use-create-post";
 import { Markdown } from "tiptap-markdown";
-import { toast } from "sonner";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./select";
+import { toast, useToast } from "./use-toast";
 
 // TODO: fix the flash of unstyled content when switching back to home from about for example, the editor isn't rendered before the posts
 export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 	const { mutate: createPost } = useCreatePost();
+	const { toast } = useToast();
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -53,18 +55,34 @@ export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 					<EditorContent editor={editor} />
 					<PostEditorToolbar
 						editor={editor}
-						onPostButtonClick={() => {
+						onPostButtonClick={(postCategoryId: number) => {
+							// if (editor.isEmpty) freezes..
 							createPost(
-								// TOOD: add dropdown for choosing category
-								{ content: editor.storage.markdown.getMarkdown(), category_id: 1 },
+								{ content: editor.storage.markdown.getMarkdown(), category_id: postCategoryId },
 								{
 									onSuccess: () => {
 										editor.commands.clearContent(true);
-										toast("You have successfully created a post");
+										toast({
+											// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
+											title: "You have successfully created a post"
+										});
 										requestRefetch();
 									},
-									onError: (error) => {
-										toast(error.message);
+									onError: (error, variables, _) => {
+										// had to check here because the UI freezes when try to check with "editor.isEmpty"
+										if (variables.content === "") {
+											toast({
+												variant: "destructive",
+												title: "Your post cannot be created with no content"
+											});
+											return;
+										}
+
+										toast({
+											variant: "destructive",
+											title: "There was an error while creating your post",
+											description: error.message
+										});
 									}
 								}
 							);
@@ -133,7 +151,15 @@ const toolbarCategories = [
 	}
 ];
 
-function PostEditorToolbar({ editor, onPostButtonClick }: { editor: Editor; onPostButtonClick: () => void }) {
+function PostEditorToolbar({
+	editor,
+	onPostButtonClick
+}: {
+	editor: Editor;
+	onPostButtonClick: (postCategoryId: number) => void;
+}) {
+	const [postCategory, setPostCategory] = useState("");
+
 	return (
 		<div className="flex h-12 flex-row items-center gap-1 rounded-bl-md rounded-br-md border border-input bg-transparent p-1">
 			{/* TODO: uh... let's try this again later. */}
@@ -154,9 +180,36 @@ function PostEditorToolbar({ editor, onPostButtonClick }: { editor: Editor; onPo
 					{index < toolbarCategories.length - 1 && <Separator orientation="vertical" className="h-8" />}
 				</Fragment>
 			))}
-			<Button onClick={onPostButtonClick} className="ml-auto w-20 ">
-				Post
-			</Button>
+			<div className="ml-auto flex gap-x-2 ">
+				<Select onValueChange={setPostCategory} value={postCategory}>
+					<SelectTrigger className="w-auto">
+						<SelectValue placeholder="Select a category" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectGroup>
+							<SelectLabel>Categories</SelectLabel>
+							{/* TODO: get from backend */}
+							<SelectItem value="1">General</SelectItem>
+							<SelectItem value="2">Technology</SelectItem>
+							<SelectItem value="3">Entertainment</SelectItem>
+							<SelectItem value="4">Education</SelectItem>
+							<SelectItem value="5">Movies</SelectItem>
+						</SelectGroup>
+					</SelectContent>
+				</Select>
+				<Button
+					onClick={() => {
+						if (!postCategory) {
+                            // for now.....
+							setPostCategory("1");
+						}
+						onPostButtonClick(parseInt(postCategory));
+					}}
+					className="w-20 "
+				>
+					Post
+				</Button>
+			</div>
 
 			{/* {toolbarItems.map(({ command, Icon, tooltip, func }) => (
 				<Toggle

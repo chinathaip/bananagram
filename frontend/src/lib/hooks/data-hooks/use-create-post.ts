@@ -31,6 +31,6 @@ export function useCreatePost() {
 				},
 				{ Authorization: `Bearer ${token}` }
 			);
-		}
+		},
 	});
 }
