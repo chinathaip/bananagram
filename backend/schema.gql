@@ -87,6 +87,7 @@ type Query {
     category_id: Int
     user_id: String
   ): PostConnection!
+  categories: [Category!]!
 }
 
 type Mutation {

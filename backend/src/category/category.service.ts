@@ -18,4 +18,9 @@ export class CategoryService {
 
 		return category[0];
 	}
+
+	async findAll(): Promise<Category[]> {
+		const categories = await this.db.query<Category[]>(`SELECT * FROM public.category`);
+		return categories;
+	}
 }
