@@ -60,8 +60,8 @@ export class PostService {
 			const queries: QueryConfig[] = [
 				{
 					name: `Create New Post for : ${userId}`,
-					text: `INSERT INTO public.post (content, user_id, category_id) VALUES ($1,$2, $3) RETURNING *`,
-					values: [createPostInput.content, userId, createPostInput.category_id]
+					text: `INSERT INTO public.post (content, user_id, category_id, created_at) VALUES ($1,$2, $3, $4) RETURNING *`,
+					values: [createPostInput.content, userId, createPostInput.category_id, new Date()]
 				}
 			];
 			const results = await this.db.transaction(queries);
