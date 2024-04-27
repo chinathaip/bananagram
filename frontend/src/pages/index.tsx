@@ -1,11 +1,12 @@
 import PostCard from "@/components/ui/post-card";
+import { PostEditor } from "@/components/ui/post-editor";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
 import { useLikePost } from "@/lib/hooks/data-hooks/use-like-post";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect } from "react";
 
 export default function Home() {
-	const { data, error, isError, isPending, fetchNextPage, hasNextPage } = useInfinitePosts({});
+	const { data, error, isError, isPending, fetchNextPage, hasNextPage, refetch } = useInfinitePosts({});
 
 	const { data: likeData, mutate } = useLikePost();
 	const { ref, entry } = useIntersection({
@@ -26,6 +27,7 @@ export default function Home() {
 			<div className="relative hidden md:col-span-3 md:block">Stuff goes here</div>
 			<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto md:col-span-9">
 				<div className="flex flex-col gap-y-2">
+					<PostEditor requestRefetch={refetch} />
 					{data?.pages.map((page, pageIndex) =>
 						page.posts.edges.map((edge, index) => {
 							const isLastElement =
@@ -39,6 +41,7 @@ export default function Home() {
 								<PostCard
 									key={edge.node.id}
 									post={edge.node}
+									// TODO: keep banana callback in postcard
 									onBananaClick={(id) => {
 										mutate(id);
 									}}
@@ -50,7 +53,7 @@ export default function Home() {
 
 					<div className="mt-2 w-full text-center">
 						{isPending && "Loading..."}
-						{!hasNextPage && "You've reached the end!"}
+						{!hasNextPage && "You're all caught up!"}
 					</div>
 				</div>
 				{/* <button onClick={fetchNextPage}>{hasNextPage ? "Load More" : "You're all caught up!"}</button> */}

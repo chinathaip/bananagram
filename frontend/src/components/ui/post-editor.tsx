@@ -8,9 +8,14 @@ import { Fragment } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
 import { Toggle } from "./toggle";
+import { Button } from "./button";
+import { useCreatePost } from "@/lib/hooks/data-hooks/use-create-post";
+import { Markdown } from "tiptap-markdown";
+import { toast } from "sonner";
 
 // TODO: fix the flash of unstyled content when switching back to home from about for example, the editor isn't rendered before the posts
-export function PostEditor() {
+export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
+	const { mutate: createPost } = useCreatePost();
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -18,6 +23,7 @@ export function PostEditor() {
 			}
 		},
 		extensions: [
+			Markdown,
 			StarterKit.configure({
 				orderedList: {
 					HTMLAttributes: {
@@ -32,7 +38,7 @@ export function PostEditor() {
 			}),
 
 			Placeholder.configure({
-				placeholder: "What's up doc?"
+				placeholder: "What's on your mind?"
 			})
 		],
 		content: ""
@@ -45,7 +51,25 @@ export function PostEditor() {
 			{editor ? (
 				<>
 					<EditorContent editor={editor} />
-					<PostEditorToolbar editor={editor} />
+					<PostEditorToolbar
+						editor={editor}
+						onPostButtonClick={() => {
+							createPost(
+								// TOOD: add dropdown for choosing category
+								{ content: editor.storage.markdown.getMarkdown(), category_id: 1 },
+								{
+									onSuccess: () => {
+										editor.commands.clearContent(true);
+										toast("You have successfully created a post");
+										requestRefetch();
+									},
+									onError: (error) => {
+										toast(error.message);
+									}
+								}
+							);
+						}}
+					/>
 				</>
 			) : (
 				<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
@@ -109,7 +133,7 @@ const toolbarCategories = [
 	}
 ];
 
-function PostEditorToolbar({ editor }: { editor: Editor }) {
+function PostEditorToolbar({ editor, onPostButtonClick }: { editor: Editor; onPostButtonClick: () => void }) {
 	return (
 		<div className="flex h-12 flex-row items-center gap-1 rounded-bl-md rounded-br-md border border-input bg-transparent p-1">
 			{/* TODO: uh... let's try this again later. */}
@@ -130,6 +154,9 @@ function PostEditorToolbar({ editor }: { editor: Editor }) {
 					{index < toolbarCategories.length - 1 && <Separator orientation="vertical" className="h-8" />}
 				</Fragment>
 			))}
+			<Button onClick={onPostButtonClick} className="ml-auto w-20 ">
+				Post
+			</Button>
 
 			{/* {toolbarItems.map(({ command, Icon, tooltip, func }) => (
 				<Toggle

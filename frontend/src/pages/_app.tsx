@@ -11,6 +11,7 @@ import Head from "next/head";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark as clerkDarkTheme } from "@clerk/themes";
+import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
 							{...pageProps}
 						>
 							<ApplicationShell>
+								<Toaster />
 								<Component {...pageProps} />
 							</ApplicationShell>
 						</ClerkProvider>
