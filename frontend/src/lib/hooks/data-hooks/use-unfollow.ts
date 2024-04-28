@@ -1,8 +1,7 @@
 import { graphql } from "@/gql";
+import { useSession } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
-import { useSession } from "@clerk/nextjs";
-import { useState } from "react";
 
 const unfollowUserQuery = graphql(`
 	mutation Unfollow($id: String!) {
@@ -24,13 +23,12 @@ const unfollowUserQuery = graphql(`
 
 export function useUnfollow() {
 	const { session } = useSession();
-	const [token, setToken] = useState("");
-
-	session?.getToken({ template: "supabase" }).then((token) => setToken(token || ""));
 
 	return useMutation({
 		mutationKey: ["unfollow-user"],
-		mutationFn: (id: string) => {
+		mutationFn: async (id: string) => {
+			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
+
 			return request(
 				"http://localhost:3001/_api/graphql",
 				unfollowUserQuery,

@@ -1,8 +1,7 @@
 import { graphql } from "@/gql";
+import { useSession } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
-import { useSession } from "@clerk/nextjs";
-import { useState } from "react";
 
 const followUserQuery = graphql(`
 	mutation Follow($id: String!) {
@@ -24,19 +23,17 @@ const followUserQuery = graphql(`
 
 export function useFollow() {
 	const { session } = useSession();
-	const [token, setToken] = useState("");
-
-	session?.getToken({ template: "supabase" }).then((token) => setToken(token || ""));
 
 	return useMutation({
 		mutationKey: ["follow-user"],
-		mutationFn: (id: string) => {
+		mutationFn: async (id: string) => {
+			// Fetch the token directly in the mutation function
+			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
+
 			return request(
 				"http://localhost:3001/_api/graphql",
 				followUserQuery,
-				{
-					id
-				},
+				{ id },
 				{ Authorization: `Bearer ${token}` }
 			);
 		}
