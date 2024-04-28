@@ -2,17 +2,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import PostCard from "@/components/ui/post-card";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, UserRoundPlusIcon, UserRoundMinusIcon, UserRoundCog, Send } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
+import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
+import { useUnfollow } from "@/lib/hooks/data-hooks/use-unfollow";
+import { useUser } from "@/lib/hooks/data-hooks/use-user";
+import { useIntersection } from "@mantine/hooks";
+import { format } from "date-fns";
+import { CalendarIcon, Send, UserRoundCog, UserRoundMinusIcon, UserRoundPlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
-import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
-import { useIntersection } from "@mantine/hooks";
 import { useEffect } from "react";
-import { useUser } from "@/lib/hooks/data-hooks/use-user";
-import { format } from "date-fns";
-import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
-import { useUnfollow } from "@/lib/hooks/data-hooks/use-unfollow";
 
 export default function UserProfilePage() {
 	const router = useRouter();
@@ -35,8 +35,10 @@ export default function UserProfilePage() {
 		}
 	}, [entry?.isIntersecting, hasNextPage, fetchNextPage]);
 
-	if (isError) return <div>Error: {error.message}</div>;
-	if (!userData?.user) return <div>Error: user not found</div>;
+	// TODO: proper loading skeletons, error, and empty states
+	if (isError) return <div className="container">Error: {error.message}</div>;
+	if (isPending) return <div className="container">Loading...</div>;
+	if (!userData?.user) return <div className="container">Error: user not found</div>;
 
 	return (
 		<div className="container grid grid-cols-12">
@@ -144,9 +146,7 @@ export default function UserProfilePage() {
 				<Tabs defaultValue="posts">
 					<TabsList className="grid w-full grid-cols-2">
 						<TabsTrigger value="posts">Posts</TabsTrigger>
-						<TabsTrigger disabled value="shares">
-							Shares
-						</TabsTrigger>
+						<TabsTrigger value="shares">Shares</TabsTrigger>
 					</TabsList>
 
 					{/* User's posts  */}
@@ -154,28 +154,25 @@ export default function UserProfilePage() {
 						<div className="flex flex-col gap-y-2">
 							{data?.pages.map((page, pageIndex) =>
 								page.posts.edges.map((edge, index) => {
-									const isLastELement =
-										index === page.posts.edges.length - 1 && pageIndex === data.pages.length - 1;
-
 									return (
 										<PostCard
 											key={`postcard_${edge.node.id}`}
 											post={edge.node}
 											onBananaClick={() => {}}
-											ref={isLastELement ? ref : null} // fetch new page when the last element is about to be visible
 										/>
 									);
 								})
 							)}
-							<div className="mt-2 w-full text-center">
-								{isPending && "Loading..."}
-								{!hasNextPage && "You've reached the end!"}
-							</div>
 						</div>
 					</TabsContent>
 					<TabsContent value="shares">
 						<div>TODO</div>
 					</TabsContent>
+
+					<div className="mt-2 w-full text-center" ref={ref}>
+						{isPending && "Loading..."}
+						{!hasNextPage && "You've reached the end!"}
+					</div>
 				</Tabs>
 			</section>
 		</div>
