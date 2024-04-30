@@ -11,7 +11,7 @@ import Head from "next/head";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark as clerkDarkTheme } from "@clerk/themes";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = new QueryClient();
 

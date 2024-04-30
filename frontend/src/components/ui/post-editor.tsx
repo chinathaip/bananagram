@@ -12,17 +12,22 @@ import { Button } from "./button";
 import { useCreatePost } from "@/lib/hooks/data-hooks/use-create-post";
 import { Markdown } from "tiptap-markdown";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./select";
-import { useToast } from "./use-toast";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader } from "./dialog";
 import { useSession } from "@clerk/nextjs";
+import { Category } from "@/gql/graphql";
+import { toast } from "sonner";
+
+interface PostEditorProps {
+	postCategories?: Category[];
+	requestRefetch: () => void;
+}
 
 // TODO: fix the flash of unstyled content when switching back to home from about for example, the editor isn't rendered before the posts
-export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
+export function PostEditor({ postCategories, requestRefetch }: PostEditorProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const { isSignedIn } = useSession();
 	const { mutate: createPost } = useCreatePost();
 	const [postCategory, setPostCategory] = useState<string>("");
-	const { toast } = useToast();
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -61,28 +66,31 @@ export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 					</div>
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="flex flex-col">
+			<DialogContent className="flex flex-col overflow-hidden">
 				<DialogHeader>Create new post</DialogHeader>
-				<Separator />
+				{/* HACK: ignore parent padding XD */}
+				<Separator className="w-[1000px] -translate-x-1/2 " />
 
 				{editor ? (
 					<>
-						<EditorContent  editor={editor} />
+						<EditorContent editor={editor} />
 						<div className="flex flex-row gap-x-2">
 							<PostEditorToolbar editor={editor} />
 							<Select onValueChange={setPostCategory} value={postCategory}>
 								<SelectTrigger className="ml-auto w-auto border-none">
-									<SelectValue placeholder="Select a category" />
+									<SelectValue placeholder="Category" />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectGroup>
-										<SelectLabel>Categories</SelectLabel>
-										{/* TODO: get from backend */}
-										<SelectItem value="1">General</SelectItem>
-										<SelectItem value="2">Technology</SelectItem>
-										<SelectItem value="3">Entertainment</SelectItem>
-										<SelectItem value="4">Education</SelectItem>
-										<SelectItem value="5">Movies</SelectItem>
+										<SelectLabel className="mb-1">Categories</SelectLabel>
+										<Separator />
+										{postCategories ? (
+											postCategories?.map((category) => (
+												<SelectItem value={category.id.toString()}>{category.name}</SelectItem>
+											))
+										) : (
+											<SelectItem value="1">General</SelectItem>
+										)}
 									</SelectGroup>
 								</SelectContent>
 							</Select>
@@ -91,6 +99,17 @@ export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 						<Button
 							disabled={editor.isEmpty}
 							onClick={() => {
+								// Probably not gonna happen since this button will be disabled, but anyways..
+								if (editor.isEmpty) {
+									toast.warning("Your post cannot be created without any content");
+									return;
+								}
+
+								if (postCategory === "") {
+									toast.warning("Your post is missing a category it belongs to");
+									return;
+								}
+
 								createPost(
 									{
 										content: editor.storage.markdown.getMarkdown(),
@@ -99,33 +118,21 @@ export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 									{
 										onSuccess: () => {
 											editor.commands.clearContent(true);
-											toast({
-												// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
-												title: "You have successfully created a post"
-											});
+											// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
+											toast.success("You have successfully created a post");
 											requestRefetch();
 											setOpen(false);
 										},
-										onError: (error, variables, _) => {
+										onError: (error) => {
 											// had to check here because the UI freezes when try to check with "editor.isEmpty"
-											if (variables.content === "") {
-												toast({
-													variant: "destructive",
-													title: "Your post cannot be created with no content"
-												});
-												return;
-											}
-
-											toast({
-												variant: "destructive",
-												title: "There was an error while creating your post",
+											toast.error("There was an error while creating your post", {
 												description: error.message
 											});
 										}
 									}
 								);
 							}}
-							className="mt-2 w-full"
+							className="w-full"
 						>
 							Post
 						</Button>
@@ -195,7 +202,7 @@ const toolbarCategories = [
 
 function PostEditorToolbar({ editor }: { editor: Editor }) {
 	return (
-		<div className="flex h-12 flex-row items-center gap-1 bg-transparent p-1">
+		<div className="flex h-12 flex-row items-center gap-1 bg-transparent ">
 			{/* TODO: uh... let's try this again later. */}
 			{toolbarCategories.map((category, index) => (
 				<Fragment key={"toolbarcategoryitem_" + category.category}>

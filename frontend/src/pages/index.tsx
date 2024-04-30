@@ -45,7 +45,7 @@ export default function Home() {
 					<CommandList>
 						<CommandEmpty>No results found.</CommandEmpty>
 						<CommandGroup heading="Category">
-							<CommandItem key="category_all" onSelect={() => setCategoryId(0)}>
+							<CommandItem key="category_all" onSelect={() => setCategoryId(1)}>
 								<Grip className="mr-2 h-4 w-4" />
 								<span>All</span>
 							</CommandItem>
@@ -88,7 +88,7 @@ export default function Home() {
 			</aside>
 			<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto md:col-span-9">
 				<div className="flex flex-col gap-y-2">
-					<PostEditor requestRefetch={refetch} />
+					<PostEditor postCategories={categoryData?.categories} requestRefetch={refetch} />
 					{data?.pages.map((page, pageIndex) =>
 						page.posts.edges.map((edge, index) => {
 							const isLastElement =

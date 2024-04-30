@@ -68,6 +68,7 @@ INSERT INTO public.user (id, username, email, bio, display_name, profile_picture
 INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', 'this guy write the frontend for course compose', 'Lxkas', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
 INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'tester', 'tochar@proton.me', 'who is this guy?', 'TestMan101', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
 
+INSERT INTO public.category (name) VALUES ('General');
 INSERT INTO public.category (name) VALUES ('Education');
 INSERT INTO public.category (name) VALUES ('Technology');
 INSERT INTO public.category (name) VALUES ('Entertainment');
