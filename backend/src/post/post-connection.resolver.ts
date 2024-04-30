@@ -28,8 +28,8 @@ export class PostConnectionResolver {
 			}
 		];
 		const connectionBuilder = new PostConnectionBuilder(connectionArgs, {
-			defaultEdgesPerPage: 10,
-			maxEdgesPerPage: 10
+			defaultEdgesPerPage: 5,
+			maxEdgesPerPage: 5
 		});
 		const totalEdges = await this.paginationService.getItemCountFor("post", queryConditions);
 
