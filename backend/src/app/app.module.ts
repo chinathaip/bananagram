@@ -3,7 +3,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "../user/user.module";
 import { AuthModule } from "../auth/auth.module";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { PostModule } from "../post/post.module";
@@ -16,22 +16,26 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
 		ConfigModule.forRoot({
 			isGlobal: true
 		}),
-		GraphQLModule.forRoot<ApolloDriverConfig>({
+		GraphQLModule.forRootAsync<ApolloDriverConfig>({
 			driver: ApolloDriver,
-			autoSchemaFile: join(process.cwd(), "./schema.gql"),
-			path: "/_api/graphql",
-			includeStacktraceInErrorResponses: false,
-			formatError: (formattedError: GraphQLFormattedError, error: unknown) => {
-				if (error instanceof GraphQLError) {
-					const graphQLFormattedError = {
-						message: error.message,
-						code: error.extensions.code
-					};
-					return graphQLFormattedError;
-				}
+			useFactory: (config: ConfigService) => ({
+				typePaths: config.get("APP_ENV") === "vercel" ? [join(process.cwd(), "./schema.gql")] : undefined,
+				autoSchemaFile: config.get("APP_ENV") !== "vercel" ? join(process.cwd(), "./schema.gql") : undefined,
+				path: "/_api/graphql",
+				includeStacktraceInErrorResponses: false,
+				formatError: (formattedError: GraphQLFormattedError, error: unknown) => {
+					if (error instanceof GraphQLError) {
+						const graphQLFormattedError = {
+							message: error.message,
+							code: error.extensions.code
+						};
+						return graphQLFormattedError;
+					}
 
-				return formattedError;
-			}
+					return formattedError;
+				}
+			}),
+			inject: [ConfigService]
 		}),
 		CommonModule,
 		UserModule,
