@@ -23,6 +23,8 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
 				autoSchemaFile: config.get("APP_ENV") !== "vercel" ? join(process.cwd(), "./schema.gql") : undefined,
 				path: "/_api/graphql",
 				includeStacktraceInErrorResponses: false,
+				playground: true,
+				introspection: true,
 				formatError: (formattedError: GraphQLFormattedError, error: unknown) => {
 					if (error instanceof GraphQLError) {
 						const graphQLFormattedError = {
