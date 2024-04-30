@@ -31,7 +31,7 @@ export function usePost(id: number) {
 	return useQuery({
 		queryKey: ["allposts", id],
 		queryFn: async () =>
-			request("http://localhost:3001/_api/graphql", postById, {
+			request(`${process.env.NEXT_PUBLIC_BACKEND_URL}_api/graphql`, postById, {
 				id
 			})
 	});

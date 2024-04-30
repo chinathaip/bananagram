@@ -31,7 +31,7 @@ export function useFollow() {
 			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
 
 			return request(
-				"http://localhost:3001/_api/graphql",
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`,
 				followUserQuery,
 				{ id },
 				{ Authorization: `Bearer ${token}` }

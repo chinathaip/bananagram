@@ -49,7 +49,7 @@ export function useInfinitePosts({ userId, categoryId }: { userId?: string; cate
 	return useInfiniteQuery({
 		queryKey: ["infinite-posts", userId, categoryId],
 		queryFn: ({ pageParam }) => {
-			return request("http://localhost:3001/_api/graphql", infinitePostsQuery, {
+			return request(`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`, infinitePostsQuery, {
 				page: pageParam,
 				userId,
 				categoryId

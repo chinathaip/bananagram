@@ -6,7 +6,7 @@ const allCategory = graphql(`
 	query Category {
 		categories {
 			id
-            name
+			name
 		}
 	}
 `);
@@ -15,7 +15,7 @@ export function useCategory() {
 	return useQuery({
 		queryKey: ["category"],
 		queryFn: async () => {
-			return request("http://localhost:3001/_api/graphql", allCategory);
+			return request(`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`, allCategory);
 		}
 	});
 }
