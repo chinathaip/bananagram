@@ -3,7 +3,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 
-import { BoldIcon,  ItalicIcon, ListIcon, ListOrderedIcon, SquarePen, StrikethroughIcon } from "lucide-react";
+import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, SquarePen, StrikethroughIcon } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
@@ -13,7 +13,7 @@ import { useCreatePost } from "@/lib/hooks/data-hooks/use-create-post";
 import { Markdown } from "tiptap-markdown";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./select";
 import { useToast } from "./use-toast";
-import { Dialog, DialogContent, DialogTrigger,  DialogHeader } from "./dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader } from "./dialog";
 import { useSession } from "@clerk/nextjs";
 
 // TODO: fix the flash of unstyled content when switching back to home from about for example, the editor isn't rendered before the posts
@@ -26,7 +26,7 @@ export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
-				class: "min-h-36 max-h-48  rounded-md rounded-br-none rounded-bl-none border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
+				class: "min-h-36 max-h-48 rounded-md rounded-br-none rounded-bl-none border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
 			}
 		},
 		extensions: [
@@ -61,13 +61,13 @@ export function PostEditor({ requestRefetch }: { requestRefetch: () => void }) {
 					</div>
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="flex flex-col">
 				<DialogHeader>Create new post</DialogHeader>
 				<Separator />
 
 				{editor ? (
 					<>
-						<EditorContent editor={editor} />
+						<EditorContent  editor={editor} />
 						<div className="flex flex-row gap-x-2">
 							<PostEditorToolbar editor={editor} />
 							<Select onValueChange={setPostCategory} value={postCategory}>
