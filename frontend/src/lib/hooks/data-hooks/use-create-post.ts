@@ -2,7 +2,6 @@ import { graphql } from "@/gql";
 import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
 import { useSession } from "@clerk/nextjs";
-import { useState } from "react";
 import { CreatePostInput } from "@/gql/graphql";
 
 const createPostQuery = graphql(`
@@ -16,13 +15,12 @@ const createPostQuery = graphql(`
 
 export function useCreatePost() {
 	const { session } = useSession();
-	const [token, setToken] = useState("");
-
-	session?.getToken({ template: "supabase" }).then((token) => setToken(token || ""));
 
 	return useMutation({
 		mutationKey: ["create-post"],
-		mutationFn: (createPostInput: CreatePostInput) => {
+		mutationFn: async (createPostInput: CreatePostInput) => {
+			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
+
 			return request(
 				"http://localhost:3001/_api/graphql",
 				createPostQuery,
@@ -31,6 +29,6 @@ export function useCreatePost() {
 				},
 				{ Authorization: `Bearer ${token}` }
 			);
-		},
+		}
 	});
 }
