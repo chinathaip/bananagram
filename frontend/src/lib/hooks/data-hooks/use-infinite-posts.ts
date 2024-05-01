@@ -3,8 +3,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 
 const infinitePostsQuery = graphql(`
-	query Posts($page: Int!, $userId: String, $categoryId: Int) {
-		posts(page: $page, user_id: $userId, category_id: $categoryId) {
+	query Posts($page: Int!, $userId: String, $categoryName: String) {
+		posts(page: $page, user_id: $userId, category_name: $categoryName) {
 			pageInfo {
 				hasNextPage
 				totalEdges
@@ -14,7 +14,7 @@ const infinitePostsQuery = graphql(`
 					id
 					content
 					user_id
-					category_id
+					category_name
 					likes
 					user_liked
 					created_at
@@ -29,24 +29,20 @@ const infinitePostsQuery = graphql(`
 						created_at
 						profile_picture
 					}
-					category {
-						id
-						name
-					}
 				}
 			}
 		}
 	}
 `);
 
-export function useInfinitePosts({ userId, categoryId }: { userId?: string; categoryId?: number }) {
+export function useInfinitePosts({ userId, categoryName }: { userId?: string; categoryName?: string }) {
 	return useInfiniteQuery({
-		queryKey: ["infinite-posts", userId, categoryId],
+		queryKey: ["infinite-posts", userId, categoryName],
 		queryFn: ({ pageParam }) => {
 			return request(`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`, infinitePostsQuery, {
 				page: pageParam,
 				userId,
-				categoryId
+				categoryName
 			});
 		},
 		initialPageParam: 1,

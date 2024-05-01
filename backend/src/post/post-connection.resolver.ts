@@ -19,8 +19,8 @@ export class PostConnectionResolver {
 	async posts(@Args() connectionArgs: PostConnectionArgs) {
 		const queryConditions = [
 			{
-				where: "category_id",
-				equals: connectionArgs.category_id
+				where: "category_name",
+				equals: connectionArgs.category_name
 			},
 			{
 				where: "user_id",

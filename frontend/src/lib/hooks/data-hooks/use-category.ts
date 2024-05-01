@@ -5,7 +5,6 @@ import request from "graphql-request";
 const allCategory = graphql(`
 	query Category {
 		categories {
-			id
 			name
 		}
 	}

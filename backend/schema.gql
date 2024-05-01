@@ -83,7 +83,7 @@ type Query {
 
     """Retrieve last `n` edges."""
     last: Int
-    category_id: Int
+    category_name: String
     user_id: String
   ): PostConnection!
   categories: [Category!]!

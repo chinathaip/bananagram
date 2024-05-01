@@ -20,9 +20,7 @@ const postById = graphql(`
 				created_at
 				profile_picture
 			}
-			category {
-				name
-			}
+			category_name
 		}
 	}
 `);

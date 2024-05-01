@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/command";
 
 export default function Home() {
-	const [categoryId, setCategoryId] = useState<number>(0);
+	const [postCategory, setPostCategory] = useState<string>("");
 	const { data, error, isError, isPending, isFetching, fetchNextPage, hasNextPage, refetch } = useInfinitePosts({
-		categoryId
+		categoryName: postCategory
 	});
 	const { data: categoryData } = useCategory();
 	const { data: likeData, mutate } = useLikePost();
@@ -45,15 +45,15 @@ export default function Home() {
 					<CommandList>
 						<CommandEmpty>No results found.</CommandEmpty>
 						<CommandGroup heading="Category">
-							<CommandItem key="category_all" onSelect={() => setCategoryId(1)}>
+							<CommandItem key="category_all" onSelect={() => setPostCategory("")}>
 								<Grip className="mr-2 h-4 w-4" />
 								<span>All</span>
 							</CommandItem>
 							{categoryData?.categories.map((category) => (
 								<CommandItem
 									key={`category_${category.name}`}
-									value={category.id.toString()}
-									onSelect={(value) => setCategoryId(parseInt(value))}
+									value={category.name}
+									onSelect={setPostCategory}
 								>
 									<Grip className="mr-2 h-4 w-4" />
 									<span>{category.name}</span>

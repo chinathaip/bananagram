@@ -514,23 +514,7 @@
         "description": null,
         "fields": [
           {
-            "name": "category",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Category",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "category_id",
+            "name": "category_name",
             "description": "The type of category this post belongs to",
             "args": [],
             "type": {
@@ -538,7 +522,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -860,11 +844,11 @@
                 "deprecationReason": null
               },
               {
-                "name": "category_id",
+                "name": "category_name",
                 "description": null,
                 "type": {
                   "kind": "SCALAR",
-                  "name": "Int",
+                  "name": "String",
                   "ofType": null
                 },
                 "defaultValue": null,

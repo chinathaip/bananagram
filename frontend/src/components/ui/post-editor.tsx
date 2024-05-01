@@ -86,10 +86,10 @@ export function PostEditor({ postCategories, requestRefetch }: PostEditorProps) 
 										<Separator />
 										{postCategories ? (
 											postCategories?.map((category) => (
-												<SelectItem value={category.id.toString()}>{category.name}</SelectItem>
+												<SelectItem value={category.name}>{category.name}</SelectItem>
 											))
 										) : (
-											<SelectItem value="1">General</SelectItem>
+											<SelectItem value="General">General</SelectItem>
 										)}
 									</SelectGroup>
 								</SelectContent>
