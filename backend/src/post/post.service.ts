@@ -135,9 +135,8 @@ export class PostService {
 
 		try {
 			await this.validateInput({ userId, postId });
-
 			const result = await this.db.query<{ user_id: string; post_id: number }[]>(
-				`SELECT * FROM public.user_likes_post WHERE user_id = '${userId}' AND post_id = ${postId} LIMIT 1`
+				`SELECT id FROM public.user WHERE EXISTS(SELECT * FROM public.user_likes_post WHERE user_id = '${userId}' AND post_id = ${postId}) LIMIT 1)`
 			);
 
 			const userLikePost = result[0];
@@ -163,6 +162,7 @@ export class PostService {
 					values: [userId, postId]
 				},
 				{
+					// probably no need to do this since frontend simply requests a refetch
 					name: `Get updated post id ${postId} after like`,
 					text: `SELECT * FROM public.post WHERE id = $1 LIMIT 1`,
 					values: [postId]
