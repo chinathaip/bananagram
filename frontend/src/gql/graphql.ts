@@ -20,7 +20,6 @@ export type Scalars = {
 
 export type Category = {
   __typename?: 'Category';
-  id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
 };
 
