@@ -101,8 +101,7 @@ export class UserService {
 
 	async alreadyFollowed(userId: string, friendId: string): Promise<boolean> {
 		const userFollow = await this.db.query<UserFollow[]>(
-			// Optimize: EXISTS() will return right away if found
-			`SELECT id FROM public.user WHERE EXISTS(SELECT * FROM public.user_follow WHERE user_id = '${userId}' AND friend_id = '${friendId}') LIMIT 1`
+			`SELECT * FROM public.user_follow WHERE user_id = '${userId}' AND friend_id = '${friendId}' LIMIT 1`
 		);
 		return userFollow.length > 0;
 	}
