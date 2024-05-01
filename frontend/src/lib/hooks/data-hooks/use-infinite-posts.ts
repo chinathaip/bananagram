@@ -7,9 +7,6 @@ const infinitePostsQuery = graphql(`
 		posts(page: $page, user_id: $userId, category_id: $categoryId) {
 			pageInfo {
 				hasNextPage
-				hasPreviousPage
-				startCursor
-				endCursor
 				totalEdges
 			}
 			edges {
@@ -27,10 +24,7 @@ const infinitePostsQuery = graphql(`
 						username
 						bio
 						email
-						following
-						followers
 						display_name
-						is_following
 						is_owner
 						created_at
 						profile_picture
