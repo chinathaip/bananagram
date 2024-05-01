@@ -31,12 +31,12 @@ export class PostConnectionResolver {
 			defaultEdgesPerPage: 5,
 			maxEdgesPerPage: 5
 		});
-		const totalEdges = await this.paginationService.getItemCountFor("post", queryConditions);
-
 		const limit = connectionBuilder.edgesPerPage;
 		const offset = connectionBuilder.startOffset;
-
-		const posts = await this.postService.findAll(queryConditions, limit, offset);
+		const [totalEdges, posts] = await Promise.all([
+			this.paginationService.getItemCountFor("post", queryConditions),
+			this.postService.findAll(queryConditions, limit, offset)
+		]);
 
 		return connectionBuilder.build({
 			totalEdges,
