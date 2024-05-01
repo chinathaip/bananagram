@@ -29,13 +29,12 @@ type Post {
   user_id: String!
 
   """The type of category this post belongs to"""
-  category_id: Int!
+  category_name: String!
   created_at: DateTime!
   updated_at: DateTime
   user: User!
   user_liked: Boolean!
   likes: Int!
-  category: Category!
 }
 
 type Category {

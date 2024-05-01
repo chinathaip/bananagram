@@ -10,7 +10,6 @@ CREATE TABLE public.user (
 );
 
 CREATE TABLE public.category (
-  id SERIAL PRIMARY KEY,
   name VARCHAR(255) UNIQUE
 );
 
@@ -18,7 +17,7 @@ CREATE TABLE public.post (
     id SERIAL PRIMARY KEY,
     content VARCHAR NOT NULL,
     user_id VARCHAR(255) NOT NULL REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    category_id INTEGER REFERENCES public.category (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    category_name VARCHAR(255) REFERENCES public.category (name) ON DELETE SET NULL ON UPDATE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP
 );
@@ -80,26 +79,26 @@ INSERT INTO public.hashtag(name) VALUES ('universitylife');
 INSERT INTO public.hashtag(name) VALUES ('study');
 INSERT INTO public.hashtag(name) VALUES ('stamford');
 
-INSERT INTO public.post (content, user_id, category_id) VALUES ('How I get 0 hours of sleep because of classes','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('NextJS is great and all that....','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('yee haaa','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('hiiiiiii','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('woohoooo!!!','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('Stamford Syntax Club!','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('ITE442 projectsssss','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('NestJS is legit','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('But Go Fiber is better','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('Pagintion in GraphQL is annoying','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 2);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('this is 11','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('12 is my life','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('13 is not death','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('but 14 is lol','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('something is wrong 15','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('in your neighbourhood 16','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('who you gonna call? 17','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('ghost BUSTAS 18','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('but 19 ghosts','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 1);
-INSERT INTO public.post (content, user_id, category_id) VALUES ('but not my problem','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 1);
+INSERT INTO public.post (content, user_id, category_name) VALUES ('How I get 0 hours of sleep because of classes','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('NextJS is great and all that....','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'Technology');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('yee haaa','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('hiiiiiii','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('woohoooo!!!','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('Stamford Syntax Club!','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'Education');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('ITE442 projectsssss','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'Education');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('NestJS is legit','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'Technology');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('But Go Fiber is better','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'Technology');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('Pagintion in GraphQL is annoying','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'Technology');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('this is 11','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('12 is my life','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('13 is not death','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('but 14 is lol','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('something is wrong 15','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('in your neighbourhood 16','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('who you gonna call? 17','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('ghost BUSTAS 18','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('but 19 ghosts','user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'General');
+INSERT INTO public.post (content, user_id, category_name) VALUES ('but not my problem','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'General');
 
 INSERT INTO public.comment (content, post_id, user_id) VALUES ('Me too....', 1, 'user_2f02EDTfrcAuyhODlRHaNLP6LQQ');
 INSERT INTO public.comment (content, post_id, user_id) VALUES ('sure, but dockerize it yourself', 1, 'user_2f2BNrbARuhvr1M84Jq4kALpw9O');

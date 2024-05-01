@@ -11,8 +11,8 @@ export class Post {
 	@Field({ description: "The user who created this post" })
 	user_id: string;
 
-	@Field((type) => Int, { description: "The type of category this post belongs to" })
-	category_id: number;
+	@Field({ description: "The type of category this post belongs to" })
+	category_name: string;
 
 	@Field()
 	created_at: Date;

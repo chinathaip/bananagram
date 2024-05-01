@@ -6,8 +6,6 @@ import { EditPostInput } from "./dto/edit-post.input";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard, JwtAuthGuardOptional } from "../auth/auth-jwt.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
-import { Category } from "../category/entities/category.entity";
-import { CategoryService } from "../category/category.service";
 import { User } from "../user/entities/user.entity";
 import { UserService } from "../user/user.service";
 import { PaginationService } from "../common/pagination/pagination.service";
@@ -16,7 +14,6 @@ import { PaginationService } from "../common/pagination/pagination.service";
 export class PostResolver {
 	constructor(
 		private readonly postService: PostService,
-		private readonly categoryService: CategoryService,
 		private readonly userService: UserService,
 		private readonly paginationService: PaginationService
 	) {}
@@ -48,11 +45,6 @@ export class PostResolver {
 		// potential issue if the number of likes are high
 		// should denormalize creating an additional number_of_likes attribute on post entity and have 2 triggers that update it
 		return this.paginationService.getItemCountFor("user_likes_post", [{ where: "post_id", equals: post.id }]);
-	}
-
-	@ResolveField(() => Category)
-	category(@Parent() post: Post) {
-		return this.categoryService.findOne(post.category_id);
 	}
 
 	@UseGuards(JwtAuthGuard)
