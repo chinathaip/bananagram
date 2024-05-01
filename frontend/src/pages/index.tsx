@@ -5,6 +5,7 @@ import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
 import { useLikePost } from "@/lib/hooks/data-hooks/use-like-post";
 import { useIntersection } from "@mantine/hooks";
 import { useState, useEffect } from "react";
+import { Post } from "@/gql/graphql";
 import { Separator } from "@/components/ui/separator";
 import { Flame, Grip, Hash } from "lucide-react";
 import {
@@ -96,7 +97,7 @@ export default function Home() {
 							return (
 								<PostCard
 									key={`postcard_${edge.node.id}`}
-									post={edge?.node}
+									post={edge?.node as Post}
 									onBananaClick={() => {}}
 									ref={isLastElement ? ref : null}
 								/>

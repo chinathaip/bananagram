@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import PostCard from "@/components/ui/post-card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Post } from "@/gql/graphql";
 import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
 import { useUnfollow } from "@/lib/hooks/data-hooks/use-unfollow";
@@ -157,7 +158,7 @@ export default function UserProfilePage() {
 									return (
 										<PostCard
 											key={`postcard_${edge.node.id}`}
-											post={edge.node}
+											post={edge.node as Post}
 											onBananaClick={() => {}}
 										/>
 									);
