@@ -1,4 +1,5 @@
 import { graphql } from "@/gql";
+import { useSession } from "@clerk/nextjs";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 
@@ -36,14 +37,23 @@ const infinitePostsQuery = graphql(`
 `);
 
 export function useInfinitePosts({ userId, categoryName }: { userId?: string; categoryName?: string }) {
+	const { session } = useSession();
 	return useInfiniteQuery({
-		queryKey: ["infinite-posts", userId, categoryName],
-		queryFn: ({ pageParam }) => {
-			return request(`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`, infinitePostsQuery, {
-				page: pageParam,
-				userId,
-				categoryName
-			});
+		queryKey: ["infinite-posts", userId, categoryName, session ? "withSession" : "withoutSession"],
+		queryFn: async ({ pageParam }) => {
+			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
+			return request(
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`,
+				infinitePostsQuery,
+				{
+					page: pageParam,
+					userId,
+					categoryName
+				},
+				{
+					Authorization: `Bearer ${token}`
+				}
+			);
 		},
 		initialPageParam: 1,
 		getNextPageParam: (lastPage, _, lastPageParam) =>

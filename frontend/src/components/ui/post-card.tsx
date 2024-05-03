@@ -114,7 +114,7 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 // This disables scroll when activated, and there is an issue with
 // the content being misaligned since the width of the scrollbar is not accounted for.
 // Example: https://streamable.com/ysbe7b
-function PostOptionsButton({ canEdit, canDelete }: { canEdit: boolean; canDelete: boolean }) {
+function PostOptionsButton({ isOwner }: { isOwner: boolean }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -126,17 +126,17 @@ function PostOptionsButton({ canEdit, canDelete }: { canEdit: boolean; canDelete
 				<DropdownMenuLabel>Post Options</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					{canEdit && (
-						<DropdownMenuItem>
-							<PencilIcon className="mr-2 h-4 w-4" />
-							<span>Edit</span>
-						</DropdownMenuItem>
-					)}
-					{canDelete && (
-						<DropdownMenuItem className="text-red-700">
-							<Trash2Icon className="mr-2 h-4 w-4" />
-							<span>Delete</span>
-						</DropdownMenuItem>
+					{isOwner && (
+						<>
+							<DropdownMenuItem>
+								<PencilIcon className="mr-2 h-4 w-4" />
+								<span>Edit</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem className="text-red-700">
+								<Trash2Icon className="mr-2 h-4 w-4" />
+								<span>Delete</span>
+							</DropdownMenuItem>
+						</>
 					)}
 
 					<DropdownMenuItem>
@@ -167,7 +167,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 
 					{/* <PostOptionsButton canEdit={post.canEdit} canDelete={post.canDelete} /> */}
 					{/* TODO: make these work */}
-					<PostOptionsButton canEdit={false} canDelete={false} />
+					<PostOptionsButton isOwner={post.user.is_owner} />
 				</div>
 
 				<div className="relative w-full">
