@@ -52,14 +52,14 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "category_id",
+            "name": "category_name",
             "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -105,11 +105,11 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "category_id",
+            "name": "category_name",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,

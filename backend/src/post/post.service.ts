@@ -23,13 +23,13 @@ export class PostService {
 
 	private async validateInput({
 		userId,
-		categoryId,
+		categoryName,
 		postId,
 		isEdit,
 		isLike
 	}: {
 		userId: string;
-		categoryId?: number;
+		categoryName?: string;
 		postId?: number;
 		isEdit?: boolean;
 		isLike?: boolean;
@@ -38,7 +38,7 @@ export class PostService {
 			const promiseResult = await Promise.all([
 				// these 3 will throw NotFoundError if the given does not exist
 				this.userService.findOne(userId),
-				categoryId ? this.categoryService.findOne(categoryId) : null,
+				categoryName ? this.categoryService.findOne(categoryName) : null,
 				postId ? this.findOne(postId) : null
 			]);
 
@@ -56,12 +56,15 @@ export class PostService {
 
 	async create(userId: string, createPostInput: CreatePostInput): Promise<Post> {
 		try {
-			await this.validateInput({ userId, categoryId: createPostInput.category_id });
+			await this.validateInput({
+				userId,
+				categoryName: createPostInput.category_name
+			});
 			const queries: QueryConfig[] = [
 				{
 					name: `Create New Post for : ${userId}`,
-					text: `INSERT INTO public.post (content, user_id, category_id, created_at) VALUES ($1,$2, $3, $4) RETURNING *`,
-					values: [createPostInput.content, userId, createPostInput.category_id, new Date()]
+					text: `INSERT INTO public.post (content, user_id, category_name, created_at) VALUES ($1,$2, $3, $4) RETURNING *`,
+					values: [createPostInput.content, userId, createPostInput.category_name, new Date()]
 				}
 			];
 			const results = await this.db.transaction(queries);
@@ -98,7 +101,7 @@ export class PostService {
 		try {
 			await this.validateInput({
 				userId,
-				categoryId: editPostInput.category_id,
+				categoryName: editPostInput.category_name,
 				postId: editPostInput.id,
 				isEdit: true
 			});
@@ -106,11 +109,11 @@ export class PostService {
 			const queries: QueryConfig[] = [
 				{
 					name: `Edit post: ${editPostInput.id} for user: ${userId}`,
-					text: `UPDATE public.post SET content = $2, category_id = $3, updated_at = $4 WHERE id = $1 RETURNING *`,
+					text: `UPDATE public.post SET content = $2, category_name = $3, updated_at = $4 WHERE id = $1 RETURNING *`,
 					values: [
 						editPostInput.id,
 						editPostInput.content,
-						editPostInput.category_id,
+						editPostInput.category_name,
 						editPostInput.updated_at ?? new Date()
 					]
 				}

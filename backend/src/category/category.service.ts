@@ -9,11 +9,11 @@ export class CategoryService {
 
 	private readonly logger = new Logger(CategoryService.name);
 
-	async findOne(id: number): Promise<Category> {
-		const category = await this.db.query<Category[]>(`SELECT * FROM public.category WHERE id = ${id} LIMIT 1`);
+	async findOne(name: string): Promise<Category> {
+		const category = await this.db.query<Category[]>(`SELECT * FROM public.category WHERE name = '${name}' LIMIT 1`);
 
 		if (category.length === 0) {
-			throw new NotFoundError(`Category id ${id} not found`);
+			throw new NotFoundError(`Category name ${name} not found`);
 		}
 
 		return category[0];

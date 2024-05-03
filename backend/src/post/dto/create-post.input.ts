@@ -8,6 +8,6 @@ export class CreatePostInput {
 	@Field()
 	content: string;
 
-	@Field((type) => Int)
-	category_id: number;
+	@Field()
+	category_name: string;
 }

@@ -100,12 +100,12 @@ type Mutation {
 
 input CreatePostInput {
   content: String!
-  category_id: Int!
+  category_name: String!
 }
 
 input EditPostInput {
   content: String
-  category_id: Int
+  category_name: String
   id: Int!
   updated_at: DateTime
 }

@@ -24,12 +24,12 @@ export type Category = {
 };
 
 export type CreatePostInput = {
-  category_id: Scalars['Int']['input'];
+  category_name: Scalars['String']['input'];
   content: Scalars['String']['input'];
 };
 
 export type EditPostInput = {
-  category_id?: InputMaybe<Scalars['Int']['input']>;
+  category_name?: InputMaybe<Scalars['String']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   updated_at?: InputMaybe<Scalars['DateTime']['input']>;

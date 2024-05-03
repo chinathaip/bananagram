@@ -113,7 +113,7 @@ export function PostEditor({ postCategories, requestRefetch }: PostEditorProps) 
 								createPost(
 									{
 										content: editor.storage.markdown.getMarkdown(),
-										category_id: parseInt(postCategory)
+										category_name: postCategory
 									},
 									{
 										onSuccess: () => {
