@@ -3,7 +3,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 
-import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, SquarePen, StrikethroughIcon } from "lucide-react";
+import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, SquarePen } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
@@ -165,14 +165,6 @@ const toolbarCategories = [
 				tooltip: "Toggle Italic",
 				func: (editor: Editor) => {
 					editor.chain().focus().toggleItalic().run();
-				}
-			},
-			{
-				command: "strike",
-				Icon: StrikethroughIcon,
-				tooltip: "Toggle Strikethrough",
-				func: (editor: Editor) => {
-					editor.chain().focus().toggleStrike().run();
 				}
 			}
 		]
