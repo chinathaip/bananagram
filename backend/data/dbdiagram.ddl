@@ -7,10 +7,10 @@ Table post {
               ref: < comment.post_id, 
               ref: > post_hashtag.post_id,
               ref: > user_likes_post.post_id,
-              ref: - post_share.post_id]
+              ref: - user_shares_post.post_id]
   content varchar
   user_id varchar
-  category_id integer
+  category_name varchar
   created_at timestamp
   updated_at timestamp
 }
@@ -23,7 +23,7 @@ Table user {
               ref: > user_likes_post.user_id,
               ref: > user_follow.user_id,
               ref: > user_follow.follow_id,
-              ref: - post_share.user_id]
+              ref: - user_shares_post.user_id]
   username varchar
   email varchar
   bio varchar
@@ -47,7 +47,7 @@ Table user_follow {
   follow_id varchar
 }
 
-Table post_share {
+Table user_shares_post {
   user_id varchar
   post_id varchar
   content varchar
@@ -59,8 +59,7 @@ Table user_likes_post {
 }
 
 Table category {
-  id integer [primary key, ref: - post.category_id]
-  name varchar
+  name varchar [primary key, ref: - post.category_name]
 }
 
 Table comment {
