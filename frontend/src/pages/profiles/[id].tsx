@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import PostCard from "@/components/ui/post-card";
 import { Separator } from "@/components/ui/separator";
+import PostCardSkeleton from "@/components/ui/skeletons/post-card-skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Post } from "@/gql/graphql";
 import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
@@ -38,7 +39,6 @@ export default function UserProfilePage() {
 
 	// TODO: proper loading skeletons, error, and empty states
 	if (isError) return <div className="container">Error: {error.message}</div>;
-	if (isPending) return <div className="container">Loading...</div>;
 	if (!userData?.user) return <div className="container">Error: user not found</div>;
 
 	return (
@@ -164,6 +164,7 @@ export default function UserProfilePage() {
 									);
 								})
 							)}
+							{isPending && Array.from({ length: 5 }).map(() => <PostCardSkeleton />)}
 						</div>
 					</TabsContent>
 					<TabsContent value="shares">

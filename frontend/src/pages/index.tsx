@@ -17,6 +17,7 @@ import {
 	CommandList,
 	CommandSeparator
 } from "@/components/ui/command";
+import PostCardSkeleton from "@/components/ui/skeletons/post-card-skeleton";
 
 export default function Home() {
 	const [postCategory, setPostCategory] = useState<string>("");
@@ -36,19 +37,18 @@ export default function Home() {
 	}, [entry?.isIntersecting, hasNextPage, isFetching, fetchNextPage]);
 
 	if (isError) return <div className="container">Error: {error.message}</div>;
-	if (isPending) return <div className="container">Loading...</div>;
 
 	return (
 		<div className="container mx-auto grid grid-cols-12">
 			<aside className="relative mr-2 hidden md:col-span-3 md:block">
-				<Command className="h-min w-auto rounded-lg border shadow-md">
+				<Command className="h-min rounded-lg border shadow-md">
 					<CommandInput placeholder="Search category or hashtag..." />
-					<CommandList>
+					<CommandList className="max-h-min">
 						<CommandEmpty>No results found.</CommandEmpty>
 						<CommandGroup heading="Category">
 							<CommandItem key="category_all" onSelect={() => setPostCategory("")}>
 								<Grip className="mr-2 h-4 w-4" />
-								<span>All</span>
+								<span>all</span>
 							</CommandItem>
 							{categoryData?.categories.map((category) => (
 								<CommandItem
@@ -104,11 +104,8 @@ export default function Home() {
 							);
 						})
 					)}
-				</div>
-
-				<div className="mt-2 w-full text-center">
-					{isPending && "Loading..."}
-					{!hasNextPage && "You've reached the end!"}
+					{isPending && Array.from({ length: 5 }).map(() => <PostCardSkeleton />)}
+					{!hasNextPage && <p className="my-2 text-center">You are all caught up</p>}
 				</div>
 			</div>
 		</div>
