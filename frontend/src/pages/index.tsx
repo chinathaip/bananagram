@@ -6,18 +6,8 @@ import { useLikePost } from "@/lib/hooks/data-hooks/use-like-post";
 import { useIntersection } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { Post } from "@/gql/graphql";
-import { Separator } from "@/components/ui/separator";
-import { Flame, Grip, Hash } from "lucide-react";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-	CommandSeparator
-} from "@/components/ui/command";
 import PostCardSkeleton from "@/components/ui/skeletons/post-card-skeleton";
+import CategoryMenu from "@/components/ui/category-menu";
 
 export default function Home() {
 	const [postCategory, setPostCategory] = useState<string>("");
@@ -40,53 +30,7 @@ export default function Home() {
 
 	return (
 		<div className="container mx-auto grid grid-cols-12">
-			<aside className="relative mr-2 hidden md:col-span-3 md:block">
-				<Command className="h-min rounded-lg border shadow-md">
-					<CommandInput placeholder="Search category or hashtag..." />
-					<CommandList className="max-h-min">
-						<CommandEmpty>No results found.</CommandEmpty>
-						<CommandGroup heading="Category">
-							<CommandItem key="category_all" onSelect={() => setPostCategory("")}>
-								<Grip className="mr-2 h-4 w-4" />
-								<span>all</span>
-							</CommandItem>
-							{categoryData?.categories.map((category) => (
-								<CommandItem
-									key={`category_${category.name}`}
-									value={category.name}
-									onSelect={setPostCategory}
-								>
-									<Grip className="mr-2 h-4 w-4" />
-									<span>{category.name}</span>
-								</CommandItem>
-							))}
-						</CommandGroup>
-						<CommandSeparator />
-						<CommandGroup heading="Trending Hashtags">
-							<CommandItem>
-								<Hash className="mr-2 h-4 w-4" />
-								<span>STIU</span>
-								<Flame className="ml-auto h-4 w-4" />
-								<span>1</span>
-							</CommandItem>
-							<CommandItem>
-								<Hash className="mr-2 h-4 w-4" />
-								<span>CourseCompose</span>
-								<Flame className="ml-auto h-4 w-4" />
-								<span>2</span>
-							</CommandItem>
-							<CommandItem>
-								<Hash className="mr-2 h-4 w-4" />
-								<span>Syntax Club</span>
-								<Flame className="ml-auto h-4 w-4" />
-								<span>3</span>
-							</CommandItem>
-						</CommandGroup>
-					</CommandList>
-				</Command>
-
-				<Separator />
-			</aside>
+			<CategoryMenu onSelectCategory={setPostCategory} />
 			<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto md:col-span-9">
 				<div className="flex flex-col gap-y-2">
 					<PostEditor postCategories={categoryData?.categories} requestRefetch={refetch} />
