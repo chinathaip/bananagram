@@ -227,21 +227,23 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 
 						{/* We are not using the Button component here because we just need this to be clickable, without any other styling. */}
 						{/* Mostly to combat alignment issues and to use semantic html. It can easily be a div. */}
-						<button
-							className="group flex flex-row items-center text-sm text-muted-foreground"
-							aria-label="comment on post"
-						>
-							<MessageCircleIcon className="h-5 w-5 transition-all duration-150 group-hover:text-accent-foreground" />
-							{/* TODO: probably find all instances of this type of thing and make it a component */}
-							<span className="select-none">&nbsp;</span>
+						<Link href={`/posts/${post.id}`}>
+							<button
+								className="group flex flex-row items-center text-sm text-muted-foreground"
+								aria-label="comment on post"
+							>
+								<MessageCircleIcon className="h-5 w-5 transition-all duration-150 group-hover:text-accent-foreground" />
+								{/* TODO: probably find all instances of this type of thing and make it a component */}
+								<span className="select-none">&nbsp;</span>
 
-							{/* TODO: comments count */}
-							<span className="transition-all duration-150 group-hover:text-accent-foreground">
-								{Intl.NumberFormat("en-US", {
-									notation: "compact"
-								}).format(1100)}
-							</span>
-						</button>
+								{/* TODO: comments count */}
+								<span className="transition-all duration-150 group-hover:text-accent-foreground">
+									{Intl.NumberFormat("en-US", {
+										notation: "compact"
+									}).format(1100)}
+								</span>
+							</button>
+						</Link>
 
 						<BananaLikeButton
 							likeCount={post.likes}
