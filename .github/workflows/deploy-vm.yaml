@@ -1,0 +1,28 @@
+name: Deploy to VM
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages_deployment:
+        description: packages to build and deploy
+        required: true
+        type: string
+
+jobs:
+    deploy-to-vm:
+      name: Deploy new changes to VM
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+  
+        - name: Deploy new changes via SSH
+          uses: appleboy/ssh-action@v1.0.0
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USERNAME }}
+            password: ${{ secrets.SSH_PASSWORD }}
+            script: |
+              docker stop bananagram-be && docker rm bananagram-be
+              docker run --network=banangram --mount type=bind,source=./bananagram/.env,target=/usr/src/app/.env --name=bananagram-be -d ${{ inputs.packages_deployment }} 
+              docker image prune -a -f

@@ -10,22 +10,21 @@ jobs:
         permissions:
             packages: write
         runs-on: ubuntu-latest
-        outputs:
-            GITHUB_SHA: ${{ steps.generate_sha.outputs.GITHUB_SHA }}
-
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-
+              with:
+                fetch-depth: 0
+    
             - name: Check for changed files in backend
               id: backend_changes
               run: |
-                changed_files=$(git diff --name-only HEAD^ HEAD | grep -E '^(backend)/src')
+                changed_files=$(git diff --name-only HEAD~1 HEAD | grep -E '^(backend)/src' | xargs)
                 if [ -z "$changed_files" ]; then
                     echo "No changes in backend/src directories."
-                    exit 0
                 else
                     echo "Changes detected in backend/src directories, rebuilding the image"
+                    echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
                     echo "$changed_files"
                 fi
 
@@ -33,9 +32,9 @@ jobs:
               id: generate_sha
               run: |
                 echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-                echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_OUTPUT
 
             - name: Login ghcr.io
+              if: steps.backend_changes.outputs.changed_files != ''
               uses: docker/login-action@v2.1.0
               with:
                   registry: ghcr.io
@@ -44,6 +43,7 @@ jobs:
                   logout: true
 
             - name: Build and Push to GitHub Container Registry
+              if: steps.backend_changes.outputs.changed_files != ''
               uses: docker/build-push-action@v3.2.0
               with:
                   context: ./backend
@@ -52,26 +52,5 @@ jobs:
                   push: true
 
             - name: Image digest
+              if: steps.backend_changes.outputs.changed_files != ''
               run: echo ${{ steps.docker_build.outputs.digest }}
-
-    deploy-to-vm:
-      name: Deploy new changes to VM
-      needs: build-and-push
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-
-        - name: Get GITHUB_SHA from previous job
-          run: echo "GITHUB_SHA=${{ needs.build-and-push.outputs.GITHUB_SHA }}" >> $GITHUB_ENV
-  
-        - name: Deploy new changes via SSH
-          uses: appleboy/ssh-action@v1.0.0
-          with:
-            host: ${{ secrets.SSH_HOST }}
-            username: ${{ secrets.SSH_USERNAME }}
-            password: ${{ secrets.SSH_PASSWORD }}
-            script: |
-              docker stop bananagram-be && docker rm bananagram-be
-              docker run --network=banangram --mount type=bind,source=./bananagram/.env,target=/usr/src/app/.env --name=bananagram-be -d ghcr.io/chinathaip/bananagram/backend:${{ env.GITHUB_SHA }}
-              docker image prune -a -f
