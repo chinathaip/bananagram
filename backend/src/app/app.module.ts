@@ -20,8 +20,7 @@ import { CommentModule } from "../comment/comment.module";
 		GraphQLModule.forRootAsync<ApolloDriverConfig>({
 			driver: ApolloDriver,
 			useFactory: (config: ConfigService) => ({
-				typePaths: config.get("APP_ENV") === "vercel" ? [join(process.cwd(), "./schema.gql")] : undefined,
-				autoSchemaFile: config.get("APP_ENV") !== "vercel" ? join(process.cwd(), "./schema.gql") : undefined,
+				autoSchemaFile: join(process.cwd(), "./schema.gql"),
 				path: "/_api/graphql",
 				includeStacktraceInErrorResponses: false,
 				playground: true,
