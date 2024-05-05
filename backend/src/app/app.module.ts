@@ -10,6 +10,7 @@ import { PostModule } from "../post/post.module";
 import { join } from "path";
 import { CommonModule } from "../common/common.module";
 import { GraphQLError, GraphQLFormattedError } from "graphql";
+import { CommentModule } from "../comment/comment.module";
 
 @Module({
 	imports: [
@@ -42,7 +43,8 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
 		CommonModule,
 		UserModule,
 		PostModule,
-		AuthModule
+		AuthModule,
+		CommentModule
 	],
 	controllers: [AppController],
 	providers: [AppService]
