@@ -62,5 +62,5 @@ jobs:
             password: ${{ secrets.SSH_PASSWORD }}
             script: |
               docker stop bananagram-be && docker rm bananagram-be
-              docker run --network=banangram --mount type=bind,source=./bananagram/.env,target=/usr/src/app/.env --name=bananagram-be -d ghcr.io/chinathaip/bananagram/backend:${GITHUB_SHA}
-              docker image prune -a --yes
+              docker run --network=banangram --mount type=bind,source=./bananagram/.env,target=/usr/src/app/.env --name=bananagram-be -d ghcr.io/chinathaip/bananagram/backend:${{ env.GITHUB_SHA }}
+              docker image prune -a -f
