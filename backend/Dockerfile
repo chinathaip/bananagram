@@ -28,7 +28,6 @@ FROM base AS release
 COPY --from=prerelease /usr/src/app/dist dist
 COPY --from=prerelease /usr/src/app/node_modules node_modules
 COPY --from=prerelease /usr/src/app/package.json package.json
-COPY .env .env
 
 EXPOSE 3001
 

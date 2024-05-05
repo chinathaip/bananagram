@@ -35,18 +35,6 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
                   logout: true
 
-            - name: Setup NestJS env
-              run: |
-                  echo "Setting env for nestJS";
-                  echo "POSTGRES_HOST=\"${{ vars.POSTGRES_HOST }}\"" >> ./backend/.env
-                  echo "POSTGRES_PORT=\"${{ vars.POSTGRES_PORT }}\"" >> ./backend/.env
-                  echo "POSTGRES_USER=\"${{ vars.POSTGRES_USER }}\"" >> ./backend/.env
-                  echo "POSTGRES_PASSWORD=\"${{ vars.POSTGRES_PASSWORD }}\"" >> ./backend/.env
-                  echo "POSTGRES_DATABASE=\"${{ vars.POSTGRES_DATABASE }}\"" >> ./backend/.env
-                  echo "BASIC_AUTH_USERNAME=\"${{ vars.BASIC_AUTH_USERNAME }}\"" >> ./backend/.env
-                  echo "BASIC_AUTH_PASSWORD=\"${{ vars.BASIC_AUTH_PASSWORD }}\"" >> ./backend/.env
-                  echo "JWT_SECRET=\"${{ vars.JWT_SECRET }}\"" >> ./backend/.env
-
             - name: Build and Push to GitHub Container Registry
               uses: docker/build-push-action@v3.2.0
               with:
