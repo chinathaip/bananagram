@@ -5,6 +5,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "./auth-jwt.strategy";
 import { AnonymousStrategy } from "./auth-anonymous.strategy";
+import { JwtWebSocketStrategy } from "./auth-ws.strategy";
 
 const jwtFactory = async (configService: ConfigService) => ({
 	secretOrPrivateKey: configService.get("JWT_SECRET")
@@ -18,6 +19,6 @@ const jwtFactory = async (configService: ConfigService) => ({
 			inject: [ConfigService]
 		})
 	],
-	providers: [BasicAuthStrategy, JwtStrategy, AnonymousStrategy]
+	providers: [BasicAuthStrategy, JwtStrategy, AnonymousStrategy, JwtWebSocketStrategy]
 })
 export class AuthModule {}

@@ -17,3 +17,10 @@ export class JwtAuthGuardOptional extends AuthGuard(["jwt", "anonymous"]) {
 		return ctx.getContext().req;
 	}
 }
+
+@Injectable()
+export class JwtWSAuthGuard extends AuthGuard("websocket") {
+	getRequest(context: ExecutionContext) {
+		return context.switchToWs().getClient().handshake;
+	}
+}
