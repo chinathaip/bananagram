@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
-import { DatabaseService } from "src/db/db.service";
+import { DatabaseService } from "../db/db.service";
 import { QueryConfig } from "pg";
 import { Comment } from "./entities/comment.entity";
 

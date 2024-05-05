@@ -4,7 +4,7 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { Server } from "http";
 import { CurrentWebSocketUesr } from "../auth/decorators/current-user.decorator";
 import { UseGuards } from "@nestjs/common";
-import { JwtWSAuthGuard } from "src/auth/auth-jwt.guard";
+import { JwtWSAuthGuard } from "../auth/auth-jwt.guard";
 
 @WebSocketGateway({ cors: { origin: "*" } })
 export class CommentGateway {
