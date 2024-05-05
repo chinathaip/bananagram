@@ -25,12 +25,9 @@ export class CommentService {
 		return comment[0];
 	}
 
-	findAll() {
-		return `This action returns all comment`;
-	}
-
-	findOne(id: number) {
-		return `This action returns a #${id} comment`;
+	async findFor(postId: number): Promise<Comment[]> {
+		const results = await this.db.query<Comment[]>(`SELECT * FROM public.comment WHERE post_id = ${postId}`);
+		return results;
 	}
 
 	update(id: number, updateCommentDto: UpdateCommentDto) {

@@ -70,7 +70,7 @@ type Comment {
   post_id: Int!
   user_id: String!
   created_at: DateTime!
-  updated_at: DateTime!
+  updated_at: DateTime
 }
 
 type Query {
