@@ -48,6 +48,7 @@ jobs:
 
     deploy-to-vm:
       name: Deploy new changes to VM
+      needs: build-and-push
       runs-on: ubuntu-latest
       steps:
         - name: Checkout code
@@ -60,6 +61,6 @@ jobs:
             username: ${{ secrets.SSH_USERNAME }}
             password: ${{ secrets.SSH_PASSWORD }}
             script: |
-              docker stop bananagram-be && docker rm banangram-be
+              docker stop bananagram-be && docker rm bananagram-be
               docker run --network=banangram --mount type=bind,source=./bananagram/.env,target=/usr/src/app/.env --name=bananagram-be -d ghcr.io/chinathaip/bananagram/backend:${GITHUB_SHA}
-              docker image prune -a
+              docker image prune -a --yes
