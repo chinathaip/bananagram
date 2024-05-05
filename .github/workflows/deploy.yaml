@@ -20,11 +20,13 @@ jobs:
             - name: Check for changed files in backend
               id: backend_changes
               run: |
-                if git diff HEAD^ HEAD --quiet -- ./backend/src; then
-                  echo "No changes in backend/src directory."
-                  exit 0
+                changed_files=$(git diff --name-only HEAD^ HEAD | grep -E '^(backend)/src')
+                if [ -z "$changed_files" ]; then
+                    echo "No changes in backend/src directories."
+                    exit 0
                 else
-                  echo "Changes detected in backend/src directory."
+                    echo "Changes detected in backend/src directories, rebuilding the image"
+                    echo "$changed_files"
                 fi
 
             - name: Setup SHA
