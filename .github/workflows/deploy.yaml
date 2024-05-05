@@ -46,6 +46,9 @@ jobs:
             - name: Image digest
               run: echo ${{ steps.docker_build.outputs.digest }}
 
+            outputs:
+              GITHUB_SHA: ${{ steps.docker_build.outputs.digest }}
+
     deploy-to-vm:
       name: Deploy new changes to VM
       needs: build-and-push
@@ -53,6 +56,9 @@ jobs:
       steps:
         - name: Checkout code
           uses: actions/checkout@v3
+
+        - name: Get GITHUB_SHA from previous job
+          run: echo "GITHUB_SHA=${{ needs.build-and-push.outputs.GITHUB_SHA }}" >> $GITHUB_ENV
   
         - name: Deploy new changes via SSH
           uses: appleboy/ssh-action@v1.0.0
