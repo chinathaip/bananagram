@@ -9,7 +9,7 @@ import { Comment } from "./entities/comment.entity";
 export class CommentService {
 	constructor(private readonly db: DatabaseService) {}
 
-	async create(userId: string, createCommentDto: CreateCommentDto) {
+	async create(userId: string, createCommentDto: CreateCommentDto): Promise<Comment> {
 		// INSERT INTO public.comment (content, post_id, user_id) VALUES ('Me too....', 1, 'user_2f02EDTfrcAuyhODlRHaNLP6LQQ');
 		// INSERT INTO public.comment (content, post_id, user_id) VALUES ('sure, but dockerize it yourself', 1, 'user_2f2BNrbARuhvr1M84Jq4kALpw9O');
 
