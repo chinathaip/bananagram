@@ -10,12 +10,18 @@ import { Markdown } from "tiptap-markdown";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
+import { useEffect } from "react";
+import { useComments } from "@/lib/hooks/data-hooks/use-comments";
+import { useSocket } from "@/lib/hooks/socket-hooks/use-socket";
 
 export default function PostPage() {
 	const router = useRouter();
 	const postId = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id;
 
 	const { data: postData, isPending, isError, error } = usePost(parseInt(postId || "0"));
+	const { data: commentData, refetch } = useComments(parseInt(postId || "0"));
+
+	const socket = useSocket();
 
 	const editor = useEditor({
 		editorProps: {
@@ -45,6 +51,12 @@ export default function PostPage() {
 		content: ""
 	});
 
+	useEffect(() => {
+		socket.on("createComment", (message) => {
+			refetch();
+		});
+	}, []);
+
 	if (isError) return <div className="container">Error: {error.message}</div>;
 	if (!postData?.post) return <div className="container">Error: Post not found</div>;
 
@@ -57,7 +69,16 @@ export default function PostPage() {
 					<div className="border-1 flex flex-col rounded-md border p-2">
 						<EditorContent editor={editor} />
 						<div className="ml-auto flex">
-							<Button size="sm" variant="ghost">
+							<Button
+								size="sm"
+								variant="ghost"
+								onClick={() => {
+									if (editor.getText()) {
+										socket.emit("createComment", { postId, content: editor.getText() });
+										editor.commands.clearContent();
+									}
+								}}
+							>
 								<Send className="h-4 w-4" />
 							</Button>
 						</div>
@@ -68,6 +89,11 @@ export default function PostPage() {
 						<Skeleton className="h-8 rounded-lg" />
 					</div>
 				)}
+				{commentData?.comments?.map((comment) => (
+					<div key={`comment_${comment.id}`}>
+						<div>{comment.content}</div>
+					</div>
+				))}
 			</div>
 		</div>
 	);
