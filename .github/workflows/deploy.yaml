@@ -45,3 +45,21 @@ jobs:
 
             - name: Image digest
               run: echo ${{ steps.docker_build.outputs.digest }}
+
+    deploy-to-vm:
+      name: Deploy new changes to VM
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+  
+        - name: Deploy new changes via SSH
+          uses: appleboy/ssh-action@v1.0.0
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USERNAME }}
+            password: ${{ secrets.SSH_PASSWORD }}
+            script: |
+              docker stop bananagram-be && docker rm banangram-be
+              docker run --network=banangram --mount type=bind,source=./bananagram/.env,target=/usr/src/app/.env --name=bananagram-be -d ghcr.io/chinathaip/bananagram/backend:${GITHUB_SHA}
+              docker image prune -a
