@@ -1,0 +1,59 @@
+name: Backend CI/CD
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    build-and-push:
+        name: build and push docker image to ghcr
+        permissions:
+            packages: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Check for changed files in backend
+              id: backend_changes
+              run: |
+                if git diff HEAD^ HEAD --quiet -- ./backend/src; then
+                  echo "No changes in backend/src directory."
+                  exit 0
+                else
+                  echo "Changes detected in backend/src directory."
+                fi
+
+            - name: Setup SHA
+              run: echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+
+            - name: Login ghcr.io
+              uses: docker/login-action@v2.1.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+                  logout: true
+
+            - name: Setup NestJS env
+              run: |
+                  echo "Setting env for nestJS";
+                  echo "POSTGRES_HOST=\"${{ vars.POSTGRES_HOST }}\"" >> .env
+                  echo "POSTGRES_PORT=\"${{ vars.POSTGRES_PORT }}\"" >> .env
+                  echo "POSTGRES_USER=\"${{ vars.POSTGRES_USER }}\"" >> .env
+                  echo "POSTGRES_PASSWORD=\"${{ vars.POSTGRES_PASSWORD }}\"" >> .env
+                  echo "POSTGRES_DATABASE=\"${{ vars.POSTGRES_DATABASE }}\"" >> .env
+                  echo "BASIC_AUTH_USERNAME=\"${{ vars.BASIC_AUTH_USERNAME }}\"" >> .env
+                  echo "BASIC_AUTH_PASSWORD=\"${{ vars.BASIC_AUTH_PASSWORD }}\"" >> .env
+                  echo "JWT_SECRET=\"${{ vars.JWT_SECRET }}\"" >> .env
+
+            - name: Build and Push to GitHub Container Registry
+              uses: docker/build-push-action@v3.2.0
+              with:
+                  context: .
+                  tags: |
+                      ghcr.io/chinathaip/bananagram/backend:${{ env.GITHUB_SHA }}
+                  push: true
+
+            - name: Image digest
+              run: echo ${{ steps.docker_build.outputs.digest }}
