@@ -12,7 +12,6 @@ const userById = graphql(`
 			email
 			following
 			followers
-			display_name
 			is_following
 			is_owner
 			created_at

@@ -15,9 +15,6 @@ export class User {
 	bio: string;
 
 	@Field()
-	display_name: string;
-
-	@Field()
 	profile_picture: string;
 
 	@Field()

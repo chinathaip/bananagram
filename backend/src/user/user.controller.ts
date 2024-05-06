@@ -14,8 +14,7 @@ export class UserController {
 			id: clerkUserWebhook.data.id,
 			username: clerkUserWebhook.data.username,
 			email: clerkUserWebhook.data.email_addresses[0].email_address,
-			bio: clerkUserWebhook.data.public_metadata.bio,
-			display_name: clerkUserWebhook.data.public_metadata.display_name,
+			bio: clerkUserWebhook.data.public_metadata.bio || "",
 			profile_picture: clerkUserWebhook.data.profile_image_url,
 			updated_at: clerkUserWebhook.data.updated_at ? new Date(clerkUserWebhook.data.updated_at) : null
 		} as T;

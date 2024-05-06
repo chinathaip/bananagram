@@ -3,7 +3,6 @@ CREATE TABLE public.user (
     username VARCHAR(255) ,
     email VARCHAR(255) NOT NULL,
     bio VARCHAR(255),
-    display_name VARCHAR(255),
     profile_picture VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP 
@@ -63,9 +62,9 @@ CREATE TABLE public.user_likes_post (
     PRIMARY KEY (user_id, post_id)
 );
 
-INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', 'super cool guy working on the backend', 'ChinathaiP', 'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
-INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', 'this guy write the frontend for course compose', 'Lxkas', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
-INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ('user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'tester', 'tochar@proton.me', 'who is this guy?', 'TestMan101', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
+INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', 'super cool guy working on the backend',  'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
+INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', 'this guy write the frontend for course compose', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
+INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'tester', 'tochar@proton.me', 'who is this guy?', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
 
 INSERT INTO public.category (name) VALUES ('general');
 INSERT INTO public.category (name) VALUES ('education');

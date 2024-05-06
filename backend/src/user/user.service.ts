@@ -20,13 +20,12 @@ export class UserService {
 			const queries: QueryConfig[] = [
 				{
 					name: `Create New User: ${createUserDto.id}`,
-					text: "INSERT INTO public.user (id, username, email, bio, display_name, profile_picture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+					text: "INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ($1, $2, $3, $4, $5) RETURNING *",
 					values: [
 						createUserDto.id,
 						createUserDto.username,
 						createUserDto.email,
 						createUserDto.bio,
-						createUserDto.display_name,
 						createUserDto.profile_picture
 					]
 				}
@@ -57,13 +56,12 @@ export class UserService {
 			const queries: QueryConfig[] = [
 				{
 					name: `Update User Information for ${updateUserDto.id}`,
-					text: "UPDATE public.user SET username=$2, email=$3, bio=$4, display_name=$5, profile_picture=$6, updated_at=$7 WHERE id = $1",
+					text: "UPDATE public.user SET username=$2, email=$3, bio=$4, profile_picture=$5, updated_at=$6 WHERE id = $1",
 					values: [
 						updateUserDto.id,
 						updateUserDto.username,
 						updateUserDto.email,
 						updateUserDto.bio,
-						updateUserDto.display_name,
 						updateUserDto.profile_picture,
 						updateUserDto.updated_at
 					]

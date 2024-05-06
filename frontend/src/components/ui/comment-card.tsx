@@ -14,7 +14,6 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger
 } from "./dropdown-menu";
-import { Button } from "./button";
 import { AlertTriangleIcon, EllipsisIcon } from "lucide-react";
 
 interface CommentCardProps {
@@ -38,9 +37,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
 						<div className="flex w-full flex-col">
 							<h3 className="text-md flex flex-row font-semibold">
 								<Link href={`/profiles/${comment.user.id}`}>
-									<span className="break-all hover:underline">
-										{comment.user.display_name || comment.user.username}
-									</span>
+									<span className="break-all hover:underline">{comment.user.username}</span>
 								</Link>
 								<DropdownMenu>
 									<DropdownMenuTrigger asChild className="ml-auto">

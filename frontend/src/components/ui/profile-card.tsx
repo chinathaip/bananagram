@@ -46,7 +46,7 @@ export default function ProfileCard({ userId }: { userId: string }) {
 					</div>
 					<div className="mt-2 flex flex-row items-center px-2">
 						<div>
-							<div className="text-lg font-semibold">{userData.user.display_name}</div>
+							<div className="text-lg font-semibold">{userData.user.username}</div>
 							<div className="text-muted-foreground">@{userData.user.username}</div>
 						</div>
 						<div className="ml-auto">

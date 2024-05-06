@@ -13,7 +13,6 @@ const commentById = graphql(`
 			user {
 				id
 				username
-				display_name
 				is_owner
 				created_at
 				profile_picture

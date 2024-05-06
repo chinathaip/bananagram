@@ -185,7 +185,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 								<span className="select-none">&nbsp;</span>
 								<Link href={`/profiles/${post.user.id}`}>
 									<span className="break-all hover:underline">
-										{post.user.display_name || post.user.username}
+										{post.user.username}
 									</span>
 								</Link>
 							</h3>

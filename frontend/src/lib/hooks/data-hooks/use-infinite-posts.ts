@@ -25,7 +25,6 @@ const infinitePostsQuery = graphql(`
 						username
 						bio
 						email
-						display_name
 						is_owner
 						created_at
 						profile_picture
