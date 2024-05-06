@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import PostCard from "@/components/ui/post-card";
-import { Post } from "@/gql/graphql";
+import { Comment, Post } from "@/gql/graphql";
 import { usePost } from "@/lib/hooks/data-hooks/use-post";
 import CategoryMenu from "@/components/ui/category-menu";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -13,6 +13,8 @@ import { Send } from "lucide-react";
 import { useEffect } from "react";
 import { useComments } from "@/lib/hooks/data-hooks/use-comments";
 import { useSocket } from "@/lib/hooks/socket-hooks/use-socket";
+import { useSession } from "@clerk/nextjs";
+import CommentCard from "@/components/ui/comment-card";
 
 export default function PostPage() {
 	const router = useRouter();
@@ -21,6 +23,7 @@ export default function PostPage() {
 	const { data: postData, isPending, isError, error } = usePost(parseInt(postId || "0"));
 	const { data: commentData, refetch } = useComments(parseInt(postId || "0"));
 
+	const { isSignedIn } = useSession();
 	const socket = useSocket();
 
 	const editor = useEditor({
@@ -72,6 +75,7 @@ export default function PostPage() {
 							<Button
 								size="sm"
 								variant="ghost"
+								disabled={!isSignedIn}
 								onClick={() => {
 									if (editor.getText()) {
 										socket.emit("createComment", { postId, content: editor.getText() });
@@ -90,9 +94,7 @@ export default function PostPage() {
 					</div>
 				)}
 				{commentData?.comments?.map((comment) => (
-					<div key={`comment_${comment.id}`}>
-						<div>{comment.content}</div>
-					</div>
+					<CommentCard key={`comment_${comment.id}`} comment={comment as Comment} />
 				))}
 			</div>
 		</div>
