@@ -2,7 +2,7 @@ import { Args, Int, Resolver, ResolveField, Parent, Query } from "@nestjs/graphq
 import { Comment } from "./entities/comment.entity";
 import { CommentService } from "./comment.service";
 import { User } from "../user/entities/user.entity";
-import { UserService } from "src/user/user.service";
+import { UserService } from "../user/user.service";
 
 @Resolver((of) => Comment)
 export class CommentResolver {
