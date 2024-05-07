@@ -29,7 +29,7 @@ export default function PostPage() {
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
-				class: "min-h-min rounded-md border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto transition focus:translate-y-1.5 focus:h-20"
+				class: "min-h-min rounded-md border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto transition focus:translate-y-1.5"
 			}
 		},
 		extensions: [
