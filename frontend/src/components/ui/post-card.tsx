@@ -184,9 +184,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 								</Tooltip>
 								<span className="select-none">&nbsp;</span>
 								<Link href={`/profiles/${post.user.id}`}>
-									<span className="break-all hover:underline">
-										{post.user.username}
-									</span>
+									<span className="break-all hover:underline">{post.user.username}</span>
 								</Link>
 							</h3>
 

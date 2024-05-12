@@ -1,6 +1,6 @@
 import { navItems } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import { BananaIcon, Menu } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,6 +11,8 @@ import { ThemeToggler } from "../ui/theme-toggler";
 export default function ApplicationHeader() {
 	const router = useRouter();
 	const pathName = router.pathname;
+
+	const { user } = useUser();
 
 	return (
 		<header className="fixed top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -76,7 +78,7 @@ export default function ApplicationHeader() {
 					<ThemeToggler />
 
 					<SignedIn>
-						<UserButton />
+						{user && <UserButton userProfileMode="navigation" userProfileUrl={`/profiles/${user.id}`} />}
 					</SignedIn>
 
 					<SignedOut>

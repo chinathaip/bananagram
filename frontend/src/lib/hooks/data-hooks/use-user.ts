@@ -21,10 +21,10 @@ const userById = graphql(`
 `);
 
 export function useUser(id: string = "") {
-	const { session } = useSession();
+	const { session, isLoaded } = useSession();
 
 	return useQuery({
-		queryKey: ["user", id],
+		queryKey: ["user", id, isLoaded],
 		queryFn: async () => {
 			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
 

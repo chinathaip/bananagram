@@ -7,12 +7,14 @@ import { useUser } from "@/lib/hooks/data-hooks/use-user";
 import { format } from "date-fns";
 import { CalendarIcon, Send, UserRoundCog, UserRoundMinusIcon, UserRoundPlusIcon } from "lucide-react";
 import Image from "next/image";
+import { useClerk } from "@clerk/nextjs";
 
 export default function ProfileCard({ userId }: { userId: string }) {
 	const { mutateAsync: follow } = useFollow();
 	const { mutateAsync: unfollow } = useUnfollow();
-
 	const { data: userData, refetch } = useUser(userId);
+
+	const { openUserProfile } = useClerk();
 
 	if (!userData?.user) return <div className="container">Error: user not found</div>;
 
@@ -51,7 +53,11 @@ export default function ProfileCard({ userId }: { userId: string }) {
 						</div>
 						<div className="ml-auto">
 							{userData.user.is_owner ? (
-								<Button>
+								<Button
+									onClick={() => {
+										openUserProfile();
+									}}
+								>
 									<UserRoundCog className="h-6 w-6" />
 									Edit
 								</Button>
