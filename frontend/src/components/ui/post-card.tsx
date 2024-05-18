@@ -114,7 +114,7 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 // This disables scroll when activated, and there is an issue with
 // the content being misaligned since the width of the scrollbar is not accounted for.
 // Example: https://streamable.com/ysbe7b
-function PostOptionsButton({ isOwner }: { isOwner: boolean }) {
+function PostOptionsButton() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -126,22 +126,13 @@ function PostOptionsButton({ isOwner }: { isOwner: boolean }) {
 				<DropdownMenuLabel>Post Options</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					{isOwner && (
-						<>
-							<DropdownMenuItem>
-								<PencilIcon className="mr-2 h-4 w-4" />
-								<span>Edit</span>
-							</DropdownMenuItem>
-							<DropdownMenuItem className="text-red-700">
-								<Trash2Icon className="mr-2 h-4 w-4" />
-								<span>Delete</span>
-							</DropdownMenuItem>
-						</>
-					)}
-
 					<DropdownMenuItem>
-						<AlertTriangleIcon className="mr-2 h-4 w-4" />
-						<span>Report</span>
+						<PencilIcon className="mr-2 h-4 w-4" />
+						<span>Edit</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem className="text-red-700">
+						<Trash2Icon className="mr-2 h-4 w-4" />
+						<span>Delete</span>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 			</DropdownMenuContent>
@@ -167,7 +158,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 
 					{/* <PostOptionsButton canEdit={post.canEdit} canDelete={post.canDelete} /> */}
 					{/* TODO: make these work */}
-					<PostOptionsButton isOwner={post.user.is_owner} />
+					{post.user.is_owner && <PostOptionsButton />}
 				</div>
 
 				<div className="relative w-full">
@@ -176,12 +167,14 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 						<div className="flex flex-col">
 							<h3 className="text-md flex items-center font-semibold">
 								{/* TODO: role badges and stuff */}
-								<Tooltip>
-									<TooltipContent>Admin</TooltipContent>
-									<TooltipTrigger>
-										<CrownIcon className="h-4 w-4 text-yellow-400" />
-									</TooltipTrigger>
-								</Tooltip>
+								{post.user.is_owner && (
+									<Tooltip>
+										<TooltipContent>You</TooltipContent>
+										<TooltipTrigger>
+											<CrownIcon className="h-4 w-4 text-yellow-400" />
+										</TooltipTrigger>
+									</Tooltip>
+								)}
 								<span className="select-none">&nbsp;</span>
 								<Link href={`/profiles/${post.user.id}`}>
 									<span className="break-all hover:underline">{post.user.username}</span>
