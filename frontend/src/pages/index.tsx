@@ -46,7 +46,7 @@ export default function Home() {
 							);
 						})
 					)}
-					{isPending && Array.from({ length: 5 }).map(() => <PostCardSkeleton />)}
+					{isPending && Array.from({ length: 5 }).map((_,index) => <PostCardSkeleton key={`postCardSkeletion_${index}`}/>)}
 					{!hasNextPage && <p className="my-2 text-center">You are all caught up</p>}
 				</div>
 			</div>
