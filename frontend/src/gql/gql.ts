@@ -21,6 +21,7 @@ const documents = {
     "\n\tmutation LikePost($id: Int!) {\n\t\tlikePost(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n": types.LikePostDocument,
     "\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tlikes\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_liked\n\t\t}\n\t}\n": types.PostDocument,
     "\n\tmutation Unfollow($id: String!) {\n\t\tunfollow(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n": types.UnfollowDocument,
+    "\n\tmutation UnlikePost($id: Int!) {\n\t\tunlikePost(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n": types.UnlikePostDocument,
     "\n\tquery User($id: String!) {\n\t\tuser(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n": types.UserDocument,
 };
 
@@ -70,6 +71,10 @@ export function graphql(source: "\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tmutation Unfollow($id: String!) {\n\t\tunfollow(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation Unfollow($id: String!) {\n\t\tunfollow(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tmutation UnlikePost($id: Int!) {\n\t\tunlikePost(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation UnlikePost($id: Int!) {\n\t\tunlikePost(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

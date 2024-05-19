@@ -11,7 +11,6 @@ import {
 
 import { format, formatDistance } from "date-fns";
 import {
-	AlertTriangleIcon,
 	BananaIcon,
 	CrownIcon,
 	EllipsisIcon,
@@ -34,22 +33,36 @@ import Realistic from "react-canvas-confetti/dist/presets/realistic";
 import type { TConductorInstance } from "react-canvas-confetti/dist/types";
 
 import type { Post } from "@/gql/graphql";
+import { useLikePost } from "@/lib/hooks/data-hooks/use-like-post";
+import { useUnlikePost } from "@/lib/hooks/data-hooks/use-unlike-post";
+import { useSession } from "@clerk/nextjs";
 
 interface PostCardProps {
 	post: Post;
-	onBananaClick: (postId: number) => void;
 	ref: any;
 }
 
-function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onBananaClick: () => void }) {
-	const [bananaLiked, setBananaLiked] = useState(false);
+function BananaLikeButton({
+	postId,
+	canLike,
+	likeCount,
+	userLiked
+}: {
+	postId: number;
+	canLike: boolean;
+	likeCount: number;
+	userLiked: boolean;
+}) {
+	const [bananaCount, setBananaCount] = useState(likeCount);
+	const [bananaLiked, setBananaLiked] = useState(userLiked);
 	const [confettiInstance, setconfettiInstance] = useState<{
 		confetti: confetti.CreateTypes;
 		conductor: TConductorInstance;
 	}>();
+	const { mutateAsync: likePost } = useLikePost();
+	const { mutateAsync: unlikePost } = useUnlikePost();
 
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-		onBananaClick();
 		// Get the button's position relative to the viewport
 		const { width, height, x, y } = event.currentTarget.getBoundingClientRect();
 
@@ -60,6 +73,12 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 
 		setBananaLiked((prev) => {
 			if (!prev) {
+				likePost(postId)
+					.then((result) => {
+						setBananaCount(result.likePost.likes);
+					})
+					.catch(console.error);
+
 				// This has to be here because the confetti instance is not available on the first render
 				const bananaShape = confetti.shapeFromText({ text: "🍌", scalar });
 
@@ -72,6 +91,12 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 					shapes: [bananaShape],
 					colors: ["#ff0000", "#00ff00", "#0000ff"]
 				});
+			} else {
+				unlikePost(postId)
+					.then((result) => {
+						setBananaCount(result.unlikePost.likes);
+					})
+					.catch(console.error);
 			}
 
 			return !prev;
@@ -81,6 +106,7 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 	return (
 		// Again, we are not using the Button component here because we just need this to be clickable, without any other styling.
 		<button
+			disabled={!canLike}
 			onClick={handleClick}
 			className={cn(
 				"group flex flex-row items-center rounded-full",
@@ -90,7 +116,8 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 		>
 			<BananaIcon
 				className={cn(
-					"h-5 w-5 transition-all duration-150 group-hover:text-accent-foreground",
+					"h-5 w-5 transition-all duration-150",
+					canLike ? "group-hover:text-accent-foreground" : "",
 					bananaLiked ? "fill-yellow-400" : ""
 				)}
 			/>
@@ -99,7 +126,7 @@ function BananaLikeButton({ likeCount, onBananaClick }: { likeCount: number; onB
 			<span className="text-sm transition-all duration-150 group-hover:text-accent-foreground">
 				{Intl.NumberFormat("en-US", {
 					notation: "compact"
-				}).format(likeCount)}
+				}).format(bananaCount)}
 			</span>
 
 			<Realistic
@@ -142,7 +169,9 @@ function PostOptionsButton() {
 
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
-function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
+function PostCard({ post }: PostCardProps, ref: any) {
+	const { isSignedIn } = useSession();
+
 	return (
 		<Card ref={ref}>
 			<article className="flex flex-row items-start gap-x-4 p-4">
@@ -158,7 +187,7 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 
 					{/* <PostOptionsButton canEdit={post.canEdit} canDelete={post.canDelete} /> */}
 					{/* TODO: make these work */}
-					{post.user.is_owner && <PostOptionsButton />}
+					{post.user.is_owner && <PostOptionsButton key={`post_option_${post.id}`} />}
 				</div>
 
 				<div className="relative w-full">
@@ -237,10 +266,10 @@ function PostCard({ post, onBananaClick }: PostCardProps, ref: any) {
 						</Link>
 
 						<BananaLikeButton
+							postId={post.id}
+							canLike={(!post.user.is_owner && isSignedIn) ?? false}
 							likeCount={post.likes}
-							onBananaClick={() => {
-								onBananaClick(post.id);
-							}}
+							userLiked={post.user_liked}
 						/>
 
 						{/* TODO: share post */}

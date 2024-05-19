@@ -2,7 +2,6 @@ import PostCard from "@/components/ui/post-card";
 import { PostEditor } from "@/components/ui/post-editor";
 import { useCategory } from "@/lib/hooks/data-hooks/use-category";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
-import { useLikePost } from "@/lib/hooks/data-hooks/use-like-post";
 import { useIntersection } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { Post } from "@/gql/graphql";
@@ -15,7 +14,7 @@ export default function Home() {
 		categoryName: postCategory
 	});
 	const { data: categoryData } = useCategory();
-	const { data: likeData, mutate } = useLikePost();
+
 	const { ref, entry } = useIntersection({
 		threshold: 0.1
 	});
@@ -42,7 +41,6 @@ export default function Home() {
 								<PostCard
 									key={`postcard_${edge.node.id}`}
 									post={edge?.node as Post}
-									onBananaClick={() => {}}
 									ref={isLastElement ? ref : null}
 								/>
 							);
