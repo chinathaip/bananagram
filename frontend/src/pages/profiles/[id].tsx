@@ -45,13 +45,7 @@ export default function UserProfilePage() {
 						<div className="flex flex-col gap-y-2">
 							{data?.pages.map((page, pageIndex) =>
 								page.posts.edges.map((edge, index) => {
-									return (
-										<PostCard
-											key={`postcard_${edge.node.id}`}
-											post={edge.node as Post}
-											onBananaClick={() => {}}
-										/>
-									);
+									return <PostCard key={`postcard_${edge.node.id}`} post={edge.node as Post} />;
 								})
 							)}
 							{isPending && Array.from({ length: 5 }).map(() => <PostCardSkeleton />)}

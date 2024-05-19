@@ -67,7 +67,7 @@ export default function PostPage() {
 		<div className="container grid h-full grid-cols-12">
 			<CategoryMenu onSelectCategory={() => {}} />
 			<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto md:col-span-9">
-				<PostCard post={postData.post as Post} onBananaClick={() => {}} />
+				<PostCard post={postData.post as Post} />
 				{editor ? (
 					<div className="border-1 flex flex-col rounded-md border p-2">
 						<EditorContent editor={editor} />
