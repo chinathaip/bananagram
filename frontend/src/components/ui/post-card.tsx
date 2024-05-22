@@ -256,11 +256,10 @@ function PostCard({ post }: PostCardProps, ref: any) {
 								{/* TODO: probably find all instances of this type of thing and make it a component */}
 								<span className="select-none">&nbsp;</span>
 
-								{/* TODO: comments count */}
 								<span className="transition-all duration-150 group-hover:text-accent-foreground">
 									{Intl.NumberFormat("en-US", {
 										notation: "compact"
-									}).format(1100)}
+									}).format(post.comments)}
 								</span>
 							</button>
 						</Link>

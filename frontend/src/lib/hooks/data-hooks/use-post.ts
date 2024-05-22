@@ -20,6 +20,7 @@ const postById = graphql(`
 				profile_picture
 			}
 			likes
+			comments
 			category_name
 			created_at
 			user_liked

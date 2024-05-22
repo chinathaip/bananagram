@@ -47,6 +47,11 @@ export class PostResolver {
 		return this.paginationService.getItemCountFor("user_likes_post", [{ where: "post_id", equals: post.id }]);
 	}
 
+	@ResolveField(() => Int)
+	comments(@Parent() post: Post) {
+		return this.paginationService.getItemCountFor("comment", [{ where: "post_id", equals: post.id }]);
+	}
+
 	@UseGuards(JwtAuthGuard)
 	@Mutation(() => Post)
 	editPost(@CurrentUser() userId: string, @Args("editPostInput") editPostInput: EditPostInput) {
