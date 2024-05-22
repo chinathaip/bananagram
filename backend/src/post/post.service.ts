@@ -220,37 +220,29 @@ export class PostService {
 	}
 
 	async remove(postId: number, userId: string): Promise<Post> {
-		// `This action removes a #${postId} post`;
-
 		try {
+			const postToDelete = await this.findOne(postId);
+			if (userId == postToDelete.user_id) {
+				const queries: QueryConfig[] = [
+					{
+						name: `Delete post id ${postId} by user ${userId}`,
+						text: `Delete from public.post WHERE id = $1 AND user_id = $2 RETURNING *`,
+						values: [postId, userId]
+					}
+				];
 
-		// TODO: check if user is the owner of the post or not before allowing deletion
-		const postToDelete = await this.findOne(postId);
-
-		if (userId==postToDelete.user_id){
-
-		// TODO: write an sql script to delete a row from public.post with the following post_id and user_id
-		const queries: QueryConfig[] = [
-			{
-				name: `Delete post id ${postId} by user ${userId}`,
-				text: `Delete from public.post WHERE id = $1 AND user_id = $2 RETURNING *`,
-				values: [postId, userId]
+				const results = await this.db.transaction(queries);
+				const post = results[0].rows as Post[];
+				return post[0];
 			}
-		];
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
 
-			const results = await this.db.transaction(queries);
-			const post = results[0].rows as Post[];
-			return post[0];
-	}
-		}		
-		catch (e) {
-		if (e instanceof GraphQLError) {
-			throw e;
+			this.logger.error(`error when liking a post: ${e}`);
+			throw new InternalServerErrorException();
 		}
-
-		this.logger.error(`error when liking a post: ${e}`);
-		throw new InternalServerErrorException();
-	}
 		return;
 	}
 }
