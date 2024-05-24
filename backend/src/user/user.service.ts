@@ -106,6 +106,10 @@ export class UserService {
 
 	async follow(userId: string, friendId: string): Promise<User> {
 		try {
+			if (userId === friendId) {
+				throw new BadRequestError("Cannot follow yourself");
+			}
+
 			if (!(await this.findOne(friendId))) {
 				throw new NotFoundError(`Friend ${friendId} does not exist`);
 			}
