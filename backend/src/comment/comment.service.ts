@@ -1,13 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { DatabaseService } from "../db/db.service";
 import { QueryConfig } from "pg";
 import { Comment } from "./entities/comment.entity";
+import { GraphQLError } from "graphql";
+import { BadRequestError } from "src/common/errors/bad-request.error";
 
 @Injectable()
 export class CommentService {
 	constructor(private readonly db: DatabaseService) {}
+
+	private readonly logger = new Logger(CommentService.name);
 
 	async create(userId: string, createCommentDto: CreateCommentDto): Promise<Comment> {
 		const queries: QueryConfig[] = [
@@ -23,8 +27,70 @@ export class CommentService {
 	}
 
 	async findFor(postId: number): Promise<Comment[]> {
-		const results = await this.db.query<Comment[]>(`SELECT * FROM public.comment WHERE post_id = ${postId} ORDER BY created_at DESC`);
+		const results = await this.db.query<Comment[]>(
+			`SELECT * FROM public.comment WHERE post_id = ${postId} ORDER BY created_at DESC`
+		);
 		return results;
+	}
+
+	async likeComment(commentId: number, userId: string): Promise<Comment> {
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `User ${userId} likes comment id ${commentId}`,
+					text: `INSERT INTO public.user_likes_comment (user_id, comment_id) VALUES ($1, $2)`,
+					values: [userId, commentId]
+				},
+				{
+					name: `Get updated comment id ${commentId} after like`,
+					text: `SELECT * FROM puiblic.comment WHERE id = $1 LIMIT 1`,
+					values: [commentId]
+				}
+			];
+
+			const results = await this.db.transaction(queries);
+			const comment = results[1].rows as Comment[];
+			return comment[0];
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			if (e.code === "23505") {
+				throw new BadRequestError(`User ${userId} has already liked comment id: ${commentId}`);
+			}
+
+			this.logger.error("error when liking a comment: ${e}");
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async unlikeComment(commentId: number, userId: string): Promise<Comment> {
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `User ${userId} unlikes comment id ${commentId}`,
+					text: `DELETE FROM public.user_likes_comment WHERE user_id = $1 AND comment_id = $2`,
+					values: [userId, commentId]
+				},
+				{
+					name: `Get updated comment id ${commentId} after like`,
+					text: `SELECT * FROM puiblic.comment WHERE id = $1 LIMIT 1`,
+					values: [commentId]
+				}
+			];
+
+			const results = await this.db.transaction(queries);
+			const comment = results[1].rows as Comment[];
+			return comment[0];
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			this.logger.error(`error when unliking a post: ${e}`);
+			throw new InternalServerErrorException();
+		}
 	}
 
 	update(id: number, updateCommentDto: UpdateCommentDto) {

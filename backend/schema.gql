@@ -104,9 +104,11 @@ type Mutation {
   unfollow(id: String!): User!
   createPost(createPostInput: CreatePostInput!): Post!
   editPost(editPostInput: EditPostInput!): Post!
+  removePost(id: Int!): Post!
   likePost(id: Int!): Post!
   unlikePost(id: Int!): Post!
-  removePost(id: Int!): Post!
+  likeComment(id: Int!): Comment!
+  unlikeComment(id: Int!): Comment!
 }
 
 input CreatePostInput {
