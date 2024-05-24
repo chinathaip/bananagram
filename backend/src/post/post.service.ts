@@ -25,14 +25,12 @@ export class PostService {
 		userId,
 		categoryName,
 		postId,
-		isEdit,
-		isLike
+		isEdit
 	}: {
 		userId: string;
 		categoryName?: string;
 		postId?: number;
 		isEdit?: boolean;
-		isLike?: boolean;
 	}) {
 		try {
 			const promiseResult = await Promise.all([
@@ -45,9 +43,6 @@ export class PostService {
 			const post = promiseResult[2];
 			if (isEdit && post.user_id !== userId) {
 				throw new BadRequestError(`User ${userId} does not own post id ${post.id}`);
-			}
-			if (isLike && post.user_id === userId) {
-				throw new BadRequestError(`User ${userId} cannot like or unlike his/her own post id ${post.id}`);
 			}
 		} catch (e) {
 			throw e;
@@ -157,7 +152,7 @@ export class PostService {
 
 	async likePost(postId: number, userId: string): Promise<Post> {
 		try {
-			await this.validateInput({ userId, postId, isLike: true });
+			await this.validateInput({ userId, postId });
 
 			const queries: QueryConfig[] = [
 				{
@@ -191,7 +186,7 @@ export class PostService {
 
 	async unlikePost(postId: number, userId: string): Promise<Post> {
 		try {
-			await this.validateInput({ userId, postId, isLike: true });
+			await this.validateInput({ userId, postId });
 
 			const queries: QueryConfig[] = [
 				{

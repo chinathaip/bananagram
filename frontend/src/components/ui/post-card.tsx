@@ -42,17 +42,7 @@ interface PostCardProps {
 	ref: any;
 }
 
-function BananaLikeButton({
-	postId,
-	canLike,
-	likeCount,
-	userLiked
-}: {
-	postId: number;
-	canLike: boolean;
-	likeCount: number;
-	userLiked: boolean;
-}) {
+function BananaLikeButton({ postId, likeCount, userLiked }: { postId: number; likeCount: number; userLiked: boolean }) {
 	const [bananaCount, setBananaCount] = useState(likeCount);
 	const [bananaLiked, setBananaLiked] = useState(userLiked);
 	const [confettiInstance, setconfettiInstance] = useState<{
@@ -106,7 +96,6 @@ function BananaLikeButton({
 	return (
 		// Again, we are not using the Button component here because we just need this to be clickable, without any other styling.
 		<button
-			disabled={!canLike}
 			onClick={handleClick}
 			className={cn(
 				"group flex flex-row items-center rounded-full",
@@ -114,13 +103,7 @@ function BananaLikeButton({
 			)}
 			aria-label="like post"
 		>
-			<BananaIcon
-				className={cn(
-					"h-5 w-5 transition-all duration-150",
-					canLike ? "group-hover:text-accent-foreground" : "",
-					bananaLiked ? "fill-yellow-400" : ""
-				)}
-			/>
+			<BananaIcon className={cn("h-5 w-5 transition-all duration-150", bananaLiked ? "fill-yellow-400" : "")} />
 			<span>&nbsp;</span>
 			{/* TODO: Like count */}
 			<span className="text-sm transition-all duration-150 group-hover:text-accent-foreground">
@@ -264,12 +247,7 @@ function PostCard({ post }: PostCardProps, ref: any) {
 							</button>
 						</Link>
 
-						<BananaLikeButton
-							postId={post.id}
-							canLike={(!post.user.is_owner && isSignedIn) ?? false}
-							likeCount={post.likes}
-							userLiked={post.user_liked}
-						/>
+						<BananaLikeButton postId={post.id} likeCount={post.likes} userLiked={post.user_liked} />
 
 						{/* TODO: share post */}
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
