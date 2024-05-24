@@ -18,12 +18,6 @@ export class PostResolver {
 		private readonly paginationService: PaginationService
 	) {}
 
-	@UseGuards(JwtAuthGuard)
-	@Mutation(() => Post)
-	createPost(@CurrentUser() userId: string, @Args("createPostInput") createPostInput: CreatePostInput) {
-		return this.postService.create(userId, createPostInput);
-	}
-
 	@UseGuards(JwtAuthGuardOptional)
 	@Query(() => Post)
 	post(@Args("id", { type: () => Int }) id: number) {
@@ -54,8 +48,20 @@ export class PostResolver {
 
 	@UseGuards(JwtAuthGuard)
 	@Mutation(() => Post)
+	createPost(@CurrentUser() userId: string, @Args("createPostInput") createPostInput: CreatePostInput) {
+		return this.postService.create(userId, createPostInput);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation(() => Post)
 	editPost(@CurrentUser() userId: string, @Args("editPostInput") editPostInput: EditPostInput) {
 		return this.postService.edit(userId, editPostInput);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation(() => Post)
+	removePost(@CurrentUser() userId: string, @Args("id", { type: () => Int }) id: number) {
+		return this.postService.remove(id, userId);
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -68,11 +74,5 @@ export class PostResolver {
 	@Mutation(() => Post)
 	unlikePost(@CurrentUser() userId: string, @Args("id", { type: () => Int }) id: number) {
 		return this.postService.unlikePost(id, userId);
-	}
-
-	@UseGuards(JwtAuthGuard)
-	@Mutation(() => Post)
-	removePost(@CurrentUser() userId: string, @Args("id", { type: () => Int }) id: number) {
-		return this.postService.remove(id, userId);
 	}
 }

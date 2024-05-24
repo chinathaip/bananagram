@@ -209,7 +209,7 @@ export class PostService {
 				throw e;
 			}
 
-			this.logger.error(`error when liking a post: ${e}`);
+			this.logger.error(`error when unliking a post: ${e}`);
 			throw new InternalServerErrorException();
 		}
 	}
