@@ -30,15 +30,11 @@ CREATE TABLE public.comment (
     updated_at TIMESTAMP
 );
 
-CREATE TABLE public.hashtag (
+CREATE TABLE public.post_deletion_log (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE
-);
-
-CREATE TABLE public.post_hashtag (
-    hashtag_id INTEGER REFERENCES public.hashtag (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (hashtag_id, post_id)
+    post_id INTEGER,
+    user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE public.user_follow (
@@ -62,6 +58,12 @@ CREATE TABLE public.user_likes_post (
     PRIMARY KEY (user_id, post_id)
 );
 
+CREATE TABLE public.user_likes_comment (
+    user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    comment_id INTEGER REFERENCES public.comment (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (user_id, comment_id)
+);
+
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', 'super cool guy working on the backend',  'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', 'this guy write the frontend for course compose', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'tester', 'tochar@proton.me', 'who is this guy?', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
@@ -70,13 +72,6 @@ INSERT INTO public.category (name) VALUES ('general');
 INSERT INTO public.category (name) VALUES ('education');
 INSERT INTO public.category (name) VALUES ('technology');
 INSERT INTO public.category (name) VALUES ('entertainment');
-
-INSERT INTO public.hashtag(name) VALUES ('nextjs');
-INSERT INTO public.hashtag(name) VALUES ('javascript');
-INSERT INTO public.hashtag(name) VALUES ('frontend');
-INSERT INTO public.hashtag(name) VALUES ('universitylife');
-INSERT INTO public.hashtag(name) VALUES ('study');
-INSERT INTO public.hashtag(name) VALUES ('stamford');
 
 INSERT INTO public.post (content, user_id, category_name) VALUES ('How I get 0 hours of sleep because of classes','user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'general');
 INSERT INTO public.post (content, user_id, category_name) VALUES ('NextJS is great and all that....','user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'technology');
