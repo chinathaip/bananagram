@@ -64,19 +64,30 @@ CREATE TABLE public.user_likes_comment (
     PRIMARY KEY (user_id, comment_id)
 );
 
-CREATE OR REPLACE FUNCTION log_post_deletion() RETURNS TRIGGER AS $ $ BEGIN
-INSERT INTO
-    post_deletion_log (post_id, user_id, deleted_at)
-VALUES
-    (OLD.id, OLD.user_id, NOW());
-RETURN OLD;
-END;
-$ $ LANGUAGE plpgsql;
+CREATE OR REPLACE VIEW post_like_counts AS
+    SELECT
+    	post.id AS post_id,
+    	COALESCE(
+    		COUNT(post_id), 0) AS likes_count
+    FROM
+    	public.post AS post
+    	LEFT JOIN public.user_likes_post AS user_likes_post ON post.id = user_likes_post.post_id
+    GROUP BY
+    	post.id
+    ORDER BY
+    	post.id;
 
-CREATE TRIGGER post_log
-BEFORE DELETE ON post
-FOR EACH ROW
-EXECUTE FUNCTION log_post_deletion();
+CREATE OR REPLACE FUNCTION log_post_deletion() RETURNS TRIGGER AS $$ BEGIN
+    INSERT INTO
+        post_deletion_log (post_id, user_id, deleted_at)
+    VALUES
+        (OLD.id, OLD.user_id, NOW());
+    RETURN OLD;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER post_log BEFORE DELETE ON post
+FOR EACH ROW EXECUTE FUNCTION log_post_deletion();
 
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', 'super cool guy working on the backend',  'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', 'this guy write the frontend for course compose', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
