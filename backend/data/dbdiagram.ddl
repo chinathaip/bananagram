@@ -1,11 +1,6 @@
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
-
-
 Table post {
   id integer [primary key,
-              ref: < comment.post_id, 
-              ref: > post_hashtag.post_id,
+              ref: < comment.post_id,
               ref: > user_likes_post.post_id,
               ref: - user_shares_post.post_id]
   content varchar
@@ -15,12 +10,20 @@ Table post {
   updated_at timestamp
 }
 
+Table post_deletion_log {
+  id integer [primary key]
+  post_id integer
+  user_id integer
+  deleted_at timestamp
+}
 
 Table user {
   id varchar [primary key, 
               ref: < post.user_id, 
               ref: < comment.user_id,
               ref: > user_likes_post.user_id,
+              ref: - post_deletion_log.user_id,
+              ref: > user_likes_comment.user_id,
               ref: > user_follow.user_id,
               ref: > user_follow.follow_id,
               ref: - user_shares_post.user_id]
@@ -32,14 +35,18 @@ Table user {
   created_at timestamp
   updated_at timestamp
 }
-Table hashtag {
-  id integer [primary key, ref: > post_hashtag.hashtag_id]
-  name varchar [unique]
+
+Table category {
+  name varchar [primary key, ref: - post.category_name]
 }
 
-Table post_hashtag {
+Table comment {
+  id integer [primary key,  ref: > user_likes_comment.comment_id]
+  content varchar
   post_id integer
-  hashtag_id integer
+  user_id varchar
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table user_follow {
@@ -58,15 +65,7 @@ Table user_likes_post {
   user_id varchar
 }
 
-Table category {
-  name varchar [primary key, ref: - post.category_name]
-}
-
-Table comment {
-  id integer [primary key]
-  content varchar
-  post_id integer
-  user_id varchar
-  created_at timestamp
-  updated_at timestamp
+Table user_likes_comment {
+  comment_id integer
+  user_id integer
 }
