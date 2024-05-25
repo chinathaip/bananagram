@@ -5,16 +5,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { format, formatDistance } from "date-fns";
 import MarkdownViewer from "./markdown-viewer";
-import {
-	DropdownMenu,
-	DropdownMenuSeparator,
-	DropdownMenuItem,
-	DropdownMenuGroup,
-	DropdownMenuLabel,
-	DropdownMenuContent,
-	DropdownMenuTrigger
-} from "./dropdown-menu";
-import { AlertTriangleIcon, EllipsisIcon } from "lucide-react";
+import { OptionsButton } from "./options-button";
+import { BananaLikeButton } from "./banana-button";
 
 interface CommentCardProps {
 	comment: Comment;
@@ -39,23 +31,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
 								<Link href={`/profiles/${comment.user.id}`}>
 									<span className="break-all hover:underline">{comment.user.username}</span>
 								</Link>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild className="ml-auto">
-										<button className="text-muted-foreground transition-all duration-150 hover:text-accent-foreground">
-											<EllipsisIcon className="h-4 w-4" />
-										</button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent className="w-56">
-										<DropdownMenuLabel>Post Options</DropdownMenuLabel>
-										<DropdownMenuSeparator />
-										<DropdownMenuGroup>
-											<DropdownMenuItem>
-												<AlertTriangleIcon className="mr-2 h-4 w-4" />
-												<span>Report</span>
-											</DropdownMenuItem>
-										</DropdownMenuGroup>
-									</DropdownMenuContent>
-								</DropdownMenu>
+								{comment.user.is_owner && <OptionsButton />}
 							</h3>
 
 							<div className="flex flex-row">
@@ -83,6 +59,15 @@ export default function CommentCard({ comment }: CommentCardProps) {
 					{/* Comment content */}
 					<section aria-labelledby="comment-content">
 						<MarkdownViewer>{comment.content}</MarkdownViewer>
+					</section>
+
+					<section aria-labelledby="post actions" className="mt-4 flex w-full items-center gap-x-2">
+						<BananaLikeButton
+							id={comment.id}
+							userLiked={comment.user_liked}
+							likeCount={comment.likes}
+							isComment={true}
+						/>
 					</section>
 				</div>
 			</article>
