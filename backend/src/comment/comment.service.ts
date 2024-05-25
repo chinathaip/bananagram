@@ -43,7 +43,7 @@ export class CommentService {
 				},
 				{
 					name: `Get updated comment id ${commentId} after like`,
-					text: `SELECT * FROM puiblic.comment WHERE id = $1 LIMIT 1`,
+					text: `SELECT * FROM public.comment WHERE id = $1 LIMIT 1`,
 					values: [commentId]
 				}
 			];
@@ -60,7 +60,7 @@ export class CommentService {
 				throw new BadRequestError(`User ${userId} has already liked comment id: ${commentId}`);
 			}
 
-			this.logger.error("error when liking a comment: ${e}");
+			this.logger.error(`error when liking a comment: ${e}`);
 			throw new InternalServerErrorException();
 		}
 	}
@@ -74,8 +74,8 @@ export class CommentService {
 					values: [userId, commentId]
 				},
 				{
-					name: `Get updated comment id ${commentId} after like`,
-					text: `SELECT * FROM puiblic.comment WHERE id = $1 LIMIT 1`,
+					name: `Get updated comment id ${commentId} after unlike`,
+					text: `SELECT * FROM public.comment WHERE id = $1 LIMIT 1`,
 					values: [commentId]
 				}
 			];
@@ -89,6 +89,28 @@ export class CommentService {
 			}
 
 			this.logger.error(`error when unliking a post: ${e}`);
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async checkUserLike(commentId: number, userId: string): Promise<Boolean> {
+		if (!userId) {
+			return false;
+		}
+
+		try {
+			const result = await this.db.query<{ user_id: string; post_id: number }[]>(
+				`SELECT * FROM public.user_likes_comment WHERE user_id = '${userId}' AND comment_id = ${commentId} LIMIT 1`
+			);
+
+			const userLikePost = result[0];
+			return userLikePost !== undefined;
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			this.logger.error(`error when querying user_likes_post: ${e}`);
 			throw new InternalServerErrorException();
 		}
 	}
