@@ -1,4 +1,5 @@
 import { graphql } from "@/gql";
+import { useSession } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 
@@ -29,12 +30,21 @@ const postById = graphql(`
 `);
 
 export function usePost(id: number) {
-	// TODO: attach token to see if user has liked the post or not
+	const { session } = useSession();
 	return useQuery({
-		queryKey: ["allposts", id],
-		queryFn: async () =>
-			request(`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`, postById, {
-				id
-			})
+		queryKey: ["allposts", id, session ? "withSession" : "withoutSession"],
+		queryFn: async () => {
+			const token = await session?.getToken({ template: "supabase" }).then((token) => token || "");
+			return request(
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/_api/graphql`,
+				postById,
+				{
+					id
+				},
+				{
+					Authorization: `Bearer ${token}`
+				}
+			);
+		}
 	});
 }
