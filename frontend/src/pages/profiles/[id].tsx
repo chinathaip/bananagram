@@ -1,9 +1,11 @@
+import CreatePostDialog from "@/components/ui/create-post-dialog";
 import PostCard from "@/components/ui/post-card";
 import ProfileCard from "@/components/ui/profile-card";
 import PostCardSkeleton from "@/components/ui/skeletons/post-card-skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Post } from "@/gql/graphql";
 import { useInfinitePosts } from "@/lib/hooks/data-hooks/use-infinite-posts";
+import { useSession } from "@clerk/nextjs";
 import { useIntersection } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -11,7 +13,7 @@ import { useEffect } from "react";
 export default function UserProfilePage() {
 	const router = useRouter();
 	const userId = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id;
-	const { data, error, isError, isPending, fetchNextPage, hasNextPage } = useInfinitePosts({
+	const { data, error, isError, isPending, fetchNextPage, hasNextPage, refetch } = useInfinitePosts({
 		userId
 	});
 
@@ -28,6 +30,8 @@ export default function UserProfilePage() {
 	// TODO: proper loading skeletons, error, and empty states
 	if (isError) return <div className="container">Error: {error.message}</div>;
 
+	const { session } = useSession();
+
 	return (
 		<div className="container grid grid-cols-12">
 			<ProfileCard userId={userId || ""} />
@@ -43,6 +47,7 @@ export default function UserProfilePage() {
 					{/* User's posts  */}
 					<TabsContent value="posts">
 						<div className="flex flex-col gap-y-2">
+							{session?.user.id === userId && <CreatePostDialog onPostCreated={refetch} />}
 							{data?.pages.map((page, pageIndex) =>
 								page.posts.edges.map((edge, index) => {
 									return <PostCard key={`postcard_${edge.node.id}`} post={edge.node as Post} />;
