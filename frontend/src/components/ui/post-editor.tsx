@@ -3,7 +3,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 
-import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, SquarePen } from "lucide-react";
+import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
@@ -12,22 +12,28 @@ import { Button } from "./button";
 import { useCreatePost } from "@/lib/hooks/data-hooks/use-create-post";
 import { Markdown } from "tiptap-markdown";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./select";
-import { Dialog, DialogContent, DialogTrigger, DialogHeader } from "./dialog";
-import { useSession } from "@clerk/nextjs";
-import { Category } from "@/gql/graphql";
+
+import { Post } from "@/gql/graphql";
 import { toast } from "sonner";
+import { useCategory } from "@/lib/hooks/data-hooks/use-category";
+
+export enum EDITOR_ACTION {
+	CREATE,
+	EDIT
+}
 
 interface PostEditorProps {
-	postCategories?: Category[];
-	requestRefetch: () => void;
+	onSuccessCallBack: () => void;
+	currentPostData?: Post;
+	editorAction: EDITOR_ACTION;
 }
 
 // TODO: fix the flash of unstyled content when switching back to home from about for example, the editor isn't rendered before the posts
-export function PostEditor({ postCategories, requestRefetch }: PostEditorProps) {
-	const [open, setOpen] = useState<boolean>(false);
-	const { isSignedIn } = useSession();
+export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }: PostEditorProps) {
+	const { data: categoryData } = useCategory();
 	const { mutate: createPost } = useCreatePost();
-	const [postCategory, setPostCategory] = useState<string>("");
+	// const { mutate: editPost } = useEditPost();
+	const [postCategory, setPostCategory] = useState<string>(currentPostData ? currentPostData.category_name : "");
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -53,102 +59,87 @@ export function PostEditor({ postCategories, requestRefetch }: PostEditorProps) 
 				placeholder: "What's on your mind?"
 			})
 		],
-		content: ""
+		content: currentPostData ? currentPostData.content : ""
 	});
 
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button className="w-full py-10" variant="outline" disabled={!isSignedIn}>
-					<div className="item-center flex w-full flex-row gap-x-4 text-left text-lg">
-						<SquarePen />
-						What&apos;s on your mind&#63; {!isSignedIn && "Please sign in to post..."}
-					</div>
-				</Button>
-			</DialogTrigger>
-			<DialogContent className="flex flex-col overflow-hidden">
-				<DialogHeader>Create new post</DialogHeader>
-				{/* HACK: ignore parent padding XD */}
-				<Separator className="w-[1000px] -translate-x-1/2 " />
+	return editor ? (
+		<>
+			<EditorContent editor={editor} />
+			<div className="flex flex-row gap-x-2">
+				<PostEditorToolbar editor={editor} />
+				<Select onValueChange={setPostCategory} value={postCategory}>
+					<SelectTrigger className="ml-auto w-auto border-none">
+						<SelectValue placeholder="Category" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectGroup>
+							<SelectLabel className="mb-1">Categories</SelectLabel>
+							<Separator />
+							{categoryData?.categories ? (
+								categoryData.categories.map((category) => (
+									<SelectItem key={`category_${category.name}`} value={category.name}>
+										{category.name}
+									</SelectItem>
+								))
+							) : (
+								<SelectItem key="category_general" value="General">
+									General
+								</SelectItem>
+							)}
+						</SelectGroup>
+					</SelectContent>
+				</Select>
+			</div>
 
-				{editor ? (
-					<>
-						<EditorContent editor={editor} />
-						<div className="flex flex-row gap-x-2">
-							<PostEditorToolbar editor={editor} />
-							<Select onValueChange={setPostCategory} value={postCategory}>
-								<SelectTrigger className="ml-auto w-auto border-none">
-									<SelectValue placeholder="Category" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectLabel className="mb-1">Categories</SelectLabel>
-										<Separator />
-										{postCategories ? (
-											postCategories?.map((category) => (
-												<SelectItem key={`category_${category.name}`} value={category.name}>
-													{category.name}
-												</SelectItem>
-											))
-										) : (
-											<SelectItem key="category_general" value="General">
-												General
-											</SelectItem>
-										)}
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</div>
+			<Button
+				disabled={editor.isEmpty}
+				onClick={() => {
+					// Probably not gonna happen since this button will be disabled, but anyways..
+					if (editor.isEmpty) {
+						toast.warning("Your post cannot be created without any content");
+						return;
+					}
 
-						<Button
-							disabled={editor.isEmpty}
-							onClick={() => {
-								// Probably not gonna happen since this button will be disabled, but anyways..
-								if (editor.isEmpty) {
-									toast.warning("Your post cannot be created without any content");
-									return;
-								}
+					if (postCategory === "") {
+						toast.warning("Your post is missing a category it belongs to");
+						return;
+					}
 
-								if (postCategory === "") {
-									toast.warning("Your post is missing a category it belongs to");
-									return;
-								}
-
-								createPost(
-									{
-										content: editor.storage.markdown.getMarkdown(),
-										category_name: postCategory
+					editorAction === EDITOR_ACTION.CREATE
+						? createPost(
+								{
+									content: editor.storage.markdown.getMarkdown(),
+									category_name: postCategory
+								},
+								{
+									onSuccess: () => {
+										editor.commands.clearContent(true);
+										// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
+										toast.success(
+											`You have successfully ${editorAction === EDITOR_ACTION.CREATE ? "created" : "edited"} a post`
+										);
+										onSuccessCallBack();
 									},
-									{
-										onSuccess: () => {
-											editor.commands.clearContent(true);
-											// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
-											toast.success("You have successfully created a post");
-											requestRefetch();
-											setOpen(false);
-										},
-										onError: (error) => {
-											// had to check here because the UI freezes when try to check with "editor.isEmpty"
-											toast.error("There was an error while creating your post", {
-												description: error.message
-											});
-										}
+									onError: (error) => {
+										// had to check here because the UI freezes when try to check with "editor.isEmpty"
+										toast.error("There was an error while creating your post", {
+											description: error.message
+										});
 									}
-								);
-							}}
-							className="w-full"
-						>
-							Post
-						</Button>
-					</>
-				) : (
-					<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
-						<Skeleton className="h-16 rounded-lg" />
-						<Skeleton className="h-8 rounded-lg" />
-					</div>
-				)}
-			</DialogContent>
-		</Dialog>
+								}
+							)
+						: editPost();
+				}}
+				className="w-full"
+			>
+				Submit
+			</Button>
+		</>
+	) : (
+		<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
+			<Skeleton className="h-16 rounded-lg" />
+			<Skeleton className="h-8 rounded-lg" />
+		</div>
 	);
 }
 const toolbarCategories = [

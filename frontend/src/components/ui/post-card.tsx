@@ -7,7 +7,7 @@ import { forwardRef } from "react";
 import MarkdownViewer from "./markdown-viewer";
 import Link from "next/link";
 import type { Post } from "@/gql/graphql";
-import { OptionsButton } from "./options-button";
+import { OPTION_TYPE, OptionsButton } from "./options-button";
 import { BananaLikeButton } from "./banana-button";
 
 interface PostCardProps {
@@ -52,7 +52,11 @@ function PostCard({ post }: PostCardProps, ref: any) {
 								</Link>
 								{post.user.is_owner && (
 									<div className="ml-auto">
-										<OptionsButton key={`post_option_${post.id}`} />
+										<OptionsButton
+											key={`post_option_${post.id}`}
+											post={post}
+											optionType={OPTION_TYPE.POST}
+										/>
 									</div>
 								)}
 							</h3>
