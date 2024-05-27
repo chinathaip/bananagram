@@ -19,7 +19,6 @@ export default function Home() {
 	const { data, error, isError, isPending, isFetching, fetchNextPage, hasNextPage, refetch } = useInfinitePosts({
 		categoryName: postCategory
 	});
-	const { data: categoryData } = useCategory();
 	const { isSignedIn } = useSession();
 
 	const { ref, entry } = useIntersection({

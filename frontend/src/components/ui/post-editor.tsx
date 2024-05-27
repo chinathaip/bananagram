@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Post } from "@/gql/graphql";
 import { toast } from "sonner";
 import { useCategory } from "@/lib/hooks/data-hooks/use-category";
+import { useEditPost } from "@/lib/hooks/data-hooks/use-edit-post";
 
 export enum EDITOR_ACTION {
 	CREATE,
@@ -32,7 +33,7 @@ interface PostEditorProps {
 export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }: PostEditorProps) {
 	const { data: categoryData } = useCategory();
 	const { mutate: createPost } = useCreatePost();
-	// const { mutate: editPost } = useEditPost();
+	const { mutate: editPost } = useEditPost();
 	const [postCategory, setPostCategory] = useState<string>(currentPostData ? currentPostData.category_name : "");
 	const editor = useEditor({
 		editorProps: {
@@ -115,9 +116,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 									onSuccess: () => {
 										editor.commands.clearContent(true);
 										// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
-										toast.success(
-											`You have successfully ${editorAction === EDITOR_ACTION.CREATE ? "created" : "edited"} a post`
-										);
+										toast.success("You have successfully created a post");
 										onSuccessCallBack();
 									},
 									onError: (error) => {
@@ -128,7 +127,28 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 									}
 								}
 							)
-						: editPost();
+						: editPost(
+								{
+									id: currentPostData?.id || 0,
+									content: editor.storage.markdown.getMarkdown(),
+									category_name: postCategory
+								},
+								{
+									onSuccess: () => {
+										editor.commands.clearContent(true);
+										// TODO: can add a button to direct to the post page
+										toast.success(
+											"You have successfully edit your post. Please refresh to see changes"
+										);
+										onSuccessCallBack();
+									},
+									onError: (error) => {
+										toast.error("There was an error while editing your post", {
+											description: error.message
+										});
+									}
+								}
+							);
 				}}
 				className="w-full"
 			>

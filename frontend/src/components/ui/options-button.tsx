@@ -10,6 +10,7 @@ import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
 import { EDITOR_ACTION, PostEditor } from "./post-editor";
 import { Post } from "@/gql/graphql";
+import { useState } from "react";
 
 // This disables scroll when activated, and there is an issue with
 // the content being misaligned since the width of the scrollbar is not accounted for.
@@ -21,6 +22,7 @@ export enum OPTION_TYPE {
 }
 
 export function OptionsButton({ post, optionType }: { post: Post; optionType: OPTION_TYPE }) {
+	const [open, setOpen] = useState(false);
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild className="ml-auto">
@@ -31,7 +33,7 @@ export function OptionsButton({ post, optionType }: { post: Post; optionType: OP
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>Post Options</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<Dialog>
+				<Dialog open={open} onOpenChange={setOpen}>
 					<DialogTrigger>
 						<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
 							<PencilIcon className="mr-2 h-4 w-4" />
@@ -45,7 +47,9 @@ export function OptionsButton({ post, optionType }: { post: Post; optionType: OP
 								<PostEditor
 									editorAction={EDITOR_ACTION.EDIT}
 									currentPostData={post}
-									onSuccessCallBack={() => {}}
+									onSuccessCallBack={() => {
+										setOpen(false);
+									}}
 								/>
 							</>
 						) : (
