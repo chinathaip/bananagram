@@ -5,7 +5,7 @@ import { DatabaseService } from "../db/db.service";
 import { QueryConfig } from "pg";
 import { Comment } from "./entities/comment.entity";
 import { GraphQLError } from "graphql";
-import { BadRequestError } from "src/common/errors/bad-request.error";
+import { BadRequestError } from "../common/errors/bad-request.error";
 
 @Injectable()
 export class CommentService {

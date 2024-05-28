@@ -4,9 +4,9 @@ import { CommentService } from "./comment.service";
 import { User } from "../user/entities/user.entity";
 import { UserService } from "../user/user.service";
 import { UseGuards } from "@nestjs/common";
-import { JwtAuthGuard, JwtAuthGuardOptional } from "src/auth/auth-jwt.guard";
-import { CurrentUser } from "src/auth/decorators/current-user.decorator";
-import { PaginationService } from "src/common/pagination/pagination.service";
+import { JwtAuthGuard, JwtAuthGuardOptional } from "../auth/auth-jwt.guard";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { PaginationService } from "../common/pagination/pagination.service";
 
 @Resolver((of) => Comment)
 export class CommentResolver {
