@@ -7,10 +7,21 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from "./dialog";
 import { EDITOR_ACTION, PostEditor } from "./post-editor";
 import { Comment, Post } from "@/gql/graphql";
 import { useState } from "react";
+import { Button } from "./button";
+import { useDeletePost } from "@/lib/hooks/data-hooks/use-delete-post";
+import { toast } from "sonner";
 
 export enum OPTION_TYPE {
 	POST,
@@ -18,7 +29,9 @@ export enum OPTION_TYPE {
 }
 
 export function OptionsButton({ data, optionType }: { data: Post | Comment; optionType: OPTION_TYPE }) {
-	const [open, setOpen] = useState(false);
+	const [editDialogOpen, setEditDialogOpen] = useState(false);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const { mutate: deletePost } = useDeletePost();
 	return (
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild className="ml-auto">
@@ -30,7 +43,7 @@ export function OptionsButton({ data, optionType }: { data: Post | Comment; opti
 				<DropdownMenuLabel>Post Options</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<div className="flex flex-col">
-					<Dialog open={open} onOpenChange={setOpen}>
+					<Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
 						<DialogTrigger>
 							<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
 								<PencilIcon className="mr-2 h-4 w-4" />
@@ -45,7 +58,7 @@ export function OptionsButton({ data, optionType }: { data: Post | Comment; opti
 										editorAction={EDITOR_ACTION.EDIT}
 										currentPostData={data as Post}
 										onSuccessCallBack={() => {
-											setOpen(false);
+											setEditDialogOpen(false);
 										}}
 									/>
 								</>
@@ -57,7 +70,7 @@ export function OptionsButton({ data, optionType }: { data: Post | Comment; opti
 						</DialogContent>
 					</Dialog>
 
-					<Dialog>
+					<Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
 						<DialogTrigger>
 							<DropdownMenuItem className="text-red-700" onSelect={(e) => e.preventDefault()}>
 								<Trash2Icon className="mr-2 h-4 w-4" />
@@ -66,12 +79,43 @@ export function OptionsButton({ data, optionType }: { data: Post | Comment; opti
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>Are you sure absolutely sure?</DialogTitle>
+								<DialogTitle>Are you absolutely sure?</DialogTitle>
 								<DialogDescription>
-									This action cannot be undone. This will permanently delete your account and remove
-									your data from our servers.
+									You are about to delete your {optionType === OPTION_TYPE.POST ? "post" : "comment"}{" "}
+									This action cannot be undone.
 								</DialogDescription>
 							</DialogHeader>
+							<DialogFooter>
+								<div className="flew-row flex gap-x-2">
+									<Button
+										variant="destructive"
+										onClick={() => {
+											deletePost(data.id, {
+												onSuccess: () => {
+													toast.success(
+														"Your post has been deleted. Please refresh to see the changes"
+													);
+													setDeleteDialogOpen(false);
+												},
+												onError: (error) => {
+													toast.error("There was an error while creating your post", {
+														description: error.message
+													});
+												}
+											});
+										}}
+									>
+										Yes, delete
+									</Button>
+									<Button
+										onClick={() => {
+											setDeleteDialogOpen(false);
+										}}
+									>
+										No, take me back
+									</Button>
+								</div>
+							</DialogFooter>
 						</DialogContent>
 					</Dialog>
 				</div>
