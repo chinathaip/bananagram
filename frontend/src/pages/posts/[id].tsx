@@ -15,6 +15,7 @@ import { useComments } from "@/lib/hooks/data-hooks/use-comments";
 import { useSocket } from "@/lib/hooks/socket-hooks/use-socket";
 import { useSession } from "@clerk/nextjs";
 import CommentCard from "@/components/ui/comment-card";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function PostPage() {
 	const router = useRouter();
@@ -23,7 +24,7 @@ export default function PostPage() {
 	const { data: postData, isPending, isError, error } = usePost(parseInt(postId || "0"));
 	const { data: commentData, refetch } = useComments(parseInt(postId || "0"));
 
-	const { isSignedIn } = useSession();
+	const { isSignedIn, session } = useSession();
 	const socket = useSocket();
 
 	const editor = useEditor({
@@ -54,11 +55,27 @@ export default function PostPage() {
 		content: ""
 	});
 
+	const queryClient = useQueryClient();
+
 	useEffect(() => {
-		socket.on("createComment", (message) => {
+		socket.on("createComment", () => {
+			// Only received the raw entity --> cannot append directly to the lsit
 			refetch();
 		});
-	}, []);
+
+		socket.on("editComment", (message) => {
+			queryClient.setQueryData(
+				["comments_for_post", parseInt(postId || "0"), session ? "withSession" : "withoutSession"],
+				(oldData: { comments: Array<Comment> }) => {
+					const targetIdx = oldData.comments.findIndex((comment) => comment.id === message.id);
+					oldData.comments[targetIdx].content = message.content;
+					return oldData;
+				}
+			);
+		});
+
+		socket.on("deleteComment", (message) => {});
+	}, [postId]);
 
 	if (isError) return <div className="container">Error: {error.message}</div>;
 	if (!postData?.post) return <div className="container">Error: Post not found</div>;
