@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { format, formatDistance } from "date-fns";
 import MarkdownViewer from "./markdown-viewer";
-import { OptionsButton } from "./options-button";
+import { OPTION_TYPE, OptionsButton } from "./options-button";
 import { BananaLikeButton } from "./banana-button";
 
 interface CommentCardProps {
@@ -31,7 +31,9 @@ export default function CommentCard({ comment }: CommentCardProps) {
 								<Link href={`/profiles/${comment.user.id}`}>
 									<span className="break-all hover:underline">{comment.user.username}</span>
 								</Link>
-								{comment.user.is_owner && <OptionsButton />}
+								{comment.user.is_owner && (
+									<OptionsButton data={comment} optionType={OPTION_TYPE.COMMENT} />
+								)}
 							</h3>
 
 							<div className="flex flex-row">

@@ -54,7 +54,7 @@ function PostCard({ post }: PostCardProps, ref: any) {
 									<div className="ml-auto">
 										<OptionsButton
 											key={`post_option_${post.id}`}
-											post={post}
+											data={post}
 											optionType={OPTION_TYPE.POST}
 										/>
 									</div>
