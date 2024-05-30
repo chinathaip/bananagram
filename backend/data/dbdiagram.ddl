@@ -29,8 +29,6 @@ Table user {
               ref: - user_shares_post.user_id]
   username varchar
   email varchar
-  bio varchar
-  display_name varchar
   profile_picture varchar
   created_at timestamp
   updated_at timestamp
