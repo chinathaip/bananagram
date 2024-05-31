@@ -10,9 +10,10 @@ import { BananaLikeButton } from "./banana-button";
 
 interface CommentCardProps {
 	comment: Comment;
+	onEdit: (newComment: Comment) => void;
 }
 
-export default function CommentCard({ comment }: CommentCardProps) {
+export default function CommentCard({ comment, onEdit }: CommentCardProps) {
 	return (
 		<Card>
 			<article className="flex flex-row items-center gap-x-4 p-4">
@@ -32,7 +33,14 @@ export default function CommentCard({ comment }: CommentCardProps) {
 									<span className="break-all hover:underline">{comment.user.username}</span>
 								</Link>
 								{comment.user.is_owner && (
-									<OptionsButton data={comment} optionType={OPTION_TYPE.COMMENT} />
+									<OptionsButton
+										data={comment}
+										optionType={OPTION_TYPE.COMMENT}
+										onEdit={(newComment) => {
+                                            const comment = newComment as Comment
+											if (comment) onEdit(comment);
+										}}
+									/>
 								)}
 							</h3>
 

@@ -22,13 +22,21 @@ import { useState } from "react";
 import { Button } from "./button";
 import { useDeletePost } from "@/lib/hooks/data-hooks/use-delete-post";
 import { toast } from "sonner";
+import { CommentEditor } from "./comment-editor";
 
 export enum OPTION_TYPE {
 	POST,
 	COMMENT
 }
 
-export function OptionsButton({ data, optionType }: { data: Post | Comment; optionType: OPTION_TYPE }) {
+interface OptionsButtonProps {
+	data: Post | Comment;
+	optionType: OPTION_TYPE;
+	onEdit?: (data: Post | Comment) => void;
+	onDelete?: (data: Post | Comment) => void;
+}
+
+export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsButtonProps) {
 	const [editDialogOpen, setEditDialogOpen] = useState(false);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 	const { mutate: deletePost } = useDeletePost();
@@ -65,6 +73,14 @@ export function OptionsButton({ data, optionType }: { data: Post | Comment; opti
 							) : (
 								<>
 									<DialogHeader>Edit your comment</DialogHeader>
+									{/* TODO: comment editor */}
+									<CommentEditor
+										currentCommentData={data as Comment}
+										onSubmit={(newComment) => {
+											if (onEdit) onEdit(newComment);
+											setEditDialogOpen(false);
+										}}
+									/>
 								</>
 							)}
 						</DialogContent>

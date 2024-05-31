@@ -15,17 +15,15 @@ import { useComments } from "@/lib/hooks/data-hooks/use-comments";
 import { useSocket } from "@/lib/hooks/socket-hooks/use-socket";
 import { useSession } from "@clerk/nextjs";
 import CommentCard from "@/components/ui/comment-card";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function PostPage() {
 	const router = useRouter();
 	const postId = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id;
 
-	const { data: postData, isPending, isError, error } = usePost(parseInt(postId || "0"));
+	const { data: postData, isError, error } = usePost(parseInt(postId || "0"));
 	const { data: commentData, refetch } = useComments(parseInt(postId || "0"));
 
-	const { isSignedIn, session } = useSession();
-	const socket = useSocket();
+	const { isSignedIn } = useSession();
 
 	const editor = useEditor({
 		editorProps: {
@@ -55,27 +53,22 @@ export default function PostPage() {
 		content: ""
 	});
 
-	const queryClient = useQueryClient();
+	const socket = useSocket();
 
+	// Couldn't bother to properly integrate React Query and Socket.io
 	useEffect(() => {
 		socket.on("createComment", () => {
-			// Only received the raw entity --> cannot append directly to the lsit
 			refetch();
 		});
 
-		socket.on("editComment", (message) => {
-			queryClient.setQueryData(
-				["comments_for_post", parseInt(postId || "0"), session ? "withSession" : "withoutSession"],
-				(oldData: { comments: Array<Comment> }) => {
-					const targetIdx = oldData.comments.findIndex((comment) => comment.id === message.id);
-					oldData.comments[targetIdx].content = message.content;
-					return oldData;
-				}
-			);
+		socket.on("editComment", () => {
+			refetch();
 		});
 
-		socket.on("deleteComment", (message) => {});
-	}, [postId]);
+		socket.on("deleteComment", () => {
+			refetch();
+		});
+	}, []);
 
 	if (isError) return <div className="container">Error: {error.message}</div>;
 	if (!postData?.post) return <div className="container">Error: Post not found</div>;
@@ -111,7 +104,13 @@ export default function PostPage() {
 					</div>
 				)}
 				{commentData?.comments?.map((comment) => (
-					<CommentCard key={`comment_${comment.id}`} comment={comment as Comment} />
+					<CommentCard
+						key={`comment_${comment.id}`}
+						comment={comment as Comment}
+						onEdit={(newComment) => {
+							socket.emit("editComment", newComment);
+						}}
+					/>
 				))}
 			</div>
 		</div>

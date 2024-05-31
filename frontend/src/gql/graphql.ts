@@ -41,6 +41,12 @@ export type CreatePostInput = {
   content: Scalars['String']['input'];
 };
 
+export type EditCommentInput = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  postId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type EditPostInput = {
   category_name?: InputMaybe<Scalars['String']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
@@ -51,6 +57,7 @@ export type EditPostInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: Post;
+  editComment: Comment;
   editPost: Post;
   follow: User;
   likeComment: Comment;
@@ -64,6 +71,11 @@ export type Mutation = {
 
 export type MutationCreatePostArgs = {
   createPostInput: CreatePostInput;
+};
+
+
+export type MutationEditCommentArgs = {
+  editCommentInput: EditCommentInput;
 };
 
 
