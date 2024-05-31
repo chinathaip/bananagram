@@ -115,8 +115,28 @@ export class CommentService {
 		}
 	}
 
-	update(id: number, updateCommentDto: UpdateCommentDto) {
-		return `This action updates a #${id} comment`;
+	async update(userId: string, updateCommentDto: UpdateCommentDto) {
+		try {
+			const queries: QueryConfig[] = [
+				{
+					name: `Update comment id ${updateCommentDto.id}`,
+					text: `UPDATE public.comment SET content = $1, updated_at = $2 WHERE id = $3 AND user_id = $4 RETURNING *`,
+					values: [updateCommentDto.content, new Date(), updateCommentDto.id, userId]
+				}
+			];
+
+			const results = await this.db.transaction(queries);
+			const editedComment = results[0].rows as Comment[];
+
+			return editedComment[0];
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			this.logger.error(`error when editing comment: ${e}`);
+			throw new InternalServerErrorException();
+		}
 	}
 
 	remove(id: number) {
