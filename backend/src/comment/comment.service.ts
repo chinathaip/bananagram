@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
-import { CreateCommentDto } from "./dto/create-comment.dto";
-import { UpdateCommentDto } from "./dto/update-comment.dto";
+import { CreateCommentInput } from "./dto/create-comment.input";
+import { EditCommentInput } from "./dto/edit-comment.input";
 import { DatabaseService } from "../db/db.service";
 import { QueryConfig } from "pg";
 import { Comment } from "./entities/comment.entity";
@@ -13,7 +13,19 @@ export class CommentService {
 
 	private readonly logger = new Logger(CommentService.name);
 
-	async create(userId: string, createCommentDto: CreateCommentDto): Promise<Comment> {
+	async validateInput(userId: string, commentId: number) {
+		try {
+			const comment = await this.find(commentId);
+
+			if (!comment || comment.user_id !== userId) {
+				throw new BadRequestError(`User ${userId} does not comment id ${comment}`);
+			}
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async create(userId: string, createCommentDto: CreateCommentInput): Promise<Comment> {
 		const queries: QueryConfig[] = [
 			{
 				name: `New message for post ${createCommentDto.postId} from ${userId}`,
@@ -24,6 +36,11 @@ export class CommentService {
 		const results = await this.db.transaction(queries);
 		const comment = results[0].rows as Comment[];
 		return comment[0];
+	}
+
+	async find(commentId: number): Promise<Comment> {
+		const results = await this.db.query<Comment[]>(`SELECT * FROM public.comment WHERE id = ${commentId} LIMIT 1`);
+		return results[0];
 	}
 
 	async findFor(postId: number): Promise<Comment[]> {
@@ -115,13 +132,15 @@ export class CommentService {
 		}
 	}
 
-	async update(userId: string, updateCommentDto: UpdateCommentDto) {
+	async update(userId: string, editCommentInput: EditCommentInput) {
 		try {
+			await this.validateInput(userId, editCommentInput.id);
+
 			const queries: QueryConfig[] = [
 				{
-					name: `Update comment id ${updateCommentDto.id}`,
+					name: `Update comment id ${editCommentInput.id}`,
 					text: `UPDATE public.comment SET content = $1, updated_at = $2 WHERE id = $3 AND user_id = $4 RETURNING *`,
-					values: [updateCommentDto.content, new Date(), updateCommentDto.id, userId]
+					values: [editCommentInput.content, new Date(), editCommentInput.id, userId]
 				}
 			];
 

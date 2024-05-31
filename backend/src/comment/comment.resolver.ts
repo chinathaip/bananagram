@@ -7,6 +7,7 @@ import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard, JwtAuthGuardOptional } from "../auth/auth-jwt.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { PaginationService } from "../common/pagination/pagination.service";
+import { EditCommentInput } from "./dto/edit-comment.input";
 
 @Resolver((of) => Comment)
 export class CommentResolver {
@@ -37,6 +38,12 @@ export class CommentResolver {
 	@ResolveField(() => User)
 	user(@Parent() comment: Comment) {
 		return this.userService.findOne(comment.user_id);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation(() => Comment)
+	editComment(@CurrentUser() userId: string, @Args("editCommentInput") editCommentInput: EditCommentInput) {
+		return this.commentService.update(userId, editCommentInput);
 	}
 
 	@UseGuards(JwtAuthGuard)

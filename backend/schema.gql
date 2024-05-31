@@ -109,6 +109,7 @@ type Mutation {
   removePost(id: Int!): Post!
   likePost(id: Int!): Post!
   unlikePost(id: Int!): Post!
+  editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
   unlikeComment(id: Int!): Comment!
 }
@@ -123,4 +124,10 @@ input EditPostInput {
   category_name: String
   id: Int!
   updated_at: DateTime
+}
+
+input EditCommentInput {
+  postId: String
+  content: String
+  id: Int!
 }

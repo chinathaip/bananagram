@@ -1,11 +1,11 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, WsException } from "@nestjs/websockets";
 import { CommentService } from "./comment.service";
-import { CreateCommentDto } from "./dto/create-comment.dto";
+import { CreateCommentInput } from "./dto/create-comment.input";
 import { Server } from "http";
 import { CurrentWebSocketUesr } from "../auth/decorators/current-user.decorator";
 import { Logger, UseGuards } from "@nestjs/common";
 import { JwtWSAuthGuard } from "../auth/auth-jwt.guard";
-import { UpdateCommentDto } from "./dto/update-comment.dto";
+import { EditCommentInput } from "./dto/edit-comment.input";
 
 @WebSocketGateway({ cors: { origin: "*" } })
 export class CommentGateway {
@@ -20,7 +20,7 @@ export class CommentGateway {
 	@SubscribeMessage("createComment")
 	async create(
 		@CurrentWebSocketUesr() userId: string,
-		@MessageBody() createCommentDto: CreateCommentDto
+		@MessageBody() createCommentDto: CreateCommentInput
 	): Promise<void> {
 		try {
 			const comment = await this.commentService.create(userId, createCommentDto);
@@ -35,10 +35,10 @@ export class CommentGateway {
 	@SubscribeMessage("editComment")
 	async edit(
 		@CurrentWebSocketUesr() userId: string,
-		@MessageBody() updateCommentDto: UpdateCommentDto
+		@MessageBody() editCommentInput: EditCommentInput
 	): Promise<void> {
 		try {
-			const editedComment = await this.commentService.update(userId, updateCommentDto);
+			const editedComment = await this.commentService.update(userId, editCommentInput);
 			this.server.emit("editComment", editedComment);
 		} catch (error) {
 			this.logger.error(error);
