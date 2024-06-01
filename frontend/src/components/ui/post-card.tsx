@@ -67,15 +67,26 @@ function PostCard({ post }: PostCardProps, ref: any) {
 								</Link>
 								<span>&nbsp;·&nbsp;</span>
 								<Tooltip>
-									<TooltipContent>{format(post.created_at, "do MMM yyyy ppp")}</TooltipContent>
+									<TooltipContent>
+										Created: {format(post.created_at, "do MMM yyyy ppp")} <br />
+										{post.updated_at && `Edited: ${format(post.updated_at, "do MMM yyyy ppp")}`}
+									</TooltipContent>
 									<TooltipTrigger className="text-sm text-muted-foreground">
+										{post.updated_at && "edited "}
 										<time
-											dateTime={format(post.created_at, "do MMM yyyy ppp")}
+											dateTime={format(
+												post.updated_at ? post.updated_at : post.created_at,
+												"do MMM yyyy ppp"
+											)}
 											className="select-text"
 										>
-											{formatDistance(post.created_at, new Date(), {
-												addSuffix: true
-											})}
+											{formatDistance(
+												post.updated_at ? post.updated_at : post.created_at,
+												new Date(),
+												{
+													addSuffix: true
+												}
+											)}
 										</time>
 									</TooltipTrigger>
 								</Tooltip>
