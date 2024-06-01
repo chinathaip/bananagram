@@ -8,7 +8,6 @@ import { Button } from "./button";
 import { Markdown } from "tiptap-markdown";
 
 import { toast } from "sonner";
-import { useEditPost } from "@/lib/hooks/data-hooks/use-edit-post";
 import { Comment } from "@/gql/graphql";
 
 interface CommentEditorProps {

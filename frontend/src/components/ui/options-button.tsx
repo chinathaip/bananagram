@@ -33,7 +33,7 @@ interface OptionsButtonProps {
 	data: Post | Comment;
 	optionType: OPTION_TYPE;
 	onEdit?: (data: Post | Comment) => void;
-	onDelete?: (data: Post | Comment) => void;
+	onDelete?: (id: number) => void;
 }
 
 export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsButtonProps) {
@@ -97,7 +97,8 @@ export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsBut
 							<DialogHeader>
 								<DialogTitle>Are you absolutely sure?</DialogTitle>
 								<DialogDescription>
-									You are about to delete your {optionType === OPTION_TYPE.POST ? "post" : "comment"}{" "}
+									You are about to delete your {optionType === OPTION_TYPE.POST ? "post" : "comment"}
+									{". "}
 									This action cannot be undone.
 								</DialogDescription>
 							</DialogHeader>
@@ -106,19 +107,23 @@ export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsBut
 									<Button
 										variant="destructive"
 										onClick={() => {
-											deletePost(data.id, {
-												onSuccess: () => {
-													toast.success(
-														"Your post has been deleted. Please refresh to see the changes"
-													);
-													setDeleteDialogOpen(false);
-												},
-												onError: (error) => {
-													toast.error("There was an error while creating your post", {
-														description: error.message
-													});
-												}
-											});
+											if (optionType === OPTION_TYPE.POST) {
+												deletePost(data.id, {
+													onSuccess: () => {
+														toast.success(
+															"Your post has been deleted. Please refresh to see the changes"
+														);
+														setDeleteDialogOpen(false);
+													},
+													onError: (error) => {
+														toast.error("There was an error while creating your post", {
+															description: error.message
+														});
+													}
+												});
+											} else {
+												if (onDelete) onDelete(data.id);
+											}
 										}}
 									>
 										Yes, delete

@@ -11,9 +11,10 @@ import { BananaLikeButton } from "./banana-button";
 interface CommentCardProps {
 	comment: Comment;
 	onEdit: (newComment: Comment) => void;
+	onDelete: (commentId: number) => void;
 }
 
-export default function CommentCard({ comment, onEdit }: CommentCardProps) {
+export default function CommentCard({ comment, onEdit, onDelete }: CommentCardProps) {
 	return (
 		<Card>
 			<article className="flex flex-row items-center gap-x-4 p-4">
@@ -37,8 +38,11 @@ export default function CommentCard({ comment, onEdit }: CommentCardProps) {
 										data={comment}
 										optionType={OPTION_TYPE.COMMENT}
 										onEdit={(newComment) => {
-                                            const comment = newComment as Comment
+											const comment = newComment as Comment;
 											if (comment) onEdit(comment);
+										}}
+										onDelete={(commentId) => {
+											onDelete(commentId);
 										}}
 									/>
 								)}

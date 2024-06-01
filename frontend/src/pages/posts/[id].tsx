@@ -110,6 +110,9 @@ export default function PostPage() {
 						onEdit={(newComment) => {
 							socket.emit("editComment", newComment);
 						}}
+						onDelete={(commentId) => {
+							socket.emit("deleteComment", commentId);
+						}}
 					/>
 				))}
 			</div>
