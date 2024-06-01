@@ -158,7 +158,25 @@ export class CommentService {
 		}
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} comment`;
+	async remove(userId: string, commentId: number) {
+		try {
+			await this.validateInput(userId, commentId);
+			const queries: QueryConfig[] = [
+				{
+					name: `Delete comment id ${commentId}`,
+					text: `DELETE FROM public.comment WHERE id = $1 AND user_id = $2`,
+					values: [commentId, userId]
+				}
+			];
+
+			await this.db.transaction(queries);
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			this.logger.error(`error when deleting comment: ${e}`);
+			throw new InternalServerErrorException();
+		}
 	}
 }

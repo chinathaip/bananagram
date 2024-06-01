@@ -45,4 +45,16 @@ export class CommentGateway {
 			throw new WsException("Could not edit comment");
 		}
 	}
+
+	@UseGuards(JwtWSAuthGuard)
+	@SubscribeMessage("deleteComment")
+	async delete(@CurrentWebSocketUesr() userId: string, @MessageBody() commentId: number) {
+		try {
+			await this.commentService.remove(userId, commentId);
+			this.server.emit("deleteComment", "ok!");
+		} catch (error) {
+			this.logger.error(error);
+			throw new WsException("Could not delete comment");
+		}
+	}
 }
