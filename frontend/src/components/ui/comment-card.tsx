@@ -54,15 +54,27 @@ export default function CommentCard({ comment, onEdit, onDelete }: CommentCardPr
 								</Link>
 								<span>&nbsp;·&nbsp;</span>
 								<Tooltip>
-									<TooltipContent>{format(comment.created_at, "do MMM yyyy ppp")}</TooltipContent>
+									<TooltipContent>
+										Created: {format(comment.created_at, "do MMM yyyy ppp")} <br />
+										{comment.updated_at &&
+											`Edited: ${format(comment.updated_at, "do MMM yyyy ppp")}`}
+									</TooltipContent>
 									<TooltipTrigger className="text-sm text-muted-foreground">
+										{comment.updated_at && "edited "}
 										<time
-											dateTime={format(comment.created_at, "do MMM yyyy ppp")}
+											dateTime={format(
+												comment.updated_at ? comment.updated_at : comment.created_at,
+												"do MMM yyyy ppp"
+											)}
 											className="select-text"
 										>
-											{formatDistance(comment.created_at, new Date(), {
-												addSuffix: true
-											})}
+											{formatDistance(
+												comment.updated_at ? comment.updated_at : comment.created_at,
+												new Date(),
+												{
+													addSuffix: true
+												}
+											)}
 										</time>
 									</TooltipTrigger>
 								</Tooltip>
