@@ -17,6 +17,8 @@ import { Post } from "@/gql/graphql";
 import { toast } from "sonner";
 import { useCategory } from "@/lib/hooks/data-hooks/use-category";
 import { useEditPost } from "@/lib/hooks/data-hooks/use-edit-post";
+import { Input } from "./input";
+import Image from "next/image";
 
 export enum EDITOR_ACTION {
 	CREATE,
@@ -34,6 +36,8 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 	const { data: categoryData } = useCategory();
 	const { mutate: createPost } = useCreatePost();
 	const { mutate: editPost } = useEditPost();
+	const [file, setFile] = useState<File | undefined>(undefined);
+	const [filePreviewUrl, setFilePreviewUrl] = useState<string | undefined>(undefined);
 	const [postCategory, setPostCategory] = useState<string>(currentPostData ? currentPostData.category_name : "");
 	const editor = useEditor({
 		editorProps: {
@@ -64,9 +68,39 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 	});
 
 	return editor ? (
-		<>
+		<div className="flex flex-col">
 			<div className="truncate">
 				<EditorContent editor={editor} />
+			</div>
+			{filePreviewUrl && file && (
+				<Image
+					src={filePreviewUrl}
+					alt={file.name}
+					className="h-48 w-full rounded-md object-cover"
+					width={200}
+					height={200}
+				/>
+			)}
+			<div className="flex flex-row gap-x-2">
+				<Input
+					type="file"
+					accept="image/png,image/jpeg,image/jpg,image/gif"
+					onChange={(e) => {
+						const file = e.target.files?.[0];
+						setFile(file);
+
+						if (filePreviewUrl) {
+							URL.revokeObjectURL(filePreviewUrl);
+						}
+
+						if (file) {
+							const localFileUrl = URL.createObjectURL(file);
+							setFilePreviewUrl(localFileUrl);
+						} else {
+							setFilePreviewUrl(undefined);
+						}
+					}}
+				/>
 			</div>
 			<div className="flex flex-row gap-x-2">
 				<PostEditorToolbar editor={editor} />
@@ -156,7 +190,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 			>
 				Submit
 			</Button>
-		</>
+		</div>
 	) : (
 		<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
 			<Skeleton className="h-16 rounded-lg" />
