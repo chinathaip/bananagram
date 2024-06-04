@@ -9,6 +9,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { User } from "../user/entities/user.entity";
 import { UserService } from "../user/user.service";
 import { PaginationService } from "../common/pagination/pagination.service";
+import { SharePostInput } from "./dto/share-post.input";
 
 @Resolver((of) => Post)
 export class PostResolver {
@@ -74,5 +75,11 @@ export class PostResolver {
 	@Mutation(() => Post)
 	unlikePost(@CurrentUser() userId: string, @Args("id", { type: () => Int }) id: number) {
 		return this.postService.unlikePost(id, userId);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation(() => Post)
+	sharePost(@CurrentUser() userId: string, @Args("sharePostInput") sharePostInput: SharePostInput) {
+		return this.postService.sharePost(userId, sharePostInput);
 	}
 }

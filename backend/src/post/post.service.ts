@@ -10,6 +10,7 @@ import { GraphQLError } from "graphql";
 import { WhereEqualCondition, appendQueryCondition } from "../common/util/query-condition";
 import { UserService } from "../user/user.service";
 import { CategoryService } from "../category/category.service";
+import { SharePostInput } from "./dto/share-post.input";
 
 @Injectable()
 export class PostService {
@@ -239,5 +240,36 @@ export class PostService {
 			throw new InternalServerErrorException();
 		}
 		return;
+	}
+
+	async sharePost(userId: string, sharePostInput: SharePostInput): Promise<Post> {
+		try {
+			const post = await this.findOne(sharePostInput.postId);
+			if (!post) {
+				throw new NotFoundError(`Post id ${sharePostInput.postId} not found`);
+			}
+
+			if (post.user_id === userId) {
+				throw new BadRequestError(`User ${userId} cannot share their own post id ${sharePostInput.postId}`);
+			}
+
+			const queries: QueryConfig[] = [
+				{
+					name: `Share post id ${sharePostInput.postId} by user ${userId}`,
+					text: `INSERT INTO public.user_shares_post VALUES ($1, $2, $3, $4)`,
+					values: [userId, sharePostInput.postId, sharePostInput.content, new Date()]
+				}
+			];
+			await this.db.transaction(queries);
+
+			return post;
+		} catch (e) {
+			if (e instanceof GraphQLError) {
+				throw e;
+			}
+
+			this.logger.error(`error when sharing a post: ${e}`);
+			throw new InternalServerErrorException();
+		}
 	}
 }
