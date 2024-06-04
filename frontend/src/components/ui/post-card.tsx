@@ -9,6 +9,22 @@ import Link from "next/link";
 import type { Post } from "@/gql/graphql";
 import { OPTION_TYPE, OptionsButton } from "./options-button";
 import { BananaLikeButton } from "./banana-button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from "@/components/ui/dialog";
+import { EditorContent, useEditor } from "@tiptap/react";
+import Placeholder from "@tiptap/extension-placeholder";
+import StarterKit from "@tiptap/starter-kit";
+import { Markdown } from "tiptap-markdown";
+import { Skeleton } from "./skeleton";
+import { Button } from "./button";
+import CommentCard from "./comment-card";
 
 interface PostCardProps {
 	post: Post;
@@ -18,6 +34,34 @@ interface PostCardProps {
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
 function PostCard({ post }: PostCardProps, ref: any) {
+	const editor = useEditor({
+		editorProps: {
+			attributes: {
+				class: "min-h-36 max-h-48 rounded-md rounded-br-none rounded-bl-none border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
+			}
+		},
+		extensions: [
+			Markdown,
+			StarterKit.configure({
+				orderedList: {
+					HTMLAttributes: {
+						class: "list-decimal pl-4"
+					}
+				},
+				bulletList: {
+					HTMLAttributes: {
+						class: "list-disc pl-4"
+					}
+				}
+			}),
+
+			Placeholder.configure({
+				placeholder: "What's on your mind?"
+			})
+		],
+		content: ""
+	});
+
 	return (
 		<Card ref={ref}>
 			<article className="flex flex-row items-start gap-x-4 p-4">
@@ -125,12 +169,38 @@ function PostCard({ post }: PostCardProps, ref: any) {
 
 						{/* TODO: share post */}
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
-							<button
-								className="text-muted-foreground transition-all duration-150 hover:text-accent-foreground"
-								aria-label="share post"
-							>
-								<ShareIcon className="h-5 w-5" />
-							</button>
+							<Dialog>
+								<DialogTrigger>
+									<button
+										className="text-muted-foreground transition-all duration-150 hover:text-accent-foreground"
+										aria-label="share post"
+									>
+										<ShareIcon className="h-5 w-5" />
+									</button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Share Post</DialogTitle>
+									</DialogHeader>
+
+									{editor ? (
+										<div className="flex flex-col">
+											<EditorContent editor={editor} />
+											{/* HACK: avoid forward ref problem when use post-card */}
+											<CommentCard comment={post as Comment} />
+										</div>
+									) : (
+										<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
+											<Skeleton className="h-16 rounded-lg" />
+											<Skeleton className="h-8 rounded-lg" />
+										</div>
+									)}
+
+									<DialogFooter>
+										<Button>Share</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
 						</div>
 					</section>
 				</div>
