@@ -56,7 +56,7 @@ function PostCard({ post }: PostCardProps, ref: any) {
 			}),
 
 			Placeholder.configure({
-				placeholder: "What's on your mind?"
+				placeholder: "What are your thoughts?"
 			})
 		],
 		content: ""
@@ -184,11 +184,13 @@ function PostCard({ post }: PostCardProps, ref: any) {
 									</DialogHeader>
 
 									{editor ? (
-										<div className="flex flex-col">
-											<EditorContent editor={editor} />
+										<>
+											<div className="truncate">
+												<EditorContent editor={editor} />
+											</div>
 											{/* HACK: avoid forward ref problem when use post-card */}
 											<CommentCard comment={post as Comment} />
-										</div>
+										</>
 									) : (
 										<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
 											<Skeleton className="h-16 rounded-lg" />

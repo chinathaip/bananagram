@@ -47,7 +47,9 @@ export function CommentEditor({ currentCommentData, onSubmit }: CommentEditorPro
 
 	return editor ? (
 		<>
-			<EditorContent editor={editor} />
+			<div className="truncate">
+				<EditorContent editor={editor} />
+			</div>
 			<Button
 				disabled={editor.isEmpty}
 				onClick={() => {

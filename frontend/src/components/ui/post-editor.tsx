@@ -65,7 +65,9 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 
 	return editor ? (
 		<>
-			<EditorContent editor={editor} />
+			<div className="truncate">
+				<EditorContent editor={editor} />
+			</div>
 			<div className="flex flex-row gap-x-2">
 				<PostEditorToolbar editor={editor} />
 				<Select onValueChange={setPostCategory} value={postCategory}>
