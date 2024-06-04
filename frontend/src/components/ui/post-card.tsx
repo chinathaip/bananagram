@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { forwardRef } from "react";
 import MarkdownViewer from "./markdown-viewer";
 import Link from "next/link";
-import type { Post } from "@/gql/graphql";
+import type { Comment, Post } from "@/gql/graphql";
 import { OPTION_TYPE, OptionsButton } from "./options-button";
 import { BananaLikeButton } from "./banana-button";
 import {
@@ -189,7 +189,11 @@ function PostCard({ post }: PostCardProps, ref: any) {
 												<EditorContent editor={editor} />
 											</div>
 											{/* HACK: avoid forward ref problem when use post-card */}
-											<CommentCard comment={post as Comment} />
+											<CommentCard
+												comment={{ ...post, post_id: post.id } as Comment}
+												onEdit={() => {}}
+												onDelete={() => {}}
+											/>
 										</>
 									) : (
 										<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
