@@ -76,6 +76,11 @@ type Comment {
   user: User!
 }
 
+type SignedUrl {
+  url: String!
+  mediaId: Int!
+}
+
 type Query {
   user(id: String!): User!
   post(id: Int!): Post!
@@ -113,6 +118,7 @@ type Mutation {
   editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
   unlikeComment(id: Int!): Comment!
+  signedUrl(signedUrlInput: SignedUrlInput!): SignedUrl!
 }
 
 input CreatePostInput {
@@ -136,4 +142,10 @@ input EditCommentInput {
   postId: String
   content: String
   id: Int!
+}
+
+input SignedUrlInput {
+  fileKey: String!
+  contentType: String!
+  contentSize: Int!
 }

@@ -11,6 +11,7 @@ import { join } from "path";
 import { CommonModule } from "../common/common.module";
 import { GraphQLError, GraphQLFormattedError } from "graphql";
 import { CommentModule } from "../comment/comment.module";
+import { S3Module } from "../s3/s3.module";
 
 @Module({
 	imports: [
@@ -43,7 +44,8 @@ import { CommentModule } from "../comment/comment.module";
 		UserModule,
 		PostModule,
 		AuthModule,
-		CommentModule
+		CommentModule,
+		S3Module
 	],
 	controllers: [AppController],
 	providers: [AppService]
