@@ -71,7 +71,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 	});
 
 	return editor ? (
-		<div className="flex flex-col">
+		<>
 			<div className="truncate">
 				<EditorContent editor={editor} />
 			</div>
@@ -224,7 +224,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 			>
 				Submit
 			</Button>
-		</div>
+		</>
 	) : (
 		<div className="flex h-full flex-col justify-evenly rounded-md border border-input bg-transparent p-1">
 			<Skeleton className="h-16 rounded-lg" />
