@@ -19,6 +19,8 @@ import { useCategory } from "@/lib/hooks/data-hooks/use-category";
 import { useEditPost } from "@/lib/hooks/data-hooks/use-edit-post";
 import { Input } from "./input";
 import Image from "next/image";
+import { useSignedUrl } from "@/lib/hooks/data-hooks/use-signed-url";
+import crypto from "crypto";
 
 export enum EDITOR_ACTION {
 	CREATE,
@@ -36,6 +38,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 	const { data: categoryData } = useCategory();
 	const { mutate: createPost } = useCreatePost();
 	const { mutate: editPost } = useEditPost();
+	const { mutate: getSignedUrl } = useSignedUrl();
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [filePreviewUrl, setFilePreviewUrl] = useState<string | undefined>(undefined);
 	const [postCategory, setPostCategory] = useState<string>(currentPostData ? currentPostData.category_name : "");
@@ -140,6 +143,37 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 					if (postCategory === "") {
 						toast.warning("Your post is missing a category it belongs to");
 						return;
+					}
+
+					if (file) {
+						getSignedUrl(
+							{
+                                // change this if not working on serverless
+								fileKey: crypto.randomBytes(32).toString("hex"),
+								contentType: file.type,
+								contentSize: file.size
+							},
+							{
+								onSuccess: (data) => {
+									fetch(data.signedUrl.url, {
+										method: "PUT",
+										body: file,
+										headers: {
+											"Content-Type": file.type
+										}
+									}).catch((error) => {
+										toast.error("Error while uploading your image", {
+											description: error.mesage
+										});
+									});
+								},
+								onError: (error) => {
+									toast.error("Your media cannot be uploaded yet", {
+										description: error.message
+									});
+								}
+							}
+						);
 					}
 
 					editorAction === EDITOR_ACTION.CREATE
