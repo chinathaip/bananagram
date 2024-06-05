@@ -9,15 +9,7 @@ import Link from "next/link";
 import type { Comment, Post } from "@/gql/graphql";
 import { OPTION_TYPE, OptionsButton } from "./options-button";
 import { BananaLikeButton } from "./banana-button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
@@ -25,6 +17,7 @@ import { Markdown } from "tiptap-markdown";
 import { Skeleton } from "./skeleton";
 import { Button } from "./button";
 import CommentCard from "./comment-card";
+import Image from "next/image";
 
 interface PostCardProps {
 	post: Post;
@@ -141,6 +134,19 @@ function PostCard({ post }: PostCardProps, ref: any) {
 					{/* Post content */}
 					<section aria-labelledby="post-content">
 						<MarkdownViewer>{post.content}</MarkdownViewer>
+						{/* TODO: post.image */}
+						<Image
+							className="mt-2"
+							src={
+								post.id % 2 === 0
+									? "https://files-beta.stamford.dev/bananagram/1361d9aea09227bdcbb5aa3c31a51e0a3aa5b681faf68e4ecdb7028e5d3059de"
+									: "https://files-beta.stamford.dev/bananagram/32f9e080acc71d75bd68e0eda4b3dbef3cc59fc90a67c43259695018ccc5c80a"
+							}
+							alt="post image"
+							width={500}
+							height={500}
+							priority
+						/>
 					</section>
 
 					{/* <Separator className="mb-2 mt-4" /> */}

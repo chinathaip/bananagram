@@ -4,10 +4,16 @@ const nextConfig = {
 	images: {
 		remotePatterns: [
 			{
-				protocol: "https",
+				protocol: "http",
 				hostname: "localhost",
 				port: "",
 				pathname: "/**/*"
+			},
+			{
+				protocol: "https",
+				hostname: "files-beta.stamford.dev",
+				port: "",
+				pathname: "/bananagram/**"
 			},
 			{
 				protocol: "https",
