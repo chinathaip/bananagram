@@ -171,10 +171,12 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 						return;
 					}
 
+					let fileKey: string | undefined;
 					if (file) {
+						fileKey = crypto.randomBytes(32).toString("hex");
 						getSignedUrl(
 							{
-								fileKey: crypto.randomBytes(32).toString("hex"),
+								fileKey,
 								contentType: file.type,
 								contentSize: file.size
 							},
@@ -205,7 +207,8 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 						? createPost(
 								{
 									content: editor.storage.markdown.getMarkdown(),
-									category_name: postCategory
+									category_name: postCategory,
+									file_key: fileKey
 								},
 								{
 									onSuccess: () => {
@@ -226,7 +229,8 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 								{
 									id: currentPostData?.id || 0,
 									content: editor.storage.markdown.getMarkdown(),
-									category_name: postCategory
+									category_name: postCategory,
+									file_key: fileKey
 								},
 								{
 									onSuccess: () => {

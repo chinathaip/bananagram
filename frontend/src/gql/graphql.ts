@@ -36,14 +36,10 @@ export type Comment = {
   user_liked: Scalars['Boolean']['output'];
 };
 
-export type CreateMediaInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
-};
-
 export type CreatePostInput = {
   category_name: Scalars['String']['input'];
   content: Scalars['String']['input'];
+  file_key?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditCommentInput = {
@@ -55,6 +51,7 @@ export type EditCommentInput = {
 export type EditPostInput = {
   category_name?: InputMaybe<Scalars['String']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
+  file_key?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   updated_at?: InputMaybe<Scalars['DateTime']['input']>;
 };
@@ -68,7 +65,6 @@ export type Media = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createMedia: Media;
   createPost: Post;
   editComment: Comment;
   editPost: Post;
@@ -82,12 +78,6 @@ export type Mutation = {
   unfollow: User;
   unlikeComment: Comment;
   unlikePost: Post;
-  updateMedia: Media;
-};
-
-
-export type MutationCreateMediaArgs = {
-  createMediaInput: CreateMediaInput;
 };
 
 
@@ -153,11 +143,6 @@ export type MutationUnlikeCommentArgs = {
 
 export type MutationUnlikePostArgs = {
   id: Scalars['Int']['input'];
-};
-
-
-export type MutationUpdateMediaArgs = {
-  updateMediaInput: UpdateMediaInput;
 };
 
 export type PageInfo = {
@@ -250,12 +235,6 @@ export type SignedUrlInput = {
   contentSize: Scalars['Int']['input'];
   contentType: Scalars['String']['input'];
   fileKey: Scalars['String']['input'];
-};
-
-export type UpdateMediaInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
 };
 
 export type User = {
