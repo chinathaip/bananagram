@@ -123,7 +123,6 @@ type Mutation {
   unlikePost(id: Int!): Post!
   sharePost(sharePostInput: SharePostInput!): Post!
   createMedia(createMediaInput: CreateMediaInput!): Media!
-  updateMedia(updateMediaInput: UpdateMediaInput!): Media!
   removeMedia(id: Int!): Media!
   editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
@@ -151,12 +150,6 @@ input SharePostInput {
 input CreateMediaInput {
   """Example field (placeholder)"""
   exampleField: Int!
-}
-
-input UpdateMediaInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }
 
 input EditCommentInput {

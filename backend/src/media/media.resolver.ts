@@ -2,7 +2,6 @@ import { Resolver, Mutation, Args, Int } from "@nestjs/graphql";
 import { MediaService } from "./media.service";
 import { Media } from "./entities/media.entity";
 import { CreateMediaInput } from "./dto/create-media.input";
-import { UpdateMediaInput } from "./dto/update-media.input";
 
 @Resolver(() => Media)
 export class MediaResolver {
@@ -11,11 +10,6 @@ export class MediaResolver {
 	@Mutation(() => Media)
 	createMedia(@Args("createMediaInput") createMediaInput: CreateMediaInput) {
 		return this.mediaService.create(createMediaInput);
-	}
-
-	@Mutation(() => Media)
-	updateMedia(@Args("updateMediaInput") updateMediaInput: UpdateMediaInput) {
-		return this.mediaService.update(updateMediaInput.id, updateMediaInput);
 	}
 
 	@Mutation(() => Media)
