@@ -122,7 +122,6 @@ type Mutation {
   likePost(id: Int!): Post!
   unlikePost(id: Int!): Post!
   sharePost(sharePostInput: SharePostInput!): Post!
-  createMedia(createMediaInput: CreateMediaInput!): Media!
   removeMedia(id: Int!): Media!
   editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
@@ -133,11 +132,13 @@ type Mutation {
 input CreatePostInput {
   content: String!
   category_name: String!
+  file_key: String
 }
 
 input EditPostInput {
   content: String
   category_name: String
+  file_key: String
   id: Int!
   updated_at: DateTime
 }
@@ -145,11 +146,6 @@ input EditPostInput {
 input SharePostInput {
   postId: Int!
   content: String!
-}
-
-input CreateMediaInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
 }
 
 input EditCommentInput {

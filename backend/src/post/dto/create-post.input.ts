@@ -10,4 +10,7 @@ export class CreatePostInput {
 
 	@Field()
 	category_name: string;
+
+	@Field({ nullable: true })
+	file_key?: string;
 }

@@ -11,12 +11,14 @@ import { WhereEqualCondition, appendQueryCondition } from "../common/util/query-
 import { UserService } from "../user/user.service";
 import { CategoryService } from "../category/category.service";
 import { SharePostInput } from "./dto/share-post.input";
+import { MediaService } from "../media/media.service";
 
 @Injectable()
 export class PostService {
 	constructor(
 		private readonly db: DatabaseService,
 		private readonly userService: UserService,
+		private readonly mediaService: MediaService,
 		private readonly categoryService: CategoryService
 	) {}
 
@@ -65,6 +67,11 @@ export class PostService {
 			];
 			const results = await this.db.transaction(queries);
 			const post = results[0].rows as Post[];
+
+			if (createPostInput.file_key) {
+				await this.mediaService.create(post[0].id, userId, createPostInput.file_key);
+			}
+
 			return post[0];
 		} catch (e) {
 			if (e instanceof GraphQLError) {
