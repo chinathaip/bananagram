@@ -37,6 +37,12 @@ CREATE TABLE public.post_deletion_log (
     deleted_at TIMESTAMP
 );
 
+CREATE TABLE public.media (
+    id SERIAL PRIMARY KEY,
+    url VARCHAR NOT NULL,
+    post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE public.user_follow (
     user_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,
     friend_id VARCHAR(255) REFERENCES public.user (id) ON DELETE CASCADE ON UPDATE CASCADE,

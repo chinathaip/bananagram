@@ -10,12 +10,15 @@ import { User } from "../user/entities/user.entity";
 import { UserService } from "../user/user.service";
 import { PaginationService } from "../common/pagination/pagination.service";
 import { SharePostInput } from "./dto/share-post.input";
+import { Media } from "../media/entities/media.entity";
+import { MediaService } from "../media/media.service";
 
 @Resolver((of) => Post)
 export class PostResolver {
 	constructor(
 		private readonly postService: PostService,
 		private readonly userService: UserService,
+		private readonly mediaService: MediaService,
 		private readonly paginationService: PaginationService
 	) {}
 
@@ -28,6 +31,11 @@ export class PostResolver {
 	@ResolveField(() => User)
 	user(@Parent() post: Post) {
 		return this.userService.findOne(post.user_id);
+	}
+
+	@ResolveField(() => [Media])
+	medias(@Parent() post: Post) {
+		return this.mediaService.findAllFor(post.id);
 	}
 
 	@ResolveField(() => Boolean)

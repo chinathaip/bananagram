@@ -32,9 +32,16 @@ type Post {
   created_at: DateTime!
   updated_at: DateTime
   user: User!
+  medias: [Media!]!
   user_liked: Boolean!
   likes: Int!
   comments: Int!
+}
+
+type Media {
+  id: Int!
+  url: String!
+  post_id: Int!
 }
 
 type Category {
@@ -115,6 +122,9 @@ type Mutation {
   likePost(id: Int!): Post!
   unlikePost(id: Int!): Post!
   sharePost(sharePostInput: SharePostInput!): Post!
+  createMedia(createMediaInput: CreateMediaInput!): Media!
+  updateMedia(updateMediaInput: UpdateMediaInput!): Media!
+  removeMedia(id: Int!): Media!
   editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
   unlikeComment(id: Int!): Comment!
@@ -136,6 +146,17 @@ input EditPostInput {
 input SharePostInput {
   postId: Int!
   content: String!
+}
+
+input CreateMediaInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMediaInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input EditCommentInput {
