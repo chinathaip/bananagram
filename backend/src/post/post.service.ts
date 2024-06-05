@@ -123,6 +123,11 @@ export class PostService {
 			];
 			const results = await this.db.transaction(queries);
 			const editedPost = results[0].rows as Post[];
+
+			if (editPostInput.file_key) {
+				await this.mediaService.create(editedPost[0].id, userId, editPostInput.file_key);
+			}
+
 			return editedPost[0];
 		} catch (e) {
 			if (e instanceof GraphQLError) {
