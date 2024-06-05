@@ -21,12 +21,14 @@ import Image from "next/image";
 
 interface PostCardProps {
 	post: Post;
+	onDelete: () => void;
+	onEdit: () => void;
 	ref: any;
 }
 
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
-function PostCard({ post }: PostCardProps, ref: any) {
+function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -93,6 +95,8 @@ function PostCard({ post }: PostCardProps, ref: any) {
 											key={`post_option_${post.id}`}
 											data={post}
 											optionType={OPTION_TYPE.POST}
+											onEdit={() => onEdit()}
+											onDelete={() => onDelete()}
 										/>
 									</div>
 								)}

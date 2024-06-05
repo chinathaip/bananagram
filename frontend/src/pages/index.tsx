@@ -41,6 +41,8 @@ export default function Home() {
 									key={`postcard_${edge.node.id}`}
 									post={edge?.node as Post}
 									ref={isLastElement ? ref : null}
+									onEdit={() => refetch()}
+									onDelete={() => refetch()}
 								/>
 							);
 						})

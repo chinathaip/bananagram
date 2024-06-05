@@ -211,7 +211,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 									onSuccess: () => {
 										editor.commands.clearContent(true);
 										// Maybe add action to go to the post page with -> https://ui.shadcn.com/docs/components/toast#with-action
-										toast.success("You have successfully created a post");
+										toast.success("You have successfully created a post.");
 										onSuccessCallBack();
 									},
 									onError: (error) => {
@@ -232,9 +232,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 									onSuccess: () => {
 										editor.commands.clearContent(true);
 										// TODO: can add a button to direct to the post page
-										toast.success(
-											"You have successfully edit your post. Please refresh to see changes"
-										);
+										toast.success("You have successfully edit your post.");
 										onSuccessCallBack();
 									},
 									onError: (error) => {

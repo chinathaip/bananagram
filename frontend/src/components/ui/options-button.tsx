@@ -67,6 +67,7 @@ export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsBut
 										currentPostData={data as Post}
 										onSuccessCallBack={() => {
 											setEditDialogOpen(false);
+											if (onEdit) onEdit(data);
 										}}
 									/>
 								</>
@@ -110,9 +111,7 @@ export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsBut
 											if (optionType === OPTION_TYPE.POST) {
 												deletePost(data.id, {
 													onSuccess: () => {
-														toast.success(
-															"Your post has been deleted. Please refresh to see the changes"
-														);
+														toast.success("Your post has been deleted.");
 														setDeleteDialogOpen(false);
 													},
 													onError: (error) => {
@@ -121,9 +120,9 @@ export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsBut
 														});
 													}
 												});
-											} else {
-												if (onDelete) onDelete(data.id);
 											}
+
+											if (onDelete) onDelete(data.id);
 										}}
 									>
 										Yes, delete
