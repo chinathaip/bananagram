@@ -50,7 +50,7 @@ export default function UserProfilePage() {
 							{session?.user.id === userId && <CreatePostDialog onPostCreated={refetch} />}
 							{data?.pages.map((page, pageIndex) =>
 								page.posts.edges.map((edge, index) => {
-									return <PostCard key={`postcard_${edge.node.id}`} post={edge.node as Post} />;
+									return <PostCard key={`postcard_${edge.node.id}`} post={edge.node as Post} onEdit={()=>refetch()} onDelete={()=>refetch()}/>;
 								})
 							)}
 							{isPending && Array.from({ length: 5 }).map(() => <PostCardSkeleton />)}
