@@ -9,6 +9,7 @@ import { Markdown } from "tiptap-markdown";
 
 import { toast } from "sonner";
 import { Comment } from "@/gql/graphql";
+import Link from "@tiptap/extension-link";
 
 interface CommentEditorProps {
 	currentCommentData?: Comment;
@@ -37,7 +38,7 @@ export function CommentEditor({ currentCommentData, onSubmit }: CommentEditorPro
 					}
 				}
 			}),
-
+			Link,
 			Placeholder.configure({
 				placeholder: "What's on your mind?"
 			})

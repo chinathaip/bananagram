@@ -18,6 +18,7 @@ import { Skeleton } from "./skeleton";
 import { Button } from "./button";
 import CommentCard from "./comment-card";
 import Image from "next/image";
+import { Link as TiptapLink } from "@tiptap/extension-link";
 
 interface PostCardProps {
 	post: Post;
@@ -49,7 +50,7 @@ function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 					}
 				}
 			}),
-
+			TiptapLink,
 			Placeholder.configure({
 				placeholder: "What are your thoughts?"
 			})

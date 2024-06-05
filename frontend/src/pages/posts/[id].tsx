@@ -15,6 +15,7 @@ import { useComments } from "@/lib/hooks/data-hooks/use-comments";
 import { useSocket } from "@/lib/hooks/socket-hooks/use-socket";
 import { useSession } from "@clerk/nextjs";
 import CommentCard from "@/components/ui/comment-card";
+import Link from "@tiptap/extension-link";
 
 export default function PostPage() {
 	const router = useRouter();
@@ -45,7 +46,7 @@ export default function PostPage() {
 					}
 				}
 			}),
-
+			Link,
 			Placeholder.configure({
 				placeholder: "Write down your reply"
 			})
@@ -83,8 +84,8 @@ export default function PostPage() {
 						refetchPost();
 					}}
 					onDelete={() => {
-                        refetchPost();
-                    }}
+						refetchPost();
+					}}
 				/>
 				{editor ? (
 					<div className="border-1 flex flex-col rounded-md border p-2">

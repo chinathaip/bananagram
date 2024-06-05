@@ -2,8 +2,9 @@ import { Editor, EditorContent, useEditor } from "@tiptap/react";
 
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
 
-import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, Trash2 } from "lucide-react";
+import { BoldIcon, ItalicIcon, LinkIcon, ListIcon, ListOrderedIcon, Trash2 } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
@@ -63,7 +64,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 					}
 				}
 			}),
-
+			Link,
 			Placeholder.configure({
 				placeholder: "What's on your mind?"
 			})
