@@ -3,7 +3,7 @@ import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 
-import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon } from "lucide-react";
+import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, Trash2 } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";
@@ -21,6 +21,7 @@ import { Input } from "./input";
 import Image from "next/image";
 import { useSignedUrl } from "@/lib/hooks/data-hooks/use-signed-url";
 import crypto from "crypto";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 
 export enum EDITOR_ACTION {
 	CREATE,
@@ -75,7 +76,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 			<div className="truncate">
 				<EditorContent editor={editor} />
 			</div>
-			{filePreviewUrl && file && (
+			{editorAction === EDITOR_ACTION.CREATE && filePreviewUrl && file && (
 				<Image
 					src={filePreviewUrl}
 					alt={file.name}
@@ -83,6 +84,31 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 					width={200}
 					height={200}
 				/>
+			)}
+			{editorAction === EDITOR_ACTION.EDIT && currentPostData && currentPostData.medias.length > 0 && (
+				<div className="mt-2 flex max-h-max flex-row gap-x-2">
+					{currentPostData.medias.map((media, index) => (
+						<div className="flex flex-row">
+							<Image
+								src={media.url}
+								alt={`image ${index} for post ${currentPostData.id}`}
+								width={500}
+								height={500}
+								priority
+							/>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger className="item-start flex">
+										<Button className="text-red-700" variant="ghost">
+											<Trash2 />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>Delete this media from your post</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						</div>
+					))}
+				</div>
 			)}
 			<div className="flex flex-row gap-x-2">
 				<Input
@@ -148,7 +174,6 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 					if (file) {
 						getSignedUrl(
 							{
-                                // change this if not working on serverless
 								fileKey: crypto.randomBytes(32).toString("hex"),
 								contentType: file.type,
 								contentSize: file.size
