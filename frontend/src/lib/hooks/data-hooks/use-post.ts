@@ -20,6 +20,10 @@ const postById = graphql(`
 				created_at
 				profile_picture
 			}
+			medias {
+				id
+				url
+			}
 			likes
 			comments
 			category_name
