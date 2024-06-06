@@ -23,6 +23,7 @@ import Image from "next/image";
 import { useSignedUrl } from "@/lib/hooks/data-hooks/use-signed-url";
 import crypto from "crypto";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
+import { useDeleteMedia } from "@/lib/hooks/data-hooks/use-delete-media";
 
 export enum EDITOR_ACTION {
 	CREATE,
@@ -41,6 +42,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 	const { mutate: createPost } = useCreatePost();
 	const { mutate: editPost } = useEditPost();
 	const { mutate: getSignedUrl } = useSignedUrl();
+	const { mutate: deleteMedia } = useDeleteMedia();
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [filePreviewUrl, setFilePreviewUrl] = useState<string | undefined>(currentPostData?.medias[0]?.url);
 	const [postCategory, setPostCategory] = useState<string>(currentPostData ? currentPostData.category_name : "");
@@ -80,30 +82,67 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 			{editorAction === EDITOR_ACTION.CREATE && filePreviewUrl && file && (
 				<Image src={filePreviewUrl} alt={file.name} width={200} height={200} />
 			)}
-			{editorAction === EDITOR_ACTION.EDIT &&
-				filePreviewUrl &&
-				currentPostData &&
-				(
-					<div className="flex flex-row">
-						<Image
-							src={filePreviewUrl}
-							alt={`image for post ${currentPostData.id}`}
-							width={200}
-							height={200}
-							priority
-						/>
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger className="item-start flex">
-									<Button className="text-red-700" variant="ghost">
-										<Trash2 />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>Delete this media from your post</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-					</div>
-				)}
+			{editorAction === EDITOR_ACTION.EDIT && filePreviewUrl && currentPostData && (
+				<div className="flex flex-row">
+					<Image
+						src={filePreviewUrl}
+						alt={`image for post ${currentPostData.id}`}
+						width={200}
+						height={200}
+						priority
+					/>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger className="item-start flex">
+								<Button
+									className="text-red-700"
+									variant="ghost"
+									onClick={() => {
+										getSignedUrl(
+											{
+												action: "DELETE",
+												fileKey: currentPostData.medias[0].id
+											},
+											{
+												onSuccess: (data) => {
+													fetch(data.signedUrl.url, {
+														method: "DELETE"
+													}).catch((error) => {
+														toast.error("Error while deleting your image", {
+															description: error.mesage
+														});
+													});
+												},
+												onError: (error) => {
+													toast.error("Your media cannot be deleted yet", {
+														description: error.message
+													});
+												}
+											}
+										);
+
+										deleteMedia(currentPostData.medias[0].id, {
+											onSuccess: () => {
+												toast.success("Image deleted succcessfully");
+												setFile(undefined);
+												setFilePreviewUrl(undefined);
+											},
+											onError: (error) => {
+												toast.error("Error while deleting your image", {
+													description: error.message
+												});
+											}
+										});
+									}}
+								>
+									<Trash2 />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>Delete this media from your post</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</div>
+			)}
 			<div className="flex flex-row gap-x-2">
 				<Input
 					type="file"
@@ -171,6 +210,7 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 						fileKey = crypto.randomBytes(32).toString("hex");
 						getSignedUrl(
 							{
+								action: "PUT",
 								fileKey,
 								contentType: file.type,
 								contentSize: file.size
@@ -183,11 +223,16 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 										headers: {
 											"Content-Type": file.type
 										}
-									}).catch((error) => {
-										toast.error("Error while uploading your image", {
-											description: error.mesage
+									})
+										.then((result) => {
+											toast.success("Uploaded image successfully");
+											console.log(result);
+										})
+										.catch((error) => {
+											toast.error("Error while uploading your image", {
+												description: error.mesage
+											});
 										});
-									});
 								},
 								onError: (error) => {
 									toast.error("Your media cannot be uploaded yet", {
