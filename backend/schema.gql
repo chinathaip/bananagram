@@ -71,6 +71,11 @@ type PostConnection {
   edges: [PostEdge!]!
 }
 
+type SignedUrl {
+  url: String!
+  mediaId: Int!
+}
+
 type Comment {
   id: Int!
   content: String!
@@ -81,11 +86,6 @@ type Comment {
   likes: Int!
   user_liked: Boolean!
   user: User!
-}
-
-type SignedUrl {
-  url: String!
-  mediaId: Int!
 }
 
 type Query {
@@ -123,10 +123,10 @@ type Mutation {
   unlikePost(id: Int!): Post!
   sharePost(sharePostInput: SharePostInput!): Post!
   removeMedia(id: String!): Media!
+  signedUrl(signedUrlInput: SignedUrlInput!): SignedUrl!
   editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
   unlikeComment(id: Int!): Comment!
-  signedUrl(signedUrlInput: SignedUrlInput!): SignedUrl!
 }
 
 input CreatePostInput {
@@ -148,15 +148,14 @@ input SharePostInput {
   content: String!
 }
 
+input SignedUrlInput {
+  fileKey: String!
+  contentType: String
+  contentSize: Int
+}
+
 input EditCommentInput {
   postId: String
   content: String
   id: Int!
-}
-
-input SignedUrlInput {
-  action: String!
-  fileKey: String!
-  contentType: String
-  contentSize: Int
 }

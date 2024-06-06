@@ -19,39 +19,29 @@ export class S3Service {
 
 	private readonly logger = new Logger(S3Service.name);
 
-	async getSignedUrl(userId: string, signedUrlInput: SignedUrlInput): Promise<SignedUrl> {
+	async getSignedUrl(signedUrlInput: SignedUrlInput): Promise<SignedUrl> {
 		try {
 			if (!signedUrlInput.fileKey) {
 				throw new BadRequestError("File Key is missing");
 			}
 
-			const action = signedUrlInput.action;
-			if (action !== "PUT" && action !== "DELETE") {
-				throw new BadRequestError("Unsupported action");
-			}
-
-			if (action === "PUT" && signedUrlInput.contentSize > MAX_MEDIA_SIZE) {
+			if (signedUrlInput.contentSize > MAX_MEDIA_SIZE) {
 				throw new BadRequestError("Media is too big");
 			}
 
-			if (action === "PUT" && !ACCEPTED_CONTENT_TYPE.includes(signedUrlInput.contentType)) {
+			if (!ACCEPTED_CONTENT_TYPE.includes(signedUrlInput.contentType)) {
 				throw new BadRequestError("Unsupported media type");
 			}
 
 			const bucket = this.configService.get("AWS_BUCKET_NAME");
 			const url = await getSignedUrl(
 				this.s3Client,
-				action === "PUT"
-					? new PutObjectCommand({
-							Bucket: bucket,
-							Key: signedUrlInput.fileKey,
-							ContentType: signedUrlInput.contentType,
-							ContentLength: signedUrlInput.contentSize
-						})
-					: new DeleteObjectCommand({
-							Bucket: bucket,
-							Key: signedUrlInput.fileKey
-						}),
+				new PutObjectCommand({
+					Bucket: bucket,
+					Key: signedUrlInput.fileKey,
+					ContentType: signedUrlInput.contentType,
+					ContentLength: signedUrlInput.contentSize
+				}),
 				{ expiresIn: 60 }
 			);
 
@@ -66,5 +56,16 @@ export class S3Service {
 			this.logger.error(`cannot get signed url: ${e}`);
 			throw new InternalServerErrorException();
 		}
+	}
+
+	async remove(fileKey: string): Promise<void> {
+		await this.s3Client.send(
+			new DeleteObjectCommand({
+				Bucket: this.configService.get("AWS_BUCKET_NAME"),
+				Key: fileKey
+			})
+		);
+
+		return;
 	}
 }

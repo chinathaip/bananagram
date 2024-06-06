@@ -5,11 +5,13 @@ import { QueryConfig } from "pg";
 import { ConfigService } from "@nestjs/config";
 import { GraphQLError } from "graphql";
 import { NotFoundError } from "../common/errors/not-found.error";
+import { S3Service } from "../s3/s3.service";
 
 @Injectable()
 export class MediaService {
 	constructor(
 		private readonly db: DatabaseService,
+		private readonly s3Service: S3Service,
 		private readonly configService: ConfigService
 	) {}
 
@@ -70,6 +72,8 @@ export class MediaService {
 
 			const results = await this.db.transaction(queries);
 			const media = results[0].rows as Media[];
+
+			await this.s3Service.remove(media[0].id);
 			return media[0];
 		} catch (e) {
 			if (e instanceof GraphQLError) {
