@@ -42,12 +42,12 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 	const { mutate: editPost } = useEditPost();
 	const { mutate: getSignedUrl } = useSignedUrl();
 	const [file, setFile] = useState<File | undefined>(undefined);
-	const [filePreviewUrl, setFilePreviewUrl] = useState<string | undefined>(undefined);
+	const [filePreviewUrl, setFilePreviewUrl] = useState<string | undefined>(currentPostData?.medias[0]?.url);
 	const [postCategory, setPostCategory] = useState<string>(currentPostData ? currentPostData.category_name : "");
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
-				class: "min-h-36 max-h-48 rounded-md rounded-br-none rounded-bl-none border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
+				class: "min-h-16 max-h-48 rounded-md rounded-br-none rounded-bl-none border-input bg-transparent px-3 py-2 border-b-0 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
 			}
 		},
 		extensions: [
@@ -78,42 +78,36 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 				<EditorContent editor={editor} />
 			</div>
 			{editorAction === EDITOR_ACTION.CREATE && filePreviewUrl && file && (
-				<Image
-					src={filePreviewUrl}
-					alt={file.name}
-					className="h-48 w-full rounded-md object-cover"
-					width={200}
-					height={200}
-				/>
+				<Image src={filePreviewUrl} alt={file.name} width={200} height={200} />
 			)}
-			{editorAction === EDITOR_ACTION.EDIT && currentPostData && currentPostData.medias.length > 0 && (
-				<div className="mt-2 flex max-h-max flex-row gap-x-2">
-					{currentPostData.medias.map((media, index) => (
-						<div className="flex flex-row">
-							<Image
-								src={media.url}
-								alt={`image ${index} for post ${currentPostData.id}`}
-								width={500}
-								height={500}
-								priority
-							/>
-							<TooltipProvider>
-								<Tooltip>
-									<TooltipTrigger className="item-start flex">
-										<Button className="text-red-700" variant="ghost">
-											<Trash2 />
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent>Delete this media from your post</TooltipContent>
-								</Tooltip>
-							</TooltipProvider>
-						</div>
-					))}
-				</div>
-			)}
+			{editorAction === EDITOR_ACTION.EDIT &&
+				filePreviewUrl &&
+				currentPostData &&
+				(
+					<div className="flex flex-row">
+						<Image
+							src={filePreviewUrl}
+							alt={`image for post ${currentPostData.id}`}
+							width={200}
+							height={200}
+							priority
+						/>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger className="item-start flex">
+									<Button className="text-red-700" variant="ghost">
+										<Trash2 />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>Delete this media from your post</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					</div>
+				)}
 			<div className="flex flex-row gap-x-2">
 				<Input
 					type="file"
+					disabled={filePreviewUrl !== undefined}
 					accept="image/png,image/jpeg,image/jpg,image/gif"
 					onChange={(e) => {
 						const file = e.target.files?.[0];

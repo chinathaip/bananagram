@@ -58,7 +58,7 @@ export function OptionsButton({ data, optionType, onEdit, onDelete }: OptionsBut
 								Edit
 							</DropdownMenuItem>
 						</DialogTrigger>
-						<DialogContent className="max-w-max">
+						<DialogContent>
 							{optionType === OPTION_TYPE.POST ? (
 								<>
 									<DialogHeader>Edit your post</DialogHeader>
