@@ -98,29 +98,6 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 									className="text-red-700"
 									variant="ghost"
 									onClick={() => {
-										getSignedUrl(
-											{
-												action: "DELETE",
-												fileKey: currentPostData.medias[0].id
-											},
-											{
-												onSuccess: (data) => {
-													fetch(data.signedUrl.url, {
-														method: "DELETE"
-													}).catch((error) => {
-														toast.error("Error while deleting your image", {
-															description: error.mesage
-														});
-													});
-												},
-												onError: (error) => {
-													toast.error("Your media cannot be deleted yet", {
-														description: error.message
-													});
-												}
-											}
-										);
-
 										deleteMedia(currentPostData.medias[0].id, {
 											onSuccess: () => {
 												toast.success("Image deleted succcessfully");
@@ -210,7 +187,6 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 						fileKey = crypto.randomBytes(32).toString("hex");
 						getSignedUrl(
 							{
-								action: "PUT",
 								fileKey,
 								contentType: file.type,
 								contentSize: file.size
@@ -226,7 +202,6 @@ export function PostEditor({ editorAction, currentPostData, onSuccessCallBack }:
 									})
 										.then((result) => {
 											toast.success("Uploaded image successfully");
-											console.log(result);
 										})
 										.catch((error) => {
 											toast.error("Error while uploading your image", {

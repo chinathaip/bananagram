@@ -232,7 +232,6 @@ export type SignedUrl = {
 };
 
 export type SignedUrlInput = {
-  action: Scalars['String']['input'];
   contentSize?: InputMaybe<Scalars['Int']['input']>;
   contentType?: InputMaybe<Scalars['String']['input']>;
   fileKey: Scalars['String']['input'];
