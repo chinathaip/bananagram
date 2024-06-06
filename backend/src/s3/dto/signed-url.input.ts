@@ -3,11 +3,14 @@ import { InputType, Field, Int } from "@nestjs/graphql";
 @InputType()
 export class SignedUrlInput {
 	@Field()
-	fileKey: string;
+	action: string;
 
 	@Field()
-	contentType: string;
+	fileKey: string;
 
-	@Field(() => Int)
-	contentSize: number;
+	@Field({ nullable: true })
+	contentType?: string;
+
+	@Field(() => Int, { nullable: true })
+	contentSize?: number;
 }

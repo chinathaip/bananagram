@@ -1,6 +1,6 @@
 import { Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteBucketCommand, DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ConfigService } from "@nestjs/config";
 import { SignedUrlInput } from "./dto/signed-url.input";
 import { GraphQLError } from "graphql";
@@ -25,22 +25,33 @@ export class S3Service {
 				throw new BadRequestError("File Key is missing");
 			}
 
-			if (signedUrlInput.contentSize > MAX_MEDIA_SIZE) {
+			const action = signedUrlInput.action;
+			if (action !== "PUT" && action !== "DELETE") {
+				throw new BadRequestError("Unsupported action");
+			}
+
+			if (action === "PUT" && signedUrlInput.contentSize > MAX_MEDIA_SIZE) {
 				throw new BadRequestError("Media is too big");
 			}
 
-			if (!ACCEPTED_CONTENT_TYPE.includes(signedUrlInput.contentType)) {
+			if (action === "PUT" && !ACCEPTED_CONTENT_TYPE.includes(signedUrlInput.contentType)) {
 				throw new BadRequestError("Unsupported media type");
 			}
 
+			const bucket = this.configService.get("AWS_BUCKET_NAME");
 			const url = await getSignedUrl(
 				this.s3Client,
-				new PutObjectCommand({
-					Bucket: this.configService.get("AWS_BUCKET_NAME"),
-					Key: signedUrlInput.fileKey,
-					ContentType: signedUrlInput.contentType,
-					ContentLength: signedUrlInput.contentSize
-				}),
+				action === "PUT"
+					? new PutObjectCommand({
+							Bucket: bucket,
+							Key: signedUrlInput.fileKey,
+							ContentType: signedUrlInput.contentType,
+							ContentLength: signedUrlInput.contentSize
+						})
+					: new DeleteObjectCommand({
+							Bucket: bucket,
+							Key: signedUrlInput.fileKey
+						}),
 				{ expiresIn: 60 }
 			);
 
