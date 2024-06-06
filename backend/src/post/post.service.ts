@@ -230,6 +230,11 @@ export class PostService {
 	async remove(postId: number, userId: string): Promise<Post> {
 		try {
 			const postToDelete = await this.findOne(postId);
+			const medias = await this.mediaService.findAllFor(postId);
+
+			// remove corresponding media in S3 + table
+			await Promise.all(medias.map((media) => this.mediaService.remove(media.id)));
+
 			if (userId == postToDelete.user_id) {
 				const queries: QueryConfig[] = [
 					{
