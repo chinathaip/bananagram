@@ -38,7 +38,7 @@ CREATE TABLE public.post_deletion_log (
 );
 
 CREATE TABLE public.media (
-    id SERIAL PRIMARY KEY,
+    id  VARCHAR PRIMARY KEY,
     url VARCHAR NOT NULL,
     post_id INTEGER REFERENCES public.post (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

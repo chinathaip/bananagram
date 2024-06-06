@@ -2,8 +2,8 @@ import { ObjectType, Field, Int } from "@nestjs/graphql";
 
 @ObjectType()
 export class Media {
-	@Field(() => Int)
-	id: number;
+	@Field()
+	id: string;
 
 	@Field()
 	url: string;

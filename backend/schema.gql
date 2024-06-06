@@ -39,7 +39,7 @@ type Post {
 }
 
 type Media {
-  id: Int!
+  id: String!
   url: String!
   post_id: Int!
 }
@@ -122,7 +122,7 @@ type Mutation {
   likePost(id: Int!): Post!
   unlikePost(id: Int!): Post!
   sharePost(sharePostInput: SharePostInput!): Post!
-  removeMedia(id: Int!): Media!
+  removeMedia(id: String!): Media!
   editComment(editCommentInput: EditCommentInput!): Comment!
   likeComment(id: Int!): Comment!
   unlikeComment(id: Int!): Comment!
@@ -155,7 +155,8 @@ input EditCommentInput {
 }
 
 input SignedUrlInput {
+  action: String!
   fileKey: String!
-  contentType: String!
-  contentSize: Int!
+  contentType: String
+  contentSize: Int
 }
