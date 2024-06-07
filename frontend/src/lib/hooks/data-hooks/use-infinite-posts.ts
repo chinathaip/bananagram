@@ -19,6 +19,7 @@ const infinitePostsQuery = graphql(`
 					likes
 					comments
 					user_liked
+					user_shared
 					created_at
 					updated_at
 					medias {

@@ -190,6 +190,11 @@ function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 							<Dialog
 								open={openShareDialog}
 								onOpenChange={(open) => {
+									if (post.user_shared) {
+										toast.error("You have already shared this post.");
+										setOpenShareDialog(false);
+										return;
+									}
 									setOpenShareDialog(open);
 								}}
 							>

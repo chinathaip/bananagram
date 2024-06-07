@@ -29,6 +29,7 @@ const postById = graphql(`
 			category_name
 			created_at
 			user_liked
+			user_shared
 		}
 	}
 `);
