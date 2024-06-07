@@ -145,7 +145,7 @@ input EditPostInput {
 
 input SharePostInput {
   postId: Int!
-  content: String!
+  content: String
 }
 
 input SignedUrlInput {

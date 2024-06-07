@@ -7,7 +7,6 @@ export class SharePostInput {
 	@Field(() => Int)
 	postId: number;
 
-	@IsNotEmpty()
-	@Field()
-	content: string;
+	@Field({ nullable: true })
+	content?: string;
 }
