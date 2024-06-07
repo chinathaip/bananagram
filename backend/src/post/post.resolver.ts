@@ -43,6 +43,11 @@ export class PostResolver {
 		return this.postService.checkUserLike(post.id, userId);
 	}
 
+	@ResolveField(() => Boolean)
+	user_shared(@CurrentUser() userId: string, @Parent() post: Post) {
+		return this.postService.userAlreadyShare(post.id, userId);
+	}
+
 	@ResolveField(() => Int)
 	likes(@Parent() post: Post) {
 		// potential issue if the number of likes are high

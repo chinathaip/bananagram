@@ -34,6 +34,7 @@ type Post {
   user: User!
   medias: [Media!]!
   user_liked: Boolean!
+  user_shared: Boolean!
   likes: Int!
   comments: Int!
 }
