@@ -95,6 +95,8 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER post_log BEFORE DELETE ON post
 FOR EACH ROW EXECUTE FUNCTION log_post_deletion();
 
+CREATE INDEX post_created_at_idx ON public.post (created_at);
+
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f2BNrbARuhvr1M84Jq4kALpw9O', 'chinathai', 'cartoonabe@gmail.com', 'super cool guy working on the backend',  'https://images.clerk.dev/oauth_google/img_2f2BNtJlk61Ubm5YZfPLTAqUTVU');
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2f02EDTfrcAuyhODlRHaNLP6LQQ', 'tawan', 'alohasunshineday@gmail.com', 'this guy write the frontend for course compose', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
 INSERT INTO public.user (id, username, email, bio, profile_picture) VALUES ('user_2fMEDm1UZ3hZp1RyRijAQ4Psh2I', 'tester', 'tochar@proton.me', 'who is this guy?', 'https://images.clerk.dev/oauth_google/img_2f02ECClQ9noFSgkv8NHZpJmIDc');
