@@ -22,6 +22,7 @@ import { Link as TiptapLink } from "@tiptap/extension-link";
 import { useSharePost } from "@/lib/hooks/data-hooks/user-share-post";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 interface PostCardProps {
 	post: Post;
@@ -34,8 +35,9 @@ interface PostCardProps {
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
 function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 	const { mutate: sharePost } = useSharePost();
-	const { user } = useUser();
+	const { user, isSignedIn } = useUser();
 	const [openShareDialog, setOpenShareDialog] = useState(false);
+	const router = useRouter();
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -190,6 +192,10 @@ function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 							<Dialog
 								open={openShareDialog}
 								onOpenChange={(open) => {
+									if (!isSignedIn) {
+										router.push("/sign-in");
+										return;
+									}
 									if (post.user_shared) {
 										toast.error("You have already shared this post.");
 										setOpenShareDialog(false);
