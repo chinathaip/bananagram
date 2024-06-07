@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n\tquery Category {\n\t\tcategories {\n\t\t\tname\n\t\t}\n\t}\n": types.CategoryDocument,
     "\n\tquery Comments($postId: Int!) {\n\t\tcomments(post_id: $postId) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tpost_id\n\t\t\tuser_liked\n\t\t\tlikes\n\t\t\tcreated_at\n\t\t\tupdated_at\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t}\n\t}\n": types.CommentsDocument,
+    "\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n": types.SharePostDocument,
     "\n\tmutation CreatePost($createPostInput: CreatePostInput!) {\n\t\tcreatePost(createPostInput: $createPostInput) {\n\t\t\tid\n\t\t\tcontent\n\t\t}\n\t}\n": types.CreatePostDocument,
     "\n\tmutation DeleteMedia($id: String!) {\n\t\tremoveMedia(id: $id) {\n\t\t\tid\n\t\t\turl\n\t\t\tpost_id\n\t\t}\n\t}\n": types.DeleteMediaDocument,
     "\n\tmutation DeletePost($id: Int!) {\n\t\tremovePost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t}\n\t}\n": types.DeletePostDocument,
@@ -53,6 +54,10 @@ export function graphql(source: "\n\tquery Category {\n\t\tcategories {\n\t\t\tn
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery Comments($postId: Int!) {\n\t\tcomments(post_id: $postId) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tpost_id\n\t\t\tuser_liked\n\t\t\tlikes\n\t\t\tcreated_at\n\t\t\tupdated_at\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery Comments($postId: Int!) {\n\t\tcomments(post_id: $postId) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tpost_id\n\t\t\tuser_liked\n\t\t\tlikes\n\t\t\tcreated_at\n\t\t\tupdated_at\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

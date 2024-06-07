@@ -3,7 +3,7 @@ import { format, formatDistance } from "date-fns";
 import { CrownIcon, MessageCircleIcon, ShareIcon } from "lucide-react";
 import { Card } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import MarkdownViewer from "./markdown-viewer";
 import Link from "next/link";
 import type { Comment, Post } from "@/gql/graphql";
@@ -19,6 +19,9 @@ import { Button } from "./button";
 import CommentCard from "./comment-card";
 import Image from "next/image";
 import { Link as TiptapLink } from "@tiptap/extension-link";
+import { useSharePost } from "@/lib/hooks/data-hooks/user-share-post";
+import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
 
 interface PostCardProps {
 	post: Post;
@@ -30,6 +33,9 @@ interface PostCardProps {
 // TODO: find a better name for this component. It's a card, for a post... "PostCard" is rather misleading.
 // Possible other names: "TweetCard", "StatusCard", "CardPost", etc..
 function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
+	const { mutate: sharePost } = useSharePost();
+	const { user } = useUser();
+	const [openShareDialog, setOpenShareDialog] = useState(false);
 	const editor = useEditor({
 		editorProps: {
 			attributes: {
@@ -181,9 +187,15 @@ function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 
 						{/* TODO: share post */}
 						<div className=" ml-auto flex flex-row items-center gap-x-2">
-							<Dialog>
+							<Dialog
+								open={openShareDialog}
+								onOpenChange={(open) => {
+									setOpenShareDialog(open);
+								}}
+							>
 								<DialogTrigger>
 									<button
+										hidden={post.user_id === user?.id}
 										className="text-muted-foreground transition-all duration-150 hover:text-accent-foreground"
 										aria-label="share post"
 									>
@@ -215,7 +227,29 @@ function PostCard({ post, onEdit, onDelete }: PostCardProps, ref: any) {
 									)}
 
 									<DialogFooter>
-										<Button>Share</Button>
+										<Button
+											onClick={() => {
+												sharePost(
+													{
+														postId: post.id,
+														content: editor?.storage.markdown.getMarkdown()
+													},
+													{
+														onSuccess: () => {
+															toast.success("Post has sucessfully been shared.");
+														},
+														onError: (error) => {
+															toast.error("There was an error while sharing the post.", {
+																description: error.message
+															});
+														}
+													}
+												);
+												setOpenShareDialog(false);
+											}}
+										>
+											Share
+										</Button>
 									</DialogFooter>
 								</DialogContent>
 							</Dialog>
