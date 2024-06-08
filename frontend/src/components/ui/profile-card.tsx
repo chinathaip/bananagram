@@ -5,11 +5,11 @@ import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
 import { useUnfollow } from "@/lib/hooks/data-hooks/use-unfollow";
 import { useUser } from "@/lib/hooks/data-hooks/use-user";
 import { format } from "date-fns";
-import { CalendarIcon,  UserRoundCog, UserRoundMinusIcon, UserRoundPlusIcon } from "lucide-react";
+import { CalendarIcon, UserRoundCog, UserRoundMinusIcon, UserRoundPlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useClerk } from "@clerk/nextjs";
 
-export default function ProfileCard({ userId }: { userId: string }) {
+export default function ProfileCard({ userId, hiddenInMobile }: { userId: string; hiddenInMobile?: boolean }) {
 	const { mutateAsync: follow } = useFollow();
 	const { mutateAsync: unfollow } = useUnfollow();
 	const { data: userData, refetch } = useUser(userId);
@@ -19,7 +19,9 @@ export default function ProfileCard({ userId }: { userId: string }) {
 	if (!userData?.user) return <div className="container">Error: user not found</div>;
 
 	return (
-		<aside className="col-span-12 mb-2 h-min overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm lg:sticky lg:top-16 lg:col-span-4 xl:col-span-3">
+		<aside
+			className={`${hiddenInMobile && "hidden lg:block"} col-span-12 mb-2 h-min overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm lg:sticky lg:top-16 lg:col-span-4 xl:col-span-3`}
+		>
 			{/* Left profile aside */}
 			{/* NOTE: I have no idea why top-16 is required here, but it offsets perfectly with the padding.*/}
 			{/* top-14 also offsets it perfectly, minus the padding so its top is directly flat against the header */}

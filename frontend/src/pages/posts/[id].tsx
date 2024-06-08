@@ -75,9 +75,9 @@ export default function PostPage() {
 	if (!postData?.post) return <div className="container">Error: Post not found</div>;
 
 	return (
-		<div className="container grid h-full grid-cols-12">
-			<ProfileCard userId={postData.post.user.id} />
-			<div className="relative col-span-12 ml-2 flex flex-col gap-y-2 overflow-auto md:col-span-9">
+		<div className="container grid grid-cols-12">
+			<ProfileCard userId={postData.post.user.id} hiddenInMobile={true}/>
+			<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto lg:col-span-8 xl:col-span-9">
 				<PostCard
 					post={postData.post as Post}
 					onEdit={() => {
