@@ -77,6 +77,14 @@ type SignedUrl {
   mediaId: Int!
 }
 
+type PostShare {
+  post: Post!
+  share_content: String!
+  sharer_id: String!
+  shared_at: DateTime!
+  is_sharer: Boolean!
+}
+
 type Comment {
   id: Int!
   content: String!
@@ -92,6 +100,7 @@ type Comment {
 type Query {
   user(id: String!): User!
   post(id: Int!): Post!
+  postShares(user_id: String!): [PostShare!]!
   posts(
     """Retrieve page of edges by fixed offset page number."""
     page: Int

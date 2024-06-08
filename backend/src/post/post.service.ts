@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common
 import { CreatePostInput } from "./dto/create-post.input";
 import { EditPostInput } from "./dto/edit-post.input";
 import { Post } from "./entities/post.entity";
+import { PostShare } from "./entities/post-share.entity";
 import { DatabaseService } from "../db/db.service";
 import { QueryConfig } from "pg";
 import { BadRequestError } from "../common/errors/bad-request.error";
@@ -98,6 +99,49 @@ export class PostService {
 		}
 
 		return post[0];
+	}
+
+	// TODO: use find all better?
+	async findSharedPostFor(userId: string): Promise<PostShare[]> {
+		const result = await this.db.query<
+			{
+				id: number;
+				content: string;
+				user_id: string;
+				category_name: string;
+				created_at: Date;
+				updated_at: Date;
+				share_content: string;
+				sharer_id: string;
+				shared_at: Date;
+			}[]
+		>(
+			`
+            SELECT 
+                post.*, 
+                user_shares_post.content as share_content, 
+                user_shares_post.user_id as sharer_id, 
+                user_shares_post.created_at as shared_at 
+            FROM post INNER JOIN user_shares_post ON post.id = user_shares_post.post_id 
+            WHERE user_shares_post.user_id = '${userId}'
+            `
+		);
+
+		const postShares: PostShare[] = result.map((res) => ({
+			post: {
+				id: res.id,
+				content: res.content,
+				user_id: res.user_id,
+				category_name: res.category_name,
+				created_at: res.created_at,
+				updated_at: res.updated_at
+			},
+			share_content: res.share_content,
+			sharer_id: res.sharer_id,
+			shared_at: res.shared_at
+		}));
+
+		return postShares;
 	}
 
 	async edit(userId: string, editPostInput: EditPostInput): Promise<Post> {
