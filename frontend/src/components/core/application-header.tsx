@@ -49,8 +49,8 @@ export default function ApplicationHeader() {
 				</Sheet>
 
 				{/* Desktop Logo */}
-				<Link href="/" className="hidden select-none items-center gap-2 text-lg font-semibold lg:flex">
-					<div className="flex flex-row items-center gap-x-2 text-2xl font-bold">
+				<Link href="/" className="flex select-none items-center gap-2 font-semibold">
+					<div className="flex flex-row items-center gap-x-2 text-xl font-bold">
 						<BananaIcon className="h-6 w-6" />
 						<span className="gradient-span">Bananagram</span>
 					</div>
