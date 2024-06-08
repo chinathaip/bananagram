@@ -15,7 +15,7 @@ export default function CreatePostDialog({ onPostCreated }: { onPostCreated: () 
 				<Button className="w-full py-10" variant="outline" disabled={!isSignedIn}>
 					<div className="item-center flex w-full flex-row gap-x-4 text-left text-lg">
 						<SquarePen />
-						What&apos;s on your mind&#63; {!isSignedIn && "Please sign in to post..."}
+						{isSignedIn ? "What's on your mind?" : "Please sign in to post."}
 					</div>
 				</Button>
 			</DialogTrigger>

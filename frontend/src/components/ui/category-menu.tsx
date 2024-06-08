@@ -1,63 +1,44 @@
 import { useCategory } from "@/lib/hooks/data-hooks/use-category";
-import { Separator } from "@/components/ui/separator";
-import { Flame, Grip, Hash } from "lucide-react";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-	CommandSeparator
-} from "@/components/ui/command";
+import { Grip, Search } from "lucide-react";
+import { Card, CardContent, CardHeader } from "./card";
+import { Input } from "./input";
+import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
+import { useState } from "react";
 
 export default function CategoryMenu({ onSelectCategory }: { onSelectCategory: (value: string) => void }) {
 	const { data: categoryData } = useCategory();
+	const [category, setCategory] = useState("");
 	return (
 		<aside className="relative mr-2 hidden md:col-span-3 md:block">
-			<Command className="h-min rounded-lg border shadow-md">
-				<CommandInput placeholder="Search category or hashtag..." />
-				<CommandList className="max-h-min">
-					<CommandEmpty>No results found.</CommandEmpty>
-					<CommandGroup heading="Category">
-						<CommandItem key="category_all" onSelect={() => onSelectCategory("")}>
-							<Grip className="mr-2 h-4 w-4" />
-							<span>all</span>
-						</CommandItem>
+			<Card>
+				<CardHeader className="gap-y-2 px-0 pb-2 pt-0">
+					<div className="relative w-full">
+						<Input className="rounded-b-none py-6 pl-8" placeholder="Search for posts... " />
+						<Search className="absolute left-0 top-1.5 m-2.5 h-4 w-4 text-muted-foreground" />
+					</div>
+				</CardHeader>
+
+				<CardContent className="px-1 pb-2">
+					<p className="my-2 px-3 text-xs font-medium text-muted-foreground ">
+						Current Category: {category || "all"}
+					</p>
+					<ToggleGroup
+						className="flex-col items-start"
+						type="single"
+						onValueChange={(category) => {
+							setCategory(category);
+							onSelectCategory(category);
+						}}
+					>
 						{categoryData?.categories.map((category) => (
-							<CommandItem
-								key={`category_${category.name}`}
-								value={category.name}
-								onSelect={onSelectCategory}
-							>
+							<ToggleGroupItem className="w-full justify-start text-left" value={category.name}>
 								<Grip className="mr-2 h-4 w-4" />
-								<span>{category.name}</span>
-							</CommandItem>
+								{category.name}
+							</ToggleGroupItem>
 						))}
-					</CommandGroup>
-					<CommandSeparator />
-					<CommandGroup heading="Trending Hashtags">
-						<CommandItem>
-							<Hash className="mr-2 h-4 w-4" />
-							<span>STIU</span>
-							<Flame className="ml-auto h-4 w-4" />
-							<span>1</span>
-						</CommandItem>
-						<CommandItem>
-							<Hash className="mr-2 h-4 w-4" />
-							<span>CourseCompose</span>
-							<Flame className="ml-auto h-4 w-4" />
-							<span>2</span>
-						</CommandItem>
-						<CommandItem>
-							<Hash className="mr-2 h-4 w-4" />
-							<span>Syntax Club</span>
-							<Flame className="ml-auto h-4 w-4" />
-							<span>3</span>
-						</CommandItem>
-					</CommandGroup>
-				</CommandList>
-			</Command>
+					</ToggleGroup>
+				</CardContent>
+			</Card>
 		</aside>
 	);
 }
