@@ -5,7 +5,7 @@ import { useFollow } from "@/lib/hooks/data-hooks/use-follow";
 import { useUnfollow } from "@/lib/hooks/data-hooks/use-unfollow";
 import { useUser } from "@/lib/hooks/data-hooks/use-user";
 import { format } from "date-fns";
-import { CalendarIcon, Send, UserRoundCog, UserRoundMinusIcon, UserRoundPlusIcon } from "lucide-react";
+import { CalendarIcon,  UserRoundCog, UserRoundMinusIcon, UserRoundPlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useClerk } from "@clerk/nextjs";
 
@@ -86,9 +86,6 @@ export default function ProfileCard({ userId }: { userId: string }) {
 											Follow
 										</Button>
 									)}
-									<Button>
-										<Send className="h-6 w-6" />
-									</Button>
 								</div>
 							)}
 						</div>
