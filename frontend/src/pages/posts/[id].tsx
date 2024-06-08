@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import PostCard from "@/components/ui/post-card";
 import { Comment, Post } from "@/gql/graphql";
 import { usePost } from "@/lib/hooks/data-hooks/use-post";
-import CategoryMenu from "@/components/ui/category-menu";
 import { EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
@@ -16,6 +15,7 @@ import { useSocket } from "@/lib/hooks/socket-hooks/use-socket";
 import { useSession } from "@clerk/nextjs";
 import CommentCard from "@/components/ui/comment-card";
 import Link from "@tiptap/extension-link";
+import ProfileCard from "@/components/ui/profile-card";
 
 export default function PostPage() {
 	const router = useRouter();
@@ -76,8 +76,8 @@ export default function PostPage() {
 
 	return (
 		<div className="container grid h-full grid-cols-12">
-			<CategoryMenu onSelectCategory={() => {}} />
-			<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto md:col-span-9">
+			<ProfileCard userId={postData.post.user.id} />
+			<div className="relative col-span-12 ml-2 flex flex-col gap-y-2 overflow-auto md:col-span-9">
 				<PostCard
 					post={postData.post as Post}
 					onEdit={() => {
