@@ -2,7 +2,8 @@ Table post {
   id integer [primary key,
               ref: < comment.post_id,
               ref: > user_likes_post.post_id,
-              ref: - user_shares_post.post_id]
+              ref: - user_shares_post.post_id,
+              ref: < media.post_id]
   content varchar
   user_id varchar
   category_name varchar
@@ -45,6 +46,12 @@ Table comment {
   user_id varchar
   created_at timestamp
   updated_at timestamp
+}
+
+Table media {
+  id integer [primary key]
+  url varchar
+  post_id integer
 }
 
 Table user_follow {
