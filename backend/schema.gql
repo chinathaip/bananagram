@@ -100,6 +100,7 @@ type Comment {
 type Query {
   user(id: String!): User!
   post(id: Int!): Post!
+  search(query: String!): [Post!]!
   postShares(user_id: String!): [PostShare!]!
   posts(
     """Retrieve page of edges by fixed offset page number."""
@@ -118,6 +119,7 @@ type Query {
     last: Int
     category_name: String
     user_id: String
+    search: String
   ): PostConnection!
   categories: [Category!]!
   comments(post_id: Int!): [Comment!]!

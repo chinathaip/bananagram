@@ -28,6 +28,12 @@ export class PostResolver {
 		return this.postService.findOne(id);
 	}
 
+	@UseGuards(JwtAuthGuardOptional)
+	@Query(() => [Post])
+	search(@Args("query") query: string) {
+		return this.postService.search(query);
+	}
+
 	@ResolveField(() => User)
 	user(@Parent() post: Post) {
 		return this.userService.findOne(post.user_id);

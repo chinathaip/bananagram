@@ -101,6 +101,27 @@ export class PostService {
 		return post[0];
 	}
 
+	async search(query: string): Promise<Post[]> {
+		const searchText = query.split(" ");
+		let tsQuery = `${searchText.join(":* | ")}:*`;
+		const posts = await this.db.query<Post[]>(
+			`
+		          SELECT
+		          	post.*,
+		          	ts_rank(to_tsvector('english', username || ' ' || category_name || ' ' || content), to_tsquery('${tsQuery}')) AS rank
+		          FROM
+		          	post
+		          	INNER JOIN public.user ON post.user_id = public.user.id
+		          WHERE
+		          	to_tsvector('english', username || ' ' || category_name || ' ' || content) @@ to_tsquery('${tsQuery}')
+		          ORDER BY
+		          	rank DESC;
+		      `
+		);
+
+		return posts;
+	}
+
 	// TODO: use find all better?
 	async findSharedPostFor(userId: string): Promise<PostShare[]> {
 		const result = await this.db.query<
