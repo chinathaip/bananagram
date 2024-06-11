@@ -5,6 +5,11 @@ export const navItems = [
 		public: true
 	},
 	{
+		name: "Search",
+		href: "/search",
+		public: true
+	},
+	{
 		name: "About us",
 		href: "/about",
 		public: true

@@ -119,7 +119,6 @@ type Query {
     last: Int
     category_name: String
     user_id: String
-    search: String
   ): PostConnection!
   categories: [Category!]!
   comments(post_id: Int!): [Comment!]!

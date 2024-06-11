@@ -102,6 +102,10 @@ export class PostService {
 	}
 
 	async search(query: string): Promise<Post[]> {
+		if (!query) {
+			return [];
+		}
+
 		const searchText = query.split(" ");
 		let tsQuery = `${searchText.join(":* | ")}:*`;
 		const posts = await this.db.query<Post[]>(
