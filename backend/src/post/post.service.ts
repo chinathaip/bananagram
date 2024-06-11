@@ -106,7 +106,7 @@ export class PostService {
 			return [];
 		}
 
-		const searchText = query.split(" ");
+		const searchText = query.trimEnd().split(" ");
 		let tsQuery = `${searchText.join(":* | ")}:*`;
 		const posts = await this.db.query<Post[]>(
 			`
