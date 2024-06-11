@@ -1,9 +1,9 @@
 import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { PostShare } from "./entities/post-share.entity";
 import { UseGuards } from "@nestjs/common";
-import { JwtAuthGuardOptional } from "src/auth/auth-jwt.guard";
+import { JwtAuthGuardOptional } from "../auth/auth-jwt.guard";
 import { PostService } from "./post.service";
-import { CurrentUser } from "src/auth/decorators/current-user.decorator";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
 
 @Resolver((of) => PostShare)
 export class PostShareResolver {
