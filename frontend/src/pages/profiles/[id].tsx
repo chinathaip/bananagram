@@ -74,55 +74,55 @@ export default function UserProfilePage() {
 						</div>
 					</TabsContent>
 					<TabsContent value="shares">
-						<div>
-							<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto lg:col-span-8 xl:col-span-9">
-								{postShareData?.postShares.map((postShare) => (
-									<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto lg:col-span-8 xl:col-span-9">
-										<Card className="p-4">
-											<div className=" flex flex-row items-center gap-x-3">
-												<Avatar>
-													<AvatarImage
-														src={userData?.user?.profile_picture}
-														alt={`@${userData?.user?.profile_picture}`}
-													/>
-													<AvatarFallback>
-														{postShare.post.user.username.substring(0, 2)}
-													</AvatarFallback>
-												</Avatar>
+						<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto lg:col-span-8 xl:col-span-9">
+							{postShareData?.postShares.map((postShare) => (
+								<div className="relative col-span-12 flex flex-col gap-y-2 overflow-auto lg:col-span-8 xl:col-span-9">
+									<Card className="p-4">
+										<div className=" flex flex-row items-center gap-x-3">
+											<Avatar>
+												<AvatarImage
+													src={userData?.user?.profile_picture}
+													alt={`@${userData?.user?.profile_picture}`}
+												/>
+												<AvatarFallback>
+													{postShare.post.user.username.substring(0, 2)}
+												</AvatarFallback>
+											</Avatar>
 
-												<span className="break-all hover:underline">
-													{userData?.user?.username}
-												</span>
+											<span className="break-all hover:underline">
+												{userData?.user?.username}
+											</span>
 
-												<Tooltip>
-													<TooltipContent>
-														Created: {format(postShare.shared_at, "do MMM yyyy ppp")}
-													</TooltipContent>
-													<TooltipTrigger className="text-sm text-muted-foreground">
-														<time
-															dateTime={format(postShare.shared_at, "do MMM yyyy ppp")}
-															className="select-text"
-														>
-															{formatDistance(postShare.shared_at, new Date(), {
-																addSuffix: true
-															})}
-														</time>
-													</TooltipTrigger>
-												</Tooltip>
-											</div>
+											<Tooltip>
+												<TooltipContent>
+													Created: {format(postShare.shared_at, "do MMM yyyy ppp")}
+												</TooltipContent>
+												<TooltipTrigger className="text-sm text-muted-foreground">
+													<time
+														dateTime={format(postShare.shared_at, "do MMM yyyy ppp")}
+														className="select-text"
+													>
+														{formatDistance(postShare.shared_at, new Date(), {
+															addSuffix: true
+														})}
+													</time>
+												</TooltipTrigger>
+											</Tooltip>
+										</div>
 
-											<div className="flex flex-col gap-y-3 pl-14">
-												{postShare.share_content}
+										<div className="flex flex-col gap-y-3 pl-14">
+											{postShare.share_content}
+											<Link href={`/posts/${postShare.post.id}`}>
 												<PostCard
 													post={postShare.post as Post}
 													onEdit={() => {}}
 													onDelete={() => {}}
 												/>
-											</div>
-										</Card>
-									</div>
-								))}
-							</div>
+											</Link>
+										</div>
+									</Card>
+								</div>
+							))}
 						</div>
 					</TabsContent>
 
