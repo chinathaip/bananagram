@@ -23,14 +23,15 @@ const documents = {
     "\n\tquery Posts($page: Int!, $userId: String, $categoryName: String) {\n\t\tposts(page: $page, user_id: $userId, category_name: $categoryName) {\n\t\t\tpageInfo {\n\t\t\t\thasNextPage\n\t\t\t\ttotalEdges\n\t\t\t}\n\t\t\tedges {\n\t\t\t\tnode {\n\t\t\t\t\tid\n\t\t\t\t\tcontent\n\t\t\t\t\tuser_id\n\t\t\t\t\tcategory_name\n\t\t\t\t\tlikes\n\t\t\t\t\tcomments\n\t\t\t\t\tuser_liked\n\t\t\t\t\tuser_shared\n\t\t\t\t\tcreated_at\n\t\t\t\t\tupdated_at\n\t\t\t\t\tmedias {\n\t\t\t\t\t\tid\n\t\t\t\t\t\turl\n\t\t\t\t\t}\n\t\t\t\t\tuser {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tusername\n\t\t\t\t\t\tbio\n\t\t\t\t\t\temail\n\t\t\t\t\t\tis_owner\n\t\t\t\t\t\tcreated_at\n\t\t\t\t\t\tprofile_picture\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n": types.PostsDocument,
     "\n\tmutation LikeComment($id: Int!) {\n\t\tlikeComment(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n": types.LikeCommentDocument,
     "\n\tmutation LikePost($id: Int!) {\n\t\tlikePost(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n": types.LikePostDocument,
+    "\n\tquery PostShare($userId: String!) {\n\t\tpostShares(user_id: $userId) {\n\t\t\tsharer_id\n\t\t\tshare_content\n\t\t\tis_sharer\n\t\t\tshared_at\n\t\t\tpost {\n\t\t\t\tid\n\t\t\t\tcontent\n\t\t\t\tuser {\n\t\t\t\t\tid\n\t\t\t\t\tusername\n\t\t\t\t\tbio\n\t\t\t\t\temail\n\t\t\t\t\tfollowing\n\t\t\t\t\tfollowers\n\t\t\t\t\tis_following\n\t\t\t\t\tis_owner\n\t\t\t\t\tcreated_at\n\t\t\t\t\tprofile_picture\n\t\t\t\t}\n\t\t\t\tmedias {\n\t\t\t\t\tid\n\t\t\t\t\turl\n\t\t\t\t}\n\t\t\t\tlikes\n\t\t\t\tcomments\n\t\t\t\tcategory_name\n\t\t\t\tcreated_at\n\t\t\t\tuser_liked\n\t\t\t\tuser_shared\n\t\t\t}\n\t\t}\n\t}\n": types.PostShareDocument,
     "\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tmedias {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tlikes\n\t\t\tcomments\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_liked\n\t\t\tuser_shared\n\t\t}\n\t}\n": types.PostDocument,
     "\n\tquery Search($query: String!) {\n\t\tsearch(query: $query) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tmedias {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tlikes\n\t\t\tcomments\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_id\n\t\t\tuser_liked\n\t\t\tuser_shared\n\t\t}\n\t}\n": types.SearchDocument,
+    "\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n": types.SharePostDocument,
     "\n\tmutation SignedUrl($signedUrlInput: SignedUrlInput!) {\n\t\tsignedUrl(signedUrlInput: $signedUrlInput) {\n\t\t\turl\n\t\t\tmediaId\n\t\t}\n\t}\n": types.SignedUrlDocument,
     "\n\tmutation Unfollow($id: String!) {\n\t\tunfollow(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n": types.UnfollowDocument,
     "\n\tmutation UnlikeComment($id: Int!) {\n\t\tunlikeComment(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n": types.UnlikeCommentDocument,
     "\n\tmutation UnlikePost($id: Int!) {\n\t\tunlikePost(id: $id) {\n\t\t\tid\n\t\t\tlikes\n\t\t}\n\t}\n": types.UnlikePostDocument,
     "\n\tquery User($id: String!) {\n\t\tuser(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n": types.UserDocument,
-    "\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n": types.SharePostDocument,
 };
 
 /**
@@ -90,11 +91,19 @@ export function graphql(source: "\n\tmutation LikePost($id: Int!) {\n\t\tlikePos
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n\tquery PostShare($userId: String!) {\n\t\tpostShares(user_id: $userId) {\n\t\t\tsharer_id\n\t\t\tshare_content\n\t\t\tis_sharer\n\t\t\tshared_at\n\t\t\tpost {\n\t\t\t\tid\n\t\t\t\tcontent\n\t\t\t\tuser {\n\t\t\t\t\tid\n\t\t\t\t\tusername\n\t\t\t\t\tbio\n\t\t\t\t\temail\n\t\t\t\t\tfollowing\n\t\t\t\t\tfollowers\n\t\t\t\t\tis_following\n\t\t\t\t\tis_owner\n\t\t\t\t\tcreated_at\n\t\t\t\t\tprofile_picture\n\t\t\t\t}\n\t\t\t\tmedias {\n\t\t\t\t\tid\n\t\t\t\t\turl\n\t\t\t\t}\n\t\t\t\tlikes\n\t\t\t\tcomments\n\t\t\t\tcategory_name\n\t\t\t\tcreated_at\n\t\t\t\tuser_liked\n\t\t\t\tuser_shared\n\t\t\t}\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery PostShare($userId: String!) {\n\t\tpostShares(user_id: $userId) {\n\t\t\tsharer_id\n\t\t\tshare_content\n\t\t\tis_sharer\n\t\t\tshared_at\n\t\t\tpost {\n\t\t\t\tid\n\t\t\t\tcontent\n\t\t\t\tuser {\n\t\t\t\t\tid\n\t\t\t\t\tusername\n\t\t\t\t\tbio\n\t\t\t\t\temail\n\t\t\t\t\tfollowing\n\t\t\t\t\tfollowers\n\t\t\t\t\tis_following\n\t\t\t\t\tis_owner\n\t\t\t\t\tcreated_at\n\t\t\t\t\tprofile_picture\n\t\t\t\t}\n\t\t\t\tmedias {\n\t\t\t\t\tid\n\t\t\t\t\turl\n\t\t\t\t}\n\t\t\t\tlikes\n\t\t\t\tcomments\n\t\t\t\tcategory_name\n\t\t\t\tcreated_at\n\t\t\t\tuser_liked\n\t\t\t\tuser_shared\n\t\t\t}\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tmedias {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tlikes\n\t\t\tcomments\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_liked\n\t\t\tuser_shared\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery Post($id: Int!) {\n\t\tpost(id: $id) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tmedias {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tlikes\n\t\t\tcomments\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_liked\n\t\t\tuser_shared\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery Search($query: String!) {\n\t\tsearch(query: $query) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tmedias {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tlikes\n\t\t\tcomments\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_id\n\t\t\tuser_liked\n\t\t\tuser_shared\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery Search($query: String!) {\n\t\tsearch(query: $query) {\n\t\t\tid\n\t\t\tcontent\n\t\t\tuser {\n\t\t\t\tid\n\t\t\t\tusername\n\t\t\t\tbio\n\t\t\t\temail\n\t\t\t\tfollowing\n\t\t\t\tfollowers\n\t\t\t\tis_following\n\t\t\t\tis_owner\n\t\t\t\tcreated_at\n\t\t\t\tprofile_picture\n\t\t\t}\n\t\t\tmedias {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tlikes\n\t\t\tcomments\n\t\t\tcategory_name\n\t\t\tcreated_at\n\t\t\tuser_id\n\t\t\tuser_liked\n\t\t\tuser_shared\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -115,10 +124,6 @@ export function graphql(source: "\n\tmutation UnlikePost($id: Int!) {\n\t\tunlik
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery User($id: String!) {\n\t\tuser(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery User($id: String!) {\n\t\tuser(id: $id) {\n\t\t\tid\n\t\t\tusername\n\t\t\tbio\n\t\t\temail\n\t\t\tfollowing\n\t\t\tfollowers\n\t\t\tis_following\n\t\t\tis_owner\n\t\t\tcreated_at\n\t\t\tprofile_picture\n\t\t}\n\t}\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation SharePost($sharePostInput: SharePostInput!) {\n\t\tsharePost(sharePostInput: $sharePostInput) {\n\t\t\tid\n\t\t}\n\t}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
